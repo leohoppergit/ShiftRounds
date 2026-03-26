@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/family"
+        android:title="@string/menu_family"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_family" />
+
+    <item
+        android:id="@+id/goTo"
+        android:title="@string/menu_goto"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_goto" />
+
+    <item
+        android:id="@+id/share"
+        android:title="@string/menu_share"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_share" />
+
+</menu>

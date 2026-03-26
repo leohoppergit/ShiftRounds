@@ -1,0 +1,21 @@
+ShiftSwift is the ultimate app for managing your work shifts, designed to make your life easier and more organized. Whether you're working irregular hours or just need to stay on top of your schedule.
+
+Key Features:
+
+* Shift Blocks: Save time by adding multiple shifts at once. Predefine a group of shifts and schedule them in one go.
+
+* Shift Alarm: Never miss a shift again! ShiftSwift comes with a built-in alarm that wakes you up when your shift is about to begin, ensuring you're always on time.
+
+* Automatic Do Not Disturb Mode: No more interruptions during your shifts! ShiftSwift automatically activates and deactivates your phone’s "Do Not Disturb" mode based on your shift schedule.
+
+* Calendar Synchronization: Easily sync your work shifts with your regular calendar to keep all your events and appointments in one place.
+
+* Statistics Tracking: Stay informed with statistics on your shifts, hours worked, and more.
+
+* Modern Design: ShiftSwift features a clean and modern design, offering an intuitive and visually appealing experience. The easy-to-navigate interface ensures you can manage your shifts with minimal effort.
+
+* Family Sync: Keep your loved ones in the loop by sharing your shift schedule with family or friends. They’ll always know when you're working and when you're free.
+
+* PDF Export – Easily generate and export your shift schedule as a PDF file.
+
+Developed by a Nurse. Yes i do use it.

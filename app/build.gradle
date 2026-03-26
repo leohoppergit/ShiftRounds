@@ -1,0 +1,132 @@
+plugins {
+    id('com.android.application')
+    id('org.jetbrains.kotlin.android')
+    id('com.mikepenz.aboutlibraries.plugin')
+    id("com.google.devtools.ksp")
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+def hasReleaseSigning = keystorePropertiesFile.exists() &&
+        ["storeFile", "storePassword", "keyAlias", "keyPassword"].every {
+            keystoreProperties[it]
+        }
+
+android {
+    compileSdk 36
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile rootProject.file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            }
+        }
+    }
+    defaultConfig {
+        applicationId "app.shiftrounds.android"
+        minSdkVersion 26
+        targetSdk 36
+        versionCode 3001001
+        versionName "3.0.1-shiftrounds.1"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+    kotlin {
+        jvmToolchain(21)
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        prod {
+            dimension "default"
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            buildConfigField "String", "SERVER_IP", "\"https://shiftswiftserver.nulide.de\""
+        }
+        playstore {
+            dimension "default"
+            applicationIdSuffix ".play"
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            buildConfigField "String", "SERVER_IP", "\"https://shiftswiftserver.nulide.de\""
+        }
+        dev {
+            dimension "default"
+            applicationIdSuffix ".dev"
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "false"
+            buildConfigField "String", "SERVER_IP", "\"http://192.168.0.177:20252\""
+        }
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/versions/9/OSGI-INF/MANIFEST.MF']
+        }
+    }
+    namespace = 'de.nulide.shiftcal'
+}
+
+dependencies {
+    implementation 'androidx.activity:activity-ktx:1.13.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.compose.material3:material3:1.4.0'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.gridlayout:gridlayout:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.test:monitor:1.8.0'
+    implementation 'androidx.work:work-runtime-ktx:2.11.1'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-ktx:2.8.4'
+
+    ksp("androidx.room:room-compiler:2.8.4")
+    annotationProcessor("androidx.room:room-compiler:2.8.4")
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit:2.3.10'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+
+    implementation 'com.kizitonwose.calendar:view:2.10.0'
+    implementation 'com.github.LostNulide:materialcolorpicker:v0.0.17'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.1'
+    implementation 'com.mikepenz:aboutlibraries-core:13.2.1'
+    implementation 'com.gitlab.nulide:monthyearpicker:1.4'
+    implementation "com.github.skydoves:balloon:1.7.5"
+
+    implementation 'com.android.volley:volley:1.2.1'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.0'
+    implementation 'com.github.alexzhirkevich:custom-qr-generator:1.6.2'
+    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
+
+    implementation("ch.acra:acra-http:5.13.1")
+
+    implementation 'com.itextpdf.android:kernel-android:9.5.0'
+    implementation 'com.itextpdf.android:layout-android:9.5.0'
+}

@@ -1,0 +1,21 @@
+{
+  "commandLine": [
+    "/home/lix/.local/bin/fdroid build",
+    "de.nulide.shiftcal:52"
+  ],
+  "fdroiddata": {
+    "commitId": "8835dd3118b30db992271aee2e17b90062a9846c",
+    "isDirty": true,
+    "modifiedFiles": [
+      ".idea/misc.xml"
+    ],
+    "untrackedFiles": [
+      "app/playstore/release/app-playstore-release.aab",
+      "app/playstore/release/baselineProfiles/0/app-playstore-release.dm",
+      "app/playstore/release/baselineProfiles/1/app-playstore-release.dm",
+      "app/playstore/release/output-metadata.json"
+    ]
+  },
+  "startTimestamp": 1773914039000,
+  "subcommand": "build"
+}

@@ -1,0 +1,12 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Rounded corners -->
+    <corners android:radius="12dp" /> <!-- Adjust the radius for more or less rounding -->
+
+    <stroke
+        android:width="3dp"
+        android:color="?attr/colorTertiary" /> <!-- Optional border around the box, change the color and width -->
+
+
+</shape>

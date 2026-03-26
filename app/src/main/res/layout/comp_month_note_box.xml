@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout android:id="@+id/monthNoteBox"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:visibility="gone"
+    android:layout_margin="8dp"
+    android:background="@drawable/calendar_box"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/monthNoteText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center" />
+
+</de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout>
+

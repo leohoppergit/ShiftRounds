@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="6dp"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_gravity="end"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout
+            android:id="@+id/fabContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="end"
+            app:hideChildren="false"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <de.nulide.shiftcal.ui.calendar.comp.MonthNoteEdit
+                android:id="@+id/monthNoteFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:text="@string/fab_month_note"
+                android:contentDescription="@string/fab_month_note"
+                app:layout_anchorGravity="bottom|end"
+                app:icon="@drawable/ic_note" />
+
+            <de.nulide.shiftcal.ui.calendar.comp.ShiftBlockSelector
+                android:id="@+id/shiftBlockSelectorFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:text="@string/shift_block_creator_shift_block_title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:contentDescription="@string/fab_shift_block_selection"
+                app:icon="@drawable/ic_multi_shift_fab" />
+
+            <de.nulide.shiftcal.ui.calendar.comp.ShiftSelector
+                android:id="@+id/shiftSelectorFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:text="@string/shift_creator_shift_title"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:contentDescription="@string/fab_shift_selection"
+                app:icon="@drawable/ic_shift_fab" />
+
+        </de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/editFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text=""
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:contentDescription="@string/fab_edit"
+            app:icon="@drawable/ic_edit"
+            android:src="@android:color/transparent" />
+
+    </LinearLayout>
+
+</LinearLayout>

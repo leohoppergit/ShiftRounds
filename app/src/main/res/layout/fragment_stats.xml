@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.stats.StatsFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/statsContent"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/statsFromText"
+                style="@style/Text.SectionTitle"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/stats_from" />
+
+            <TextView
+                style="@style/Text.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/stats_time_tile" />
+
+            <androidx.gridlayout.widget.GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:columnCount="2">
+
+                <TextView
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:text="@string/stats_time_work_label" />
+
+                <TextView
+                    android:id="@+id/statsWorkTimeText"
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:text="@string/stats_time_break_label" />
+
+                <TextView
+                    android:id="@+id/statsBreakTimeText"
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:textAlignment="textEnd" />
+
+                <TextView
+                    android:id="@+id/statsOvertimeLabel"
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:text="@string/stats_time_overtime_label" />
+
+                <TextView
+                    android:id="@+id/statsOvertimeText"
+                    android:layout_width="0dp"
+                    app:layout_columnWeight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:textAlignment="textEnd" />
+
+            </androidx.gridlayout.widget.GridLayout>
+
+
+            <TextView
+                style="@style/Text.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/stats_shifts_tile" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listViewShifts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                style="@style/Text.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/stats_weekdays_title" />
+
+            <LinearLayout
+                android:id="@+id/statsWeekDaysContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/mondayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/tuesdayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/wednesdayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/thursdayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/fridayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/saturdayStat"
+                    layout="@layout/item_week_day_stat" />
+
+                <include
+                    android:id="@+id/sundayStat"
+                    layout="@layout/item_week_day_stat" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tagsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Text.SectionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/stats_tags_title" />
+
+                <LinearLayout
+                    android:id="@+id/tagsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/dollarStat"
+                        layout="@layout/item_icon_stat" />
+
+                    <include
+                        android:id="@+id/starStat"
+                        layout="@layout/item_icon_stat" />
+
+                    <include
+                        android:id="@+id/sickStat"
+                        layout="@layout/item_icon_stat" />
+
+                    <include
+                        android:id="@+id/homeStat"
+                        layout="@layout/item_icon_stat" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/emptyStatsContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Text.SectionTitle"
+            android:text="@string/stats_empty_text"
+            android:layout_margin="8dp"
+            android:textAlignment="center" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="32dp"
+            android:src="@drawable/ic_owl_watermark" />
+
+    </LinearLayout>
+
+</FrameLayout>

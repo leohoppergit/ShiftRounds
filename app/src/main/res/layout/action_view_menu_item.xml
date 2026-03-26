@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="16dp"
+    tools:ignore="RtlSymmetry">
+
+    <com.google.android.material.button.MaterialButton android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:iconTint="?attr/colorOnSurfaceVariant"
+        app:iconPadding="0dp"
+        android:padding="0dp"
+        android:minWidth="0dp"
+        app:iconSize="30dp"
+        app:cornerRadius="16dp" />
+
+</FrameLayout>

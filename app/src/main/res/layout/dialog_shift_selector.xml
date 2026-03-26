@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shift_selector_layout"
+    android:layout_width="match_parent"
+    android:dividerHeight="0dp"
+    android:divider="@color/transparent"
+    android:layout_height="match_parent">
+
+</ListView>

@@ -1,0 +1,23 @@
+ShiftSwift ist für jeden Menschen gedacht der im Schichtdienst arbeitet und eine einfache Option sucht seine Schichten zu verwalten.
+Mit mehreren Funktionen die den Alltag etwas leichter machen können.
+
+Funktionen:
+
+*Schichtblöcke: Spare Zeit, indem du mehrere Schichten auf einmal hinzufügst. Definiere eine Gruppe von Schichten füge sie in einem Schritt deinem Kalender hinzu.
+
+* Schichtalarm: Verpassen Sie nie wieder eine Schicht! ShiftSwift verfügt über einen eingebauten Alarm, der Sie weckt, wenn Ihre Schicht beginnt, damit Sie immer pünktlich sind.
+
+* Automatischer „Nicht stören“-Modus: Keine Unterbrechungen mehr während Ihrer Schicht! ShiftSwift aktiviert und deaktiviert den „Bitte nicht stören“-Modus Ihres Telefons automatisch, je nach Ihrem Schichtplan.
+
+* Kalender-Synchronisation: Synchronisieren Sie Ihre Arbeitsschichten ganz einfach mit Ihrem normalen Kalender, um alle Ihre Ereignisse und Termine an einem Ort zu haben.
+
+* Statistiken: Bleiben Sie auf dem Laufenden mit Statistiken über Ihre Schichten, Arbeitsstunden und mehr.
+
+* Modernes Design: ShiftSwift verfügt über ein sauberes und modernes Aussehen, das eine ansprechende Erfahrung bietet. Die einfach zu navigierende Oberfläche stellt sicher, dass Sie Ihre Schichten mit minimalem Aufwand verwalten können.
+
+* Family-Sync: Halte deine Familie und Freunde auf dem Laufenden, indem du deinen Schichtplan teilst. So wissen sie immer, wann du arbeitest und wann du Zeit hast.
+
+* PDF-Export – Erstelle und exportiere deinen Schichtplan als PDF-Datei.
+
+
+Entwickelt von einem Krankenpfleger.

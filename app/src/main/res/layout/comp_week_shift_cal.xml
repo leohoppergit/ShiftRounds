@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<de.nulide.shiftcal.ui.helper.TouchInterceptedLinearLayout android:id="@+id/familyCalendarBoxView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:animateLayoutChanges="true"
+    android:padding="8dp"
+    android:layout_margin="8dp"
+    android:orientation="horizontal"
+    android:background="@drawable/calendar_box"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include layout="@layout/calendar_day_user_container" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/weekTitlesContainer"
+            layout="@layout/calendar_day_titles_container" />
+
+        <com.kizitonwose.calendar.view.WeekCalendarView
+            android:id="@+id/familyCalendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cv_daySize="rectangle"
+            app:cv_dayViewResource="@layout/calendar_week_day_layout" />
+
+    </LinearLayout>
+
+</de.nulide.shiftcal.ui.helper.TouchInterceptedLinearLayout>

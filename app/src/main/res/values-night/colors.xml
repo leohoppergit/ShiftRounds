@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="spinnerText">@color/textColorWhite</color>
+    <color name="textColor">@color/textColorWhite</color>
+    <color name="reversedTextColor">@color/textColorBlack</color>
+
+
+    <color name="onSurfaceWaterMark">@color/onSurfaceWaterMarkNight</color>
+
+</resources>

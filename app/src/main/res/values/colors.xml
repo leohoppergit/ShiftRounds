@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+
+    <color name="textColorBlack">#DE000000</color>
+    <color name="textColorWhite">#FFFFFF</color>
+
+    <color name="textColorWaterMark">#929292</color>
+
+    <color name="spinnerText">@color/textColorBlack</color>
+    <color name="textColor">@color/textColorBlack</color>
+    <color name="reversedTextColor">@color/textColorWhite</color>
+
+    <color name="onSurfaceWaterMark">#76777D</color>
+    <color name="onSurfaceWaterMarkNight">#909097</color>
+
+    <color name="alarmRippleColor">#6076AC</color>
+
+    <color name="syncCalColor">#008577</color>
+
+    <color name="removeColor">#ff5449</color>
+
+    <color name="newColor">#aac7ff</color>
+
+</resources>

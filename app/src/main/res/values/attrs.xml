@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="InfoView">
+        <attr name="balloonText" format="string" />
+        <attr name="openActivity" format="reference" />
+        <attr name="scrollTo" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="ExpandableLinearLayout">
+        <attr name="hideChildren" format="boolean" />
+        <attr name="useCollapseSize" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="coordinatorLayoutStyle">@style/ActivityStyle</item>
+        <item name="appBarLayoutStyle">@style/AppBarStyle</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme.WithActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="Text.SectionTitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="Text.SectionTitleLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">?attr/colorSecondary
+        </item> <!-- Replace with your desired color -->
+        <item name="tint">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="ActivityStyle" parent="Widget.Support.CoordinatorLayout">
+        <item name="background">?attr/colorSurface</item>
+    </style>
+
+    <style name="AppBarStyle" parent="Widget.Material3.AppBarLayout">
+        <item name="statusBarBackground">?attr/colorSurface</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
+    </style>
+
+</resources>
