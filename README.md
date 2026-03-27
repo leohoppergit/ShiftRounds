@@ -37,8 +37,8 @@ If `keystore.properties` is missing, release builds fall back to the debug key. 
 
 This fork uses its own versioning scheme:
 
-- `versionName`: `3.0.1-shiftrounds.4`
-- `versionCode`: `3001004`
+- `versionName`: `3.0.1-shiftrounds.5`
+- `versionCode`: `3001005`
 
 Recommended pattern:
 
