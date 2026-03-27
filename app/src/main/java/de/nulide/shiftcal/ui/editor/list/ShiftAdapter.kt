@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import de.nulide.shiftcal.R
@@ -22,6 +23,10 @@ class ShiftAdapter(context: Context, val shifts: MutableList<Shift>) :
 
         val shortNameText = rowView.findViewById<TextView>(R.id.textViewSName)
         val nameText = rowView.findViewById<TextView>(R.id.textViewName)
+        val moreButton = rowView.findViewById<ImageButton>(R.id.buttonMore)
+        moreButton.visibility = View.GONE
+        moreButton.isClickable = false
+        moreButton.isFocusable = false
 
         val shift = shifts[position]
         shortNameText.text = shift.shortName
