@@ -15,7 +15,6 @@ import de.nulide.shiftcal.utils.Device.Companion.isOnePlus
 class Perm {
 
     companion object {
-        const val CAMERA = Manifest.permission.CAMERA
         const val CALENDAR = Manifest.permission.WRITE_CALENDAR
         const val CALENDAR_READ = Manifest.permission.READ_CALENDAR
 
@@ -23,8 +22,6 @@ class Perm {
         const val NOTIFICATION = Manifest.permission.POST_NOTIFICATIONS
         const val ONEPLUS_BACKGROUND = Settings.PERM_ONE_PLUS_BACKGROUND_ACTIVITY
         const val OVERLAY = android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-        const val DND = android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
-
         @SuppressLint("BatteryLife")
         const val BAT =
             android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
@@ -45,11 +42,6 @@ class Perm {
                     } else {
                         return true
                     }
-                }
-
-                DND -> {
-                    return (ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)
-                        ?.isNotificationPolicyAccessGranted() == true
                 }
 
                 BAT -> {

@@ -14,9 +14,7 @@ import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityAdvancedSettingsBinding
-import de.nulide.shiftcal.ui.helper.WarningDialog
 import de.nulide.shiftcal.ui.settings.feature.CalSyncFeature
-import de.nulide.shiftcal.ui.settings.feature.DNDFeature
 import de.nulide.shiftcal.ui.settings.feature.Feature
 import de.nulide.shiftcal.ui.settings.feature.FeatureStateListener
 import de.nulide.shiftcal.utils.permission.PermissionManager
@@ -36,7 +34,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
     lateinit var settings: SettingsRepository
 
-    private lateinit var dndFeature: DNDFeature
     private lateinit var calSyncFeature: CalSyncFeature
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +45,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         settings = SettingsRepository.getInstance(this)
 
         val permissionManager = PermissionManager(this)
-
-        dndFeature = DNDFeature(this, permissionManager, this)
 
         calSyncFeature = CalSyncFeature(this, permissionManager, this)
 
@@ -81,36 +76,14 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         )
         binding.firstDayOfWeekSpinner.onItemClickListener = this
 
-        val dndBehaviourOptions = ArrayList<String>()
-        dndBehaviourOptions.add(getString(R.string.settings_dnd_option_none))
-        dndBehaviourOptions.add(getString(R.string.settings_dnd_option_alarms))
-        dndBehaviourOptions.add(getString(R.string.settings_dnd_option_all))
-        val adapterDNDBehaviour = ArrayAdapter(
-            applicationContext,
-            R.layout.item_spinner, dndBehaviourOptions
-        )
-        binding.dndBehaviourSpinner.setAdapter(adapterDNDBehaviour)
-        binding.dndBehaviourSpinner.setText(
-            dndBehaviourOptions[settings.getInt(Settings.DND_BEHAVIOUR)],
-            false
-        )
-        binding.dndBehaviourSpinner.onItemClickListener = this
-
         updateViews()
 
         binding.dualShiftCheckBox.setOnCheckedChangeListener(this)
-
-        binding.dndCheckBox.setOnCheckedChangeListener(this)
 
         binding.syncCheckBox.setOnCheckedChangeListener(this)
 
         binding.weekOfYearSwitch.setOnCheckedChangeListener(this)
 
-        if (!settings.getBoolean(Settings.WELCOME_INTRO_SHOWN)) {
-            binding.tutorialSection.visibility = View.GONE
-        } else {
-            binding.tutorialResetButton.setOnClickListener(this)
-        }
     }
 
     override fun onStart() {
@@ -135,13 +108,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        if (buttonView == binding.dndCheckBox) {
-            if (isChecked) {
-                dndFeature.enable()
-            } else {
-                dndFeature.disable()
-            }
-        } else if (buttonView == binding.syncCheckBox) {
+        if (buttonView == binding.syncCheckBox) {
             if (isChecked) {
                 calSyncFeature.enable()
             } else {
@@ -155,16 +122,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     }
 
     override fun onClick(v: View?) {
-        if (v == binding.tutorialResetButton) {
-            settings.reset(Settings.WELCOME_INTRO_SHOWN)
-            settings.reset(Settings.INFO_SHIFT_SELECTOR_COUNT)
-            settings.reset(Settings.INTRO_SHIFT_SELECTOR)
-            settings.reset(Settings.INTRO_FAB_MENU_EXPLANATION)
-            settings.reset(Settings.FAMILY_SYNC_INTRO_SHOWN)
-            settings.reset(Settings.PERM_ONE_PLUS_BACKGROUND_ACTIVITY)
-            binding.tutorialResetButton.setOnClickListener(null)
-            binding.tutorialSection.visibility = View.GONE
-        }
     }
 
     override fun onResume() {
@@ -179,11 +136,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         //Dual Shift
         binding.dualShiftCheckBox.isChecked = settings.getBoolean(Settings.DUAL_SHIFT)
 
-        //DND
-        val DNDEnabled = dndFeature.isEnabled()
-        binding.dndCheckBox.isChecked = DNDEnabled
-        binding.dndBehaviourSpinner.isEnabled = DNDEnabled
-
         //Sync
         val syncEnabled = calSyncFeature.isEnabled()
         binding.syncCheckBox.isChecked = syncEnabled
@@ -193,14 +145,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         if (parent!!.adapter == binding.firstDayOfWeekSpinner.adapter) {
             if (!settings.has(Settings.START_OF_WEEK) || settings.getInt(Settings.START_OF_WEEK) != position) {
                 settings.set(Settings.START_OF_WEEK, position)
-            }
-        } else if (parent.adapter == binding.dndBehaviourSpinner.adapter) {
-            settings.set(Settings.DND_BEHAVIOUR, position)
-            if (position == 0) {
-                val warningDialog =
-                    WarningDialog(this, getString(R.string.settings_dnd_warning_none_alarm))
-                warningDialog.enableNeutralButton()
-                warningDialog.show()
             }
         }
     }

@@ -11,8 +11,6 @@
     <string name="Enable">Enable</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_week_starts_on_label">Week starts on:</string>
-    <string name="settings_dnd_title">Do Not Disturb</string>
-    <string name="settings_dnd_description">Automatically turn on DND when your shift starts.</string>
     <string name="settings_alarm_title">Shift Alarm</string>
     <string name="settings_alarm_description">This will gently wake you up at your set time before your shift begins.</string>
     <string name="settings_alarm_minutes_before_label">Minutes before Shift:</string>
@@ -65,10 +63,6 @@
     <string name="welcome_goto_info">Use this button to quickly jump to any month.</string>
     <string name="welcome_settings_info">Here you can adjust your app settings.</string>
     <string name="welcome_shift_edit_info">Click here to add or edit shifts for any day in the calendar. You can also update the monthly note to keep important reminders.</string>
-    <string name="settings_dnd_behaviour_description">Allow sound for:\n</string>
-    <string name="settings_dnd_option_none">None</string>
-    <string name="settings_dnd_option_alarms">Alarms</string>
-    <string name="settings_dnd_option_all">Alarms and Media</string>
     <string name="settings_week_of_year_label">Show week of year:</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_goto">Jump to date</string>
@@ -103,7 +97,7 @@
     <string name="add">add</string>
     <string name="notification_day_shift_title">Shift Notifications</string>
     <string name="notification_day_shift_description">Notifications about the shift you have to work today.</string>
-    <string name="welcome_info_description">Welcome to your new shift calendar!\n\nWith this app, you can:\n      &#8226; Track your shifts\n      &#8226; View detailed stats\n      &#8226; Let the app manage Do Not Disturb\n      &#8226; Sync with your regular calendar\n\nEnjoy using ShiftRounds!\n\n    - Nulide</string>
+    <string name="welcome_info_description">Welcome to your new shift calendar!\n\nWith this app, you can:\n      &#8226; Track your shifts\n      &#8226; View detailed stats\n      &#8226; Sync with your regular calendar\n\nEnjoy using ShiftRounds!\n\n    - Nulide</string>
     <string name="welcome_info_title">Welcome to Your Shift Calendar!</string>
     <string name="welcome_info_start_button">Start exploring ShiftRounds</string>
     <string name="shift_list_delete">Delete</string>
@@ -111,22 +105,14 @@
     <string name="shift_creator_alarm_info_tooltip">Enable shift alarm in settings to use it.</string>
     <string name="welcome_stats_info">Click here to see this month\'s stats.</string>
     <string name="warning">Warning</string>
-    <string name="settings_dnd_warning_none_alarm">If you select \"None\" and set the time before the alarm to 0, you won\'t hear any alarm or receive a notification for your shift.\nAdditionally, alarms from other apps won\'t function.\nPlease keep this in mind.</string>
     <string name="shift_creator_error_information">Please complete all required fields.</string>
     <string name="shift_creator_error_invalid_duration">Please choose a valid end day so the shift ends after it starts.</string>
     <string name="shift_creator_color_picker_title">Choose a color</string>
     <string name="about_description">A shift calendar.</string>
     <string name="about_credit_title">About This App</string>
     <string name="about_credit_body">ShiftRounds is a private fork based on ShiftCal / ShiftSwift by Nulide.\n\nOriginal concept and foundation by Nulide.\nThis version continues the app as an independently maintained personal edition.</string>
-    <string name="Settings_Privacy">Privacy</string>
-    <string name="privacy_ads_title">Personalized Ads</string>
-    <string name="privacy_ads_description">This app uses personalized ads to show you relevant advertisements based on your interests. This helps me provide a better experience and keep the app free. You can choose to see non-personalized ads instead, which won’t use your data for customization.</string>
-    <string name="privacy_crashlytics_title">Crash Reporting</string>
-    <string name="privacy_crashlytics_description">This app uses crash reporting to identify and fix app issues. This helps me improve the app\'s stability. The tool collects data about crashes, such as device information and app usage at the time of the crash. No sensitive or personally identifiable information is included.</string>
     <string name="save">Save</string>
-    <string name="privacy_decline_all">Decline all</string>
     <string name="shift_selector_intro_select_date">You can now click on the dates where you want the shifts to apply.</string>
-    <string name="privacy_accept_all">Accept all</string>
     <string name="shift_creator_short_name_info_tooltip">For better visibility, aim to keep the short name to a maximum of 4 characters.</string>
     <string name="numberformat" translatable="false">%1$d</string>
     <string name="month_note_description">Add a note for this month</string>
@@ -153,14 +139,7 @@
     <string name="permission_oneplus_background_activity_description"><![CDATA[Background Activity is blocked by default on OnePlus devices.\nTo fix this, you need to manually enable Background Activity in the Settings app.\n\nFollow these steps:\n\n    1. Open Settings.\n    2. Go to Apps > ShiftRounds > Battery Usage.\n    3. Enable Background Activity.]]></string>
     <string name="alarm_start_at">Starts at: %1$02d:%2$02d</string>
     <string name="ok" translatable="false">OK</string>
-    <string name="Settings_Family_Sync" translatable="false">Family Sync</string>
-    <string name="settings_family_sync_short_desc">You can share your calendar or connect to another ShiftRounds calendar.</string>
-    <string name="settings_family_sync_share_btn">Share your calendar</string>
-    <string name="settings_family_sync_connect_btn">Connect to another calendar</string>
-    <string name="family_sync_share_desc">Keep your family and friends informed about your work schedule and availability.\nSimply install the app on both devices.</string>
     <string name="net_error_retry_later">Something went wrong.\nPlease retry later.</string>
-    <string name="menu_family">Synced Calendar</string>
-    <string name="calendar_warning_family_synced">Calendar from: %1$s</string>
     <string name="qr_code_content">QR Code</string>
     <string name="fab_shift_block_selection">Shift block selection</string>
     <string name="Settings_Shift_Blocks">Shift Blocks</string>
@@ -168,30 +147,21 @@
     <string name="note_hint">Note</string>
     <string name="feedback_hint">I like …</string>
     <string name="feedback_description">Tell me what you like or what you dislike.</string>
+    <string name="feedback_thanks">Thanks for your feedback.</string>
     <string name="shift_block_creator_title">Shift Block Editor</string>
     <string name="shift_block_creator_shifts_title">Shifts</string>
     <string name="shift_block_creator_name_hint">ExampleBlock</string>
     <string name="shift_block_creator_shift_block_title">Shift Block</string>
-    <string name="settings_family_sync_disconnect_btn">Disconnect</string>
     <string name="name_hint">James</string>
-    <string name="family_sync_name_selector_title">Enter your name</string>
-    <string name="family_sync_name_description">Enter your name so others know whose calendar they\'re viewing.</string>
+    <string name="name_dialog_title">Your Name</string>
+    <string name="name_dialog_description">Enter the name that should be shown inside the app.</string>
     <string name="calendar_shift_block_selector_tooltip">Add multiple shifts at once.</string>
-    <string name="family_sync_connect_desc">View the calendar of a family member or friend.</string>
-    <string name="family_sync_currently_connected">Currently connected to: %1$s</string>
-    <string name="family_sync_currently_shared">Currently shared with:</string>
-    <string name="info_dialog_family_sync_logout">You have been logged out of FamilySync.</string>
-    <string name="warning_family_sync_delete_spectator">Are you sure you want to revoke %1$s\'s access to your calendar?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="settings_family_delete_account_btn">Delete All Server Data</string>
-    <string name="warning_family_sync_delete_account">Are you sure you want to delete your account?\nThis will log out all linked family members.</string>
-    <string name="intro_family_sync_switch">Here you can switch between your and %1$s\'s calendar.</string>
     <string name="shift_blocks_desc">Create shift blocks to quickly add multiple recurring shifts to your calendar at once.</string>
     <string name="intro_shift_block_creator_shift_selector">First, select a shift, then tap the position where you want to place it.</string>
     <string name="net_error_no_connection">Can\'t connect to the server. Please try again later.</string>
     <string name="menu_share">Share</string>
-    <string name="family_sync_not_supported_api_version">Please update your app to support the latest server.</string>
     <string name="menu_calendar">Calendar</string>
     <string name="pdf_no_calendar">There are no shifts for this month to share.</string>
     <string name="warning_delete_item">Are you sure you want to delete %1$s?</string>
@@ -200,7 +170,6 @@
     <string name="tags_dialog_title">Select Tags</string>
     <string name="stats_tags_title">Tags</string>
     <string name="stats_empty_text">No shifts this month. Enjoy it!</string>
-    <string name="calendar_warning_combined_family_synced">Combined Calendar</string>
     <string name="warning_shift_not_saved">The current changes aren\'t saved. Are you sure you want to return?</string>
     <string name="stats_from">Stats from: %1$s</string>
     <string name="notification_upcoming_alarm_title">Upcoming Alarm</string>
@@ -210,8 +179,6 @@
     <string name="starts_at">%1$s (%2$s) starts at %3$s.\nAlarm rings at %4$s.</string>
     <string name="settings_calendar_sync_google_issue_title">Problems with Google Calendar?</string>
     <string name="settings_calendar_sync_google_issue_desc">Enable ShiftRounds inside Google Calendar.\nSettings -> Accounts -> ShiftRounds</string>
-    <string name="Settings_Crash" translatable="false">Crash App</string>
-    <string name="privacy_decline">Decline</string>
     <string name="Import_Failed">Import failed.</string>
     <string name="name_someone">someone</string>
     <string name="about_library_version">Version: %1$s</string>

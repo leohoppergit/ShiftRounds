@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import de.nulide.shiftcal.BuildConfig
 import de.nulide.shiftcal.R
 
 
@@ -21,12 +20,9 @@ class SettingsEntry(
     companion object {
         const val ID_SHIFTS = 0
         const val ID_SHIFT_BLOCKS = 1
-        const val ID_FAMILY_SYNC = 2
         const val ID_ADVANCED_SETTINGS = 3
-        const val ID_PRIVACY = 4
         const val ID_FEEDBACK = 7
         const val ID_ABOUT = 8
-        const val ID_CRASH = 10
 
         fun getSettingsEntries(context: Context): List<SettingsEntry> {
             val entries: MutableList<SettingsEntry> = ArrayList()
@@ -49,37 +45,11 @@ class SettingsEntry(
             entries.add(
                 SettingsEntry(
                     context,
-                    R.string.Settings_Family_Sync,
-                    R.drawable.ic_family,
-                    ID_FAMILY_SYNC
-                )
-            )
-            entries.add(
-                SettingsEntry(
-                    context,
                     R.string.Settings_Advanced_Settings,
                     R.drawable.ic_config,
                     ID_ADVANCED_SETTINGS
                 )
             )
-            entries.add(
-                SettingsEntry(
-                    context,
-                    R.string.Settings_Privacy,
-                    R.drawable.ic_privacy,
-                    ID_PRIVACY
-                )
-            )
-            if (BuildConfig.DEBUG) {
-                entries.add(
-                    SettingsEntry(
-                        context,
-                        R.string.Settings_Crash,
-                        R.drawable.ic_warning,
-                        ID_CRASH
-                    )
-                )
-            }
             entries.add(
                 SettingsEntry(
                     context,

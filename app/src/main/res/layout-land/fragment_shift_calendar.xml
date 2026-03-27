@@ -32,17 +32,6 @@
                     android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
-                    <de.nulide.shiftcal.ui.calendar.comp.CalOwnerInfo
-                        android:id="@+id/calendarFromText"
-                        style="@style/Text.SectionTitle"
-                        android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:layout_width="match_parent"
-                        android:visibility="gone"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/calendar_warning_family_synced" />
-
                     <LinearLayout
                         android:id="@+id/tabletSplit"
                         android:layout_width="match_parent"

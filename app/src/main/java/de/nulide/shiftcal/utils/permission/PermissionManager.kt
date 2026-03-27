@@ -49,13 +49,6 @@ class PermissionManager(
     }
 
     override fun onResume(owner: LifecycleOwner) {
-        if (lastRequestedPermission == Perm.DND) {
-            if (check(Perm.DND)) {
-                informGranted(Perm.DND)
-            } else {
-                informNotGranted(Perm.DND)
-            }
-        }
     }
 
     @SuppressLint("BatteryLife")
@@ -71,11 +64,6 @@ class PermissionManager(
 
             Perm.OVERLAY -> {
                 val intent = Intent(perm, ("package:" + activity.packageName).toUri())
-                intentLauncher.launch(intent)
-            }
-
-            Perm.DND -> {
-                val intent = Intent(perm)
                 intentLauncher.launch(intent)
             }
 

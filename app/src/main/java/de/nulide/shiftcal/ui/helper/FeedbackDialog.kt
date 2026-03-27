@@ -3,9 +3,9 @@ package de.nulide.shiftcal.ui.helper
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
-import de.nulide.shiftcal.utils.ACRAHelper
 
 class FeedbackDialog(context: Context) {
 
@@ -20,9 +20,8 @@ class FeedbackDialog(context: Context) {
             .setView(feedbackView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 val msg = feedbackEdit.text.toString()
-                val now = System.currentTimeMillis()
                 if (msg.isNotEmpty()) {
-                    ACRAHelper.sendFeedback(msg)
+                    Toast.makeText(context, R.string.feedback_thanks, Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)

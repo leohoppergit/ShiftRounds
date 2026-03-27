@@ -10,9 +10,7 @@ import de.nulide.shiftcal.data.repository.task.CalendarPostProcessingScheduler
 import de.nulide.shiftcal.data.repository.wrapper.ShiftCalendarDTO
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
-import de.nulide.shiftcal.net.ShiftSwiftServerRestApi
 import de.nulide.shiftcal.sync.SyncHandler
-import de.nulide.shiftcal.utils.DndScheduler
 import de.nulide.shiftcal.utils.SingletonHolder
 
 class SCRepoManager(ctx: Context) {
@@ -165,10 +163,7 @@ class SCRepoManager(ctx: Context) {
     }
 
     fun postProcess(ctx: Context) {
-        DndScheduler(ctx).setDndAlarm()
         SyncHandler.sync(ctx)
-        val serverApi = ShiftSwiftServerRestApi(ctx)
-        serverApi.updateCalendar()
         SettingsRepository.getInstance(ctx).set(Settings.LAST_POST_PROCESS_FAILED, false)
 
     }

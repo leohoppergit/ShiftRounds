@@ -48,7 +48,6 @@ class NextShiftBox @JvmOverloads constructor(
                             timeUntilShift.second,
                             shift.shortName
                         )
-                        binding.nextAlarmText.visibility = GONE
                     }
                 } else {
                     binding.nextShiftText.text = ""

@@ -58,18 +58,8 @@ class SettingsFragment : SFragment(), AdapterView.OnItemClickListener {
                 startActivity(intent)
             }
 
-            SettingsEntry.ID_FAMILY_SYNC -> {
-                intent = Intent(ctx, FamilySyncActivity::class.java)
-                startActivity(intent)
-            }
-
             SettingsEntry.ID_ADVANCED_SETTINGS -> {
                 intent = Intent(ctx, AdvancedSettingsActivity::class.java)
-                startActivity(intent)
-            }
-
-            SettingsEntry.ID_PRIVACY -> {
-                intent = Intent(ctx, PrivacyActivity::class.java)
                 startActivity(intent)
             }
 
@@ -77,11 +67,6 @@ class SettingsFragment : SFragment(), AdapterView.OnItemClickListener {
             SettingsEntry.ID_ABOUT -> {
                 intent = Intent(ctx, AboutActivity::class.java)
                 startActivity(intent)
-            }
-
-            SettingsEntry.ID_CRASH -> {
-                val meep = "Meeep"
-                meep.substring(10)
             }
         }
     }

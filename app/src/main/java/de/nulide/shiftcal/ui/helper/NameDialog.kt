@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.repository.SCRepoManager
-import de.nulide.shiftcal.net.ShiftSwiftServerRestApi
 
 class NameDialog(activity: AppCompatActivity, onCloseListener: OnCloseListener?) :
     MaterialAlertDialogBuilder(activity) {
@@ -17,27 +16,15 @@ class NameDialog(activity: AppCompatActivity, onCloseListener: OnCloseListener?)
         val sc = SCRepoManager.getInstance(activity)
         nameEdit.setText(sc.users.getName())
 
-        val restApi = ShiftSwiftServerRestApi(context)
-
         val dialog = MaterialAlertDialogBuilder(activity)
-            .setTitle(R.string.family_sync_name_selector_title)
-            .setMessage(R.string.family_sync_name_description)
+            .setTitle(R.string.name_dialog_title)
+            .setMessage(R.string.name_dialog_description)
             .setView(nameView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 val newName = nameEdit.text.toString()
                 if (newName.isNotEmpty()) {
                     val sc = SCRepoManager.getInstance(activity)
                     sc.users.setName(newName)
-                    if (sc.calendar.getNonLocal() != null) {
-                        val subscribed = sc.users.getSubscribed()
-                        if (subscribed != null) {
-                            restApi.setSpectatorName(subscribed.netUuid!!, newName, null, null)
-                        }
-                        var localUuid = sc.users.getLocal().netUuid
-                        if (localUuid != null) {
-                            restApi.setSharingName(localUuid, newName, null, null)
-                        }
-                    }
                     onCloseListener?.onClose()
                 }
             }

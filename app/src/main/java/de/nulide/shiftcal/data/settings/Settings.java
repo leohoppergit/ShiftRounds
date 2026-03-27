@@ -11,14 +11,11 @@ public class Settings {
     public static final String ALARM_ON_OFF = "ALARM";
     public static final String ALARM_MINUTES = "ALARM-Minutes";
     public static final String ALARM_TONE = "ALARM_TONE";
-    public static final String DND = "DND";
-    public static final String DND_BEHAVIOUR = "DND_BEHAVIOUR";
     public static final String START_OF_WEEK = "START_OF_WEEK";
     public static final String SYNC = "SYNC";
     public static final String DUAL_SHIFT = "DUAL_SHIFT";
     public static final String WELCOME_INTRO_SHOWN = "INTRO";
     public static final String WEEK_OF_YEAR = "WEEK_OF_YEAR";
-    public static final String CRASHLYTICS = "CRASHLYTICS";
     public static final String INTRO_PRIVACY = "INTRO_PRIVACY";
     public static final String INTRO_SHIFT_SELECTOR = "INTRO_SHIFT_SELECTOR";
     public static final String INFO_SHIFT_SELECTOR_COUNT = "INFO_SHIFT_SELECTOR_COUNT";
@@ -70,10 +67,8 @@ public class Settings {
                 case ALARM_ON_OFF:
                 case SYNC:
                 case DUAL_SHIFT:
-                case DND:
                 case WELCOME_INTRO_SHOWN:
                 case WEEK_OF_YEAR:
-                case CRASHLYTICS:
                 case INTRO_PRIVACY:
                 case INTRO_SHIFT_SELECTOR:
                 case PERM_ONE_PLUS_BACKGROUND_ACTIVITY:
@@ -88,8 +83,6 @@ public class Settings {
                 case DB_MIGRATION_SHARED_RETRIEVED_COMPLETED:
                 case INTRO_FAB_MENU_EXPLANATION:
                     return Boolean.valueOf(false).toString();
-                case DND_BEHAVIOUR:
-                    return "1";
                 case ALARM_TONE:
                 case SERVER_SYNC_UUID:
                 case SERVER_SYNC_HPW:

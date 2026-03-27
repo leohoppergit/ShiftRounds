@@ -35,17 +35,7 @@ class CalOwnerInfo @JvmOverloads constructor(
     }
 
     fun updateInfo(disp: DISP) {
-        visibility = VISIBLE
-        if (disp == DISP.WEEK) {
-            text = context.getString(R.string.calendar_warning_combined_family_synced)
-        } else {
-            if (sc.familyMode) {
-                text =
-                    context.getString(R.string.calendar_warning_family_synced, sc.users.getName())
-            } else {
-                text = ""
-                visibility = GONE
-            }
-        }
+        text = ""
+        visibility = GONE
     }
 }

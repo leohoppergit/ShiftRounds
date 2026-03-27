@@ -2,7 +2,6 @@ package de.nulide.shiftcal.data.settings
 
 import android.content.Context
 import de.nulide.shiftcal.data.factory.JIO
-import de.nulide.shiftcal.utils.DndScheduler
 import de.nulide.shiftcal.utils.SingletonHolder
 import java.io.File
 
@@ -27,16 +26,11 @@ class SettingsRepository private constructor(private val context: Context) {
 
     private fun saveSettings() {
         save()
-        postSave()
     }
 
     private fun save() {
         val file = File(context.filesDir, SETTINGS_FILENAME)
         JIO.saveAsJSON(settings, file)
-    }
-
-    private fun postSave() {
-        DndScheduler(context).setDndAlarm()
     }
 
     fun <T> set(key: String, value: T) {

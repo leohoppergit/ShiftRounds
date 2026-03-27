@@ -8,7 +8,6 @@ import de.nulide.shiftcal.data.repository.SCRepoManager
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.sync.SyncWork
-import de.nulide.shiftcal.utils.ACRAHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -56,7 +55,7 @@ class CalendarPostProcessingScheduler(val sc: SCRepoManager, val context: Contex
                 sc.postProcess(context)
                 WorkManager.getInstance(context).cancelAllWorkByTag(TAG)
             } catch (e: Exception) {
-                ACRAHelper.sendCrash(e)
+                e.printStackTrace()
             }
         }
     }

@@ -31,8 +31,8 @@ android {
         applicationId "app.shiftrounds.android"
         minSdkVersion 26
         targetSdk 36
-        versionCode 3001001
-        versionName "3.0.1-shiftrounds.1"
+        versionCode 3001003
+        versionName "3.0.1-shiftrounds.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
@@ -65,20 +65,17 @@ android {
     productFlavors {
         prod {
             dimension "default"
-            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
-            buildConfigField "String", "SERVER_IP", "\"https://shiftswiftserver.nulide.de\""
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
         playstore {
             dimension "default"
             applicationIdSuffix ".play"
-            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
-            buildConfigField "String", "SERVER_IP", "\"https://shiftswiftserver.nulide.de\""
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
         dev {
             dimension "default"
             applicationIdSuffix ".dev"
-            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "false"
-            buildConfigField "String", "SERVER_IP", "\"http://192.168.0.177:20252\""
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
     }
     packagingOptions {
@@ -119,13 +116,7 @@ dependencies {
     implementation 'com.gitlab.nulide:monthyearpicker:1.4'
     implementation "com.github.skydoves:balloon:1.7.5"
 
-    implementation 'com.android.volley:volley:1.2.1'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
-    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.0'
-    implementation 'com.github.alexzhirkevich:custom-qr-generator:1.6.2'
-    implementation 'com.squareup.okhttp3:okhttp:5.3.2'
-
-    implementation("ch.acra:acra-http:5.13.1")
 
     implementation 'com.itextpdf.android:kernel-android:9.5.0'
     implementation 'com.itextpdf.android:layout-android:9.5.0'
