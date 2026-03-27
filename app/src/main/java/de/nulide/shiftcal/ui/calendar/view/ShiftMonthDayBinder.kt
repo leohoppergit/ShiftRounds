@@ -67,7 +67,8 @@ class ShiftMonthDayBinder(
                 applyShiftMarker(container.shiftTextView, firstShift)
 
                 val boxDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_box)
-                val shiftBoxDrawable = DrawableCompat.wrap(boxDrawable!!)
+                    ?: return@runCo
+                val shiftBoxDrawable = DrawableCompat.wrap(boxDrawable)
                 DrawableCompat.setTint(shiftBoxDrawable, firstShift.color)
 
                 if (shifts.size > 1) {

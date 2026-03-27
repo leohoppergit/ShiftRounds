@@ -99,7 +99,7 @@ class ShiftBlocksActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val info = item.menuInfo as AdapterContextMenuInfo?
-        val index = info!!.position
+        val index = info?.position ?: return false
         if (item.itemId == R.id.action_edit) {
             val myIntent = Intent(this, ShiftBlockCreatorActivity::class.java)
             myIntent.putExtra("toedit", shiftBlocks[index].block.id)

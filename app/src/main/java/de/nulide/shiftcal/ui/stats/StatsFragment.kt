@@ -142,11 +142,7 @@ class StatsFragment : SFragment() {
             val iconStats = HashMap<Int, Int>()
             for (wday in workDays) {
                 for (icon in wday.icons) {
-                    if (iconStats.containsKey(icon)) {
-                        iconStats[icon] = iconStats[icon]!! + 1
-                    } else {
-                        iconStats[icon] = 1
-                    }
+                    iconStats[icon] = (iconStats[icon] ?: 0) + 1
                 }
             }
             if (iconStats.isEmpty()) {

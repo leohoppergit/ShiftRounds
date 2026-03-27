@@ -31,4 +31,7 @@ interface ShiftBlockDao {
     @Update
     fun update(shiftBlock: ShiftBlock)
 
+    @Query("DELETE FROM shift_block WHERE calendarId = :cal")
+    fun deleteAll(cal: Int)
+
 }

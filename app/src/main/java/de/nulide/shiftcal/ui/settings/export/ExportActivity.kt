@@ -17,6 +17,7 @@ import de.nulide.monthyearpicker.OnMonthYearSelectedListener
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.factory.JIO
 import de.nulide.shiftcal.data.repository.SCRepoManager
+import de.nulide.shiftcal.data.repository.wrapper.FullBackupDTO
 import de.nulide.shiftcal.data.repository.wrapper.WorkDayDTO
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityExportBinding
@@ -49,6 +50,22 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
             }
         }
 
+    private val openDocumentLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK) {
+                return@registerForActivityResult
+            }
+            val uri = result.data?.data ?: run {
+                Toast.makeText(this, R.string.restore_failed, Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+            when (restoreBackup(uri)) {
+                BackupRestoreResult.SUCCESS -> Toast.makeText(this, R.string.restore_success, Toast.LENGTH_SHORT).show()
+                BackupRestoreResult.INVALID_FILE -> Toast.makeText(this, R.string.restore_invalid_file, Toast.LENGTH_SHORT).show()
+                BackupRestoreResult.FAILED -> Toast.makeText(this, R.string.restore_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -71,6 +88,8 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         binding.exportSettingsCard.setOnClickListener { exportSettings() }
         binding.exportShiftsCard.setOnClickListener { exportShifts() }
         binding.exportCalendarCard.setOnClickListener { showCalendarExportOptions() }
+        binding.exportBackupCard.setOnClickListener { exportFullBackup() }
+        binding.restoreBackupCard.setOnClickListener { confirmRestore() }
     }
 
     private fun exportSettings() {
@@ -103,6 +122,39 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
             ),
             content = JIO.toJSON(payload)
         )
+    }
+
+    private fun exportFullBackup() {
+        val payload = sc.createFullBackup(
+            settingsRepository = settings,
+            appName = getString(R.string.app_name),
+            exportedAt = Instant.now().toString()
+        )
+        queueExport(
+            mimeType = "application/json",
+            fileName = getString(
+                R.string.export_file_backup,
+                timestampForFileName()
+            ),
+            content = JIO.toJSON(payload)
+        )
+    }
+
+    private fun confirmRestore() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.restore_title)
+            .setMessage(R.string.restore_warning)
+            .setPositiveButton(R.string.restore_start) { _, _ -> openRestorePicker() }
+            .setNegativeButton(R.string.no, null)
+            .show()
+    }
+
+    private fun openRestorePicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
+        }
+        openDocumentLauncher.launch(intent)
     }
 
     private fun showCalendarExportOptions() {
@@ -218,6 +270,21 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
             true
         } catch (_: Exception) {
             false
+        }
+    }
+
+    private fun restoreBackup(uri: Uri): BackupRestoreResult {
+        return try {
+            val json = contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
+                ?: return BackupRestoreResult.FAILED
+            val backup = JIO.fromJSON(json, FullBackupDTO::class.java)
+            if (backup.backupVersion <= 0 || backup.appName.isBlank()) {
+                return BackupRestoreResult.INVALID_FILE
+            }
+            sc.restoreLocalBackup(backup, settings)
+            BackupRestoreResult.SUCCESS
+        } catch (_: Exception) {
+            BackupRestoreResult.INVALID_FILE
         }
     }
 

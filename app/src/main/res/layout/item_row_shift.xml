@@ -41,11 +41,24 @@
 
         <TextView
             android:id="@+id/textViewName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="21sp" />
+
+        <ImageButton
+            android:id="@+id/buttonMore"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/shifts_more_actions"
+            android:padding="12dp"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/textColor" />
     </LinearLayout>
 
 </FrameLayout>

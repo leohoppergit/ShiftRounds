@@ -192,8 +192,8 @@ class ShiftBlockCreatorActivity : AppCompatActivity(), OnItemClickedListener,
 
     //On Shift Selected
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (shiftSelectorAdapter != null) {
-            val shift = shiftSelectorAdapter!!.getItem(position)
+        val shift = shiftSelectorAdapter?.getItem(position)
+        if (shift != null) {
             setShiftSelectorFab(shift)
             selectedShiftID = shift.id
             shiftSelectorDialog?.dismiss()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +17,13 @@ class ShiftListAdapter(
     private val context: Context,
     private val shifts: MutableList<Shift>,
     private val onClick: (Int) -> Unit,
-    private val onLongPressDrag: (RecyclerView.ViewHolder) -> Unit
+    private val onLongPressDrag: (RecyclerView.ViewHolder) -> Unit,
+    private val onMoreClick: (Int, View) -> Unit
 ) : RecyclerView.Adapter<ShiftListAdapter.ShiftViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShiftViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_row_shift, parent, false)
-        return ShiftViewHolder(view, onClick, onLongPressDrag)
+        return ShiftViewHolder(view, onClick, onLongPressDrag, onMoreClick)
     }
 
     override fun onBindViewHolder(holder: ShiftViewHolder, position: Int) {
@@ -41,12 +43,14 @@ class ShiftListAdapter(
     class ShiftViewHolder(
         itemView: View,
         private val onClick: (Int) -> Unit,
-        private val onLongPressDrag: (RecyclerView.ViewHolder) -> Unit
+        private val onLongPressDrag: (RecyclerView.ViewHolder) -> Unit,
+        private val onMoreClick: (Int, View) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val shiftBox = itemView.findViewById<LinearLayout>(R.id.shiftBox)
         private val shortNameText = itemView.findViewById<TextView>(R.id.textViewSName)
         private val nameText = itemView.findViewById<TextView>(R.id.textViewName)
+        private val moreButton = itemView.findViewById<ImageButton>(R.id.buttonMore)
 
         init {
             itemView.setOnClickListener {
@@ -62,6 +66,11 @@ class ShiftListAdapter(
                     false
                 }
             }
+            moreButton.setOnClickListener { view ->
+                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                    onMoreClick(bindingAdapterPosition, view)
+                }
+            }
         }
 
         fun bind(shift: Shift) {
@@ -73,6 +82,7 @@ class ShiftListAdapter(
             }
             shortNameText.background.setTint(shift.color)
             nameText.text = shift.name
+            moreButton.visibility = if (shift.id < 0) View.GONE else View.VISIBLE
             if (shift.id < 0) {
                 itemView.setBackgroundColor(shift.color)
                 shiftBox.background = null

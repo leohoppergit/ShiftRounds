@@ -25,4 +25,7 @@ interface MonthNoteDao {
     @Query("DELETE FROM month_note WHERE calendarId = :cal AND year = :year AND month = :month")
     fun delete(cal: Int, year: Int, month: Int)
 
+    @Query("DELETE FROM month_note WHERE calendarId = :cal")
+    fun deleteAll(cal: Int)
+
 }

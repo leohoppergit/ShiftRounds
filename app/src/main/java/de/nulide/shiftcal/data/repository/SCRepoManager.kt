@@ -6,7 +6,9 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import de.nulide.shiftcal.data.db.ShiftSwiftDB
 import de.nulide.shiftcal.data.factory.JIO
+import de.nulide.shiftcal.data.model.ShiftBlockEntry
 import de.nulide.shiftcal.data.repository.task.CalendarPostProcessingScheduler
+import de.nulide.shiftcal.data.repository.wrapper.FullBackupDTO
 import de.nulide.shiftcal.data.repository.wrapper.ShiftCalendarDTO
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
@@ -166,6 +168,71 @@ class SCRepoManager(ctx: Context) {
         SyncHandler.sync(ctx)
         SettingsRepository.getInstance(ctx).set(Settings.LAST_POST_PROCESS_FAILED, false)
 
+    }
+
+    fun createFullBackup(settingsRepository: SettingsRepository, appName: String, exportedAt: String): FullBackupDTO {
+        return FullBackupDTO(
+            backupVersion = 1,
+            exportedAt = exportedAt,
+            appName = appName,
+            userName = users.getName(),
+            settings = settingsRepository.exportSettings(),
+            shifts = shifts.getAll().filter { it.id >= 0 },
+            monthNotes = monthNotes.getAll(),
+            workDays = workDays.getAll(),
+            shiftBlocks = shiftBlocks.getAll()
+        )
+    }
+
+    fun restoreLocalBackup(backup: FullBackupDTO, settingsRepository: SettingsRepository) {
+        val localCalId = calendar.getLocal()
+
+        db.shiftBlockEntryDao().deleteAll(localCalId)
+        db.shiftBlockDao().deleteAll(localCalId)
+        db.workDayDao().deleteAll(localCalId)
+        db.monthNoteDao().deleteAll(localCalId)
+        db.shiftDao().deleteAll(localCalId)
+
+        backup.shifts
+            .filter { it.id >= 0 }
+            .sortedWith(compareBy<de.nulide.shiftcal.data.model.Shift>({ it.sortOrder }, { it.id }))
+            .forEach { shift ->
+                db.shiftDao().insert(shift.copy(calendarId = localCalId))
+            }
+
+        backup.monthNotes.forEach { monthNote ->
+            db.monthNoteDao().insert(monthNote.copy(calendarId = localCalId))
+        }
+
+        backup.workDays
+            .sortedWith(compareBy({ it.day }, { it.id }))
+            .forEach { workDay ->
+                db.workDayDao().insert(workDay.copy(calendarId = localCalId))
+            }
+
+        backup.shiftBlocks.forEach { shiftBlockDTO ->
+            val block = shiftBlockDTO.block.copy(calendarId = localCalId)
+            db.shiftBlockDao().add(block)
+            shiftBlockDTO.entries
+                .sortedBy { it.pos }
+                .forEach { entry ->
+                    db.shiftBlockEntryDao().add(
+                        ShiftBlockEntry(
+                            shiftBlockId = block.id,
+                            id = 0,
+                            calendarId = localCalId,
+                            pos = entry.pos,
+                            shiftId = entry.shiftId
+                        )
+                    )
+                }
+        }
+
+        settingsRepository.importSettings(backup.settings)
+        users.setName(backup.userName)
+        curCalId = localCalId
+        familyMode = false
+        postDataChange()
     }
 
 }

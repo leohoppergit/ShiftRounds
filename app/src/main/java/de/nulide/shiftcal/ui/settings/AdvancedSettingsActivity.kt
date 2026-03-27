@@ -148,7 +148,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (parent!!.adapter == binding.firstDayOfWeekSpinner.adapter) {
+        if (parent?.adapter == binding.firstDayOfWeekSpinner.adapter) {
             if (!settings.has(Settings.START_OF_WEEK) || settings.getInt(Settings.START_OF_WEEK) != position) {
                 settings.set(Settings.START_OF_WEEK, position)
             }

@@ -205,6 +205,8 @@
     <string name="export_settings_description">Save your current app settings as JSON.</string>
     <string name="export_shifts_title">Export shifts</string>
     <string name="export_shifts_description">Save all shift definitions as JSON.</string>
+    <string name="export_backup_title">Backup everything</string>
+    <string name="export_backup_description">Save settings, shifts, shift blocks, notes, and calendar entries in one JSON backup file.</string>
     <string name="export_calendar_title">Export calendar</string>
     <string name="export_calendar_description">Save shifts as an ICS calendar file.</string>
     <string name="export_calendar_scope_title">Calendar export</string>
@@ -216,10 +218,18 @@
     <string name="export_failed">Export failed.</string>
     <string name="export_file_settings">ShiftRounds-settings-%1$s.json</string>
     <string name="export_file_shifts">ShiftRounds-shifts-%1$s.json</string>
+    <string name="export_file_backup">ShiftRounds-backup-%1$s.json</string>
     <string name="export_file_calendar_all">ShiftRounds-calendar-all.ics</string>
     <string name="export_file_calendar_month">ShiftRounds-calendar-%1$s-%2$02d.ics</string>
     <string name="export_file_calendar_range">ShiftRounds-calendar-%1$s_to_%2$s.ics</string>
     <string name="export_range_invalid">Please choose a valid date range.</string>
+    <string name="restore_title">Restore backup</string>
+    <string name="restore_description">Restore a full ShiftRounds backup and replace your current local data.</string>
+    <string name="restore_warning">Restoring a backup replaces your current local ShiftRounds data. Continue only if you want to overwrite your existing shifts, notes, and settings.</string>
+    <string name="restore_start">Choose backup file</string>
+    <string name="restore_success">Backup restored successfully.</string>
+    <string name="restore_invalid_file">This file is not a compatible ShiftRounds backup.</string>
+    <string name="restore_failed">Restore failed.</string>
     <string name="export_event_summary">%1$s</string>
     <string name="export_event_description">Short name: %1$s\nTime balance: %2$s\nDay note: %3$s\nDay adjustment: %4$s</string>
     <string name="export_event_balance_default">Shift duration</string>
@@ -227,8 +237,8 @@
     <string name="export_event_balance_negative">Fixed deduction</string>
     <string name="export_event_note_none">none</string>
     <string name="export_event_adjustment_none">none</string>
-    <string name="swiftshift_import_title">Import from SwiftShift?</string>
-    <string name="swiftshift_import_prompt">SwiftShift was detected on this device. ShiftRounds cannot read its private app data directly, but it can import a compatible SwiftShift JSON file such as shift-calendar.json or sc.json. Do you want to select such a file now?</string>
+    <string name="swiftshift_import_title">Shift import</string>
+    <string name="swiftshift_import_prompt">A compatible shift app was detected on this device. ShiftRounds cannot read another app\'s private data directly, but it can import a compatible JSON file if you have one. Do you want to select such a file now?</string>
     <string name="swiftshift_import_start">Select file</string>
     <string name="swiftshift_import_scan_folder">Scan folder</string>
     <string name="swiftshift_import_skip">Not now</string>
@@ -236,9 +246,12 @@
     <string name="swiftshift_import_folder_failed">No compatible SwiftShift file was found in the selected folder.</string>
     <string name="swiftshift_import_success">SwiftShift data was imported successfully.</string>
     <string name="swiftshift_import_existing_data">Please use this import only on a clean ShiftRounds setup without existing data.</string>
-    <string name="swiftshift_import_screen_description">Select a compatible SwiftShift JSON file such as shift-calendar.json or sc.json to import your legacy data into ShiftRounds.</string>
-    <string name="swiftshift_import_help_text">Tip: Search in your file manager or backups for files named shift-calendar.json or sc.json. If SwiftShift was moved from an older device, these files may also exist inside old app backups or copied storage folders. You can also let ShiftRounds scan a selected folder for these names.</string>
-    <string name="swiftshift_import_manual_description">Import legacy SwiftShift data from a compatible JSON file.</string>
-    <string name="swiftshift_import_manual_button">SwiftShift import</string>
+    <string name="swiftshift_import_screen_description">Import shift data from a compatible JSON file.</string>
+    <string name="swiftshift_import_manual_description">Import shift data from a compatible JSON file.</string>
+    <string name="swiftshift_import_manual_button">Shift import</string>
     <string name="settings_extras_title">Extras</string>
+    <string name="shift_duplicate">Duplicate shift</string>
+    <string name="shift_duplicate_name">%1$s Copy</string>
+    <string name="shift_duplicate_success">Shift duplicated.</string>
+    <string name="shifts_more_actions">More shift actions</string>
 </resources>

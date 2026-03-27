@@ -73,4 +73,9 @@ class SettingsRepository private constructor(private val context: Context) {
     fun exportSettings(): Map<String, String> {
         return settings.settings.toMap()
     }
+
+    fun importSettings(importedSettings: Map<String, String>) {
+        settings.settings = HashMap(importedSettings)
+        saveSettings()
+    }
 }

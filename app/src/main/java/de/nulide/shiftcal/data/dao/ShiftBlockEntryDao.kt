@@ -17,4 +17,7 @@ interface ShiftBlockEntryDao {
     @Query("SELECT * FROM shift_block_entry WHERE calendarId = :cal AND shiftBlockId = :shiftBlockId")
     fun getAllOf(cal: Int, shiftBlockId: Int): MutableList<ShiftBlockEntry>
 
+    @Query("DELETE FROM shift_block_entry WHERE calendarId = :cal")
+    fun deleteAll(cal: Int)
+
 }

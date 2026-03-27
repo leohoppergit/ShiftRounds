@@ -102,8 +102,11 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         binding.endDayOffsetGroup.setOnCheckedChangeListener(this)
         binding.balanceTypeGroup.setOnCheckedChangeListener(this)
 
-        shiftStartTime = ShiftTime(8, 0)
-        shiftEndTime = ShiftTime(16, 0)
+        shiftStartTime = ShiftTime(7, 0)
+        shiftEndTime = ShiftTime(15, 0)
+        selectedBalanceType = 1
+        binding.breakMinutesEdit.setText("30")
+        binding.balanceHoursEdit.setText("8")
         updateTime()
 
         binding.colorPickerButton.setOnClickListener(this)
@@ -338,7 +341,7 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         val useCustomBalance = selectedBalanceType != 0
         binding.balanceHoursEdit.isEnabled = useCustomBalance
         binding.balanceMinutesEdit.isEnabled = useCustomBalance
-        binding.breakMinutesEdit.isEnabled = !useCustomBalance
+        binding.breakMinutesEdit.isEnabled = true
         binding.balanceInfoText.visibility = if (useCustomBalance) View.VISIBLE else View.GONE
         binding.balanceHoursLabel.visibility = if (useCustomBalance) View.VISIBLE else View.GONE
         binding.balanceHoursEdit.visibility = if (useCustomBalance) View.VISIBLE else View.GONE

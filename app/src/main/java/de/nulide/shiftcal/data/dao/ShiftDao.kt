@@ -45,4 +45,7 @@ interface ShiftDao {
     @Query("SELECT MAX(id) FROM shift WHERE calendarId = :cal")
     fun getHighestID(cal: Int): Int
 
+    @Query("DELETE FROM shift WHERE calendarId = :cal")
+    fun deleteAll(cal: Int)
+
 }

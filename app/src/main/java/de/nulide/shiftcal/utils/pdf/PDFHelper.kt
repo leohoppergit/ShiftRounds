@@ -2,7 +2,6 @@ package de.nulide.shiftcal.utils.pdf
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.ui.graphics.Color
 import androidx.core.content.FileProvider
 import com.itextpdf.kernel.colors.DeviceRgb
 import de.nulide.shiftcal.data.model.Shift
@@ -17,8 +16,11 @@ class PDFHelper {
 
         fun color(color: Int): DeviceRgb? {
             if (color != -1) {
-                val androidColor = Color(color)
-                val rgbColor = DeviceRgb(androidColor.red, androidColor.green, androidColor.blue)
+                val rgbColor = DeviceRgb(
+                    android.graphics.Color.red(color),
+                    android.graphics.Color.green(color),
+                    android.graphics.Color.blue(color)
+                )
                 return rgbColor
             } else {
                 return null
@@ -27,8 +29,11 @@ class PDFHelper {
 
         fun color(shift: Shift?): DeviceRgb? {
             if (shift != null) {
-                val androidColor = Color(shift.color)
-                val rgbColor = DeviceRgb(androidColor.red, androidColor.green, androidColor.blue)
+                val rgbColor = DeviceRgb(
+                    android.graphics.Color.red(shift.color),
+                    android.graphics.Color.green(shift.color),
+                    android.graphics.Color.blue(shift.color)
+                )
                 return rgbColor
             } else {
                 return null

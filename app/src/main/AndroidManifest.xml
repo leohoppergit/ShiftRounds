@@ -40,9 +40,6 @@
         <activity
             android:name=".ui.settings.AboutActivity"
             android:exported="false" />
-        <activity
-            android:name="com.mikepenz.aboutlibraries.ui.LibsActivity"
-            android:theme="@style/AppTheme.WithActionBar" />
 
         <activity
             android:name=".ui.editor.ShiftCreatorActivity"

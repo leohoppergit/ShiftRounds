@@ -115,4 +115,7 @@ interface WorkDayDao {
 
     @Query("SELECT CASE WHEN (SELECT COUNT(id) AS S_C FROM work_day WHERE calendarId = :cal GROUP BY day ORDER BY S_C DESC LIMIT 1) > 1 THEN 1 ELSE 0 END")
     fun hasDualShift(cal: Int): Boolean
+
+    @Query("DELETE FROM work_day WHERE calendarId = :cal")
+    fun deleteAll(cal: Int)
 }

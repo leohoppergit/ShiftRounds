@@ -3,9 +3,12 @@ package de.nulide.shiftcal.ui.editor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,16 +18,18 @@ import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.model.Shift
 import de.nulide.shiftcal.data.repository.SCRepoManager
 import de.nulide.shiftcal.databinding.ActivityShiftsBinding
-import de.nulide.shiftcal.sync.SyncHandler
 import de.nulide.shiftcal.ui.editor.list.ShiftListAdapter
 import de.nulide.shiftcal.ui.helper.SpecialShifts
 import de.nulide.shiftcal.ui.helper.SpecialShifts.Companion.getArchivedShift
-import de.nulide.shiftcal.ui.helper.WarningDialog
 import java.util.LinkedList
 
 class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
+    companion object {
+        private const val MENU_DUPLICATE_SHIFT = 1
+    }
+
     private lateinit var sc: SCRepoManager
-    private var shifts: LinkedList<Shift>? = null
+    private var shifts: LinkedList<Shift> = LinkedList()
     private var adapter: ShiftListAdapter? = null
 
     lateinit var binding: ActivityShiftsBinding
@@ -72,18 +77,19 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
 
     fun updateShifts() {
         if (archivedMode) {
-            shifts = LinkedList<Shift>(sc.shifts.getArchived())
+            shifts = LinkedList(sc.shifts.getArchived())
         } else {
-            shifts = LinkedList<Shift>(sc.shifts.getNotArchived())
+            shifts = LinkedList(sc.shifts.getNotArchived())
             if (sc.shifts.hasArchived()) {
-                shifts!!.add(getArchivedShift(this))
+                shifts.add(getArchivedShift(this))
             }
         }
         adapter = ShiftListAdapter(
             this,
-            shifts!!,
+            shifts,
             onClick = { index -> onShiftClicked(index) },
-            onLongPressDrag = { viewHolder -> itemTouchHelper.startDrag(viewHolder) }
+            onLongPressDrag = { viewHolder -> itemTouchHelper.startDrag(viewHolder) },
+            onMoreClick = { index, anchor -> showShiftActions(index, anchor) }
         )
         binding.listViewShifts.adapter = adapter
     }
@@ -95,7 +101,7 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun onShiftClicked(i: Int) {
-        val shiftId = shifts!![i].id
+        val shiftId = shifts.getOrNull(i)?.id ?: return
         val myIntent: Intent?
         if (shiftId == SpecialShifts.ARCHIVE_ID) {
             myIntent = Intent(this, ShiftsActivity::class.java)
@@ -112,6 +118,48 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
         updateShifts()
     }
 
+    private fun showShiftActions(index: Int, anchor: View) {
+        val shift = shifts.getOrNull(index) ?: return
+        if (shift.id < 0) return
+        PopupMenu(this, anchor).apply {
+            menu.add(0, MENU_DUPLICATE_SHIFT, 0, getString(R.string.shift_duplicate))
+            setOnMenuItemClickListener { item -> onShiftActionSelected(item, shift) }
+            show()
+        }
+    }
+
+    private fun onShiftActionSelected(item: MenuItem, shift: Shift): Boolean {
+        return when (item.itemId) {
+            MENU_DUPLICATE_SHIFT -> {
+                duplicateShift(shift)
+                true
+            }
+
+            else -> false
+        }
+    }
+
+    private fun duplicateShift(source: Shift) {
+        val nextSortOrder = sc.shifts.getAll()
+            .filter { it.id >= 0 }
+            .maxOfOrNull { it.sortOrder }
+            ?.plus(1)
+            ?: 0
+        val duplicate = source.copy(
+            id = sc.shifts.getNextId(),
+            calendarId = sc.curCalId,
+            name = getString(R.string.shift_duplicate_name, source.name),
+            sortOrder = nextSortOrder
+        )
+        sc.shifts.add(duplicate)
+        Toast.makeText(this, R.string.shift_duplicate_success, Toast.LENGTH_SHORT).show()
+        startActivity(
+            Intent(this, ShiftCreatorActivity::class.java).apply {
+                putExtra(ShiftCreatorActivity.SHIFT_ID_TAG, duplicate.id)
+            }
+        )
+    }
+
     private val itemTouchHelper by lazy {
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -124,7 +172,7 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
             ): Boolean {
                 val from = viewHolder.bindingAdapterPosition
                 val to = target.bindingAdapterPosition
-                val currentShifts = shifts ?: return false
+                val currentShifts = shifts
                 if (from !in currentShifts.indices || to !in currentShifts.indices) return false
                 val fromShift = currentShifts[from]
                 val toShift = currentShifts[to]
@@ -140,7 +188,7 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
                 if (!archivedMode) {
-                    val reordered = shifts?.filter { it.id >= 0 } ?: return
+                    val reordered = shifts.filter { it.id >= 0 }
                     sc.shifts.reorder(reordered)
                 }
             }
