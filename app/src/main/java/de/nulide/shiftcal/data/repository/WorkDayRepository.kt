@@ -11,6 +11,14 @@ class WorkDayRepository(db: ShiftSwiftDB, rm: SCRepoManager) : CommonRepository(
 
     private val workDayDao = db.workDayDao()
     private val shiftDao = db.shiftDao()
+    private val dayWorkComparator = compareBy<WorkDayDTO>(
+        { it.shift.startTime.timeInMinutes },
+        { it.shift.endDayOffset },
+        { it.shift.endTime.timeInMinutes },
+        { it.shift.sortOrder },
+        { it.shift.id },
+        { it.wday.id }
+    )
 
     fun add(wday: WorkDay) {
         wday.calendarId = calId
@@ -70,7 +78,7 @@ class WorkDayRepository(db: ShiftSwiftDB, rm: SCRepoManager) : CommonRepository(
             val shift = shiftDao.get(calId, wday.shiftId)
             res.add(WorkDayDTO(wday, shift))
         }
-        return res
+        return res.sortedWith(dayWorkComparator)
     }
 
     fun getOldest(): WorkDay? {

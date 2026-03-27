@@ -1,5 +1,6 @@
 package de.nulide.shiftcal.ui.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -14,6 +15,7 @@ import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityAdvancedSettingsBinding
+import de.nulide.shiftcal.ui.importer.SwiftShiftImportActivity
 import de.nulide.shiftcal.ui.settings.feature.CalSyncFeature
 import de.nulide.shiftcal.ui.settings.feature.Feature
 import de.nulide.shiftcal.ui.settings.feature.FeatureStateListener
@@ -83,6 +85,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.syncCheckBox.setOnCheckedChangeListener(this)
 
         binding.weekOfYearSwitch.setOnCheckedChangeListener(this)
+        binding.swiftShiftImportButton.setOnClickListener(this)
 
     }
 
@@ -122,6 +125,9 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     }
 
     override fun onClick(v: View?) {
+        if (v == binding.swiftShiftImportButton) {
+            startActivity(Intent(this, SwiftShiftImportActivity::class.java))
+        }
     }
 
     override fun onResume() {

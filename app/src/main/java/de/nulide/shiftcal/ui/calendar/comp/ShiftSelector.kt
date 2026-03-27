@@ -110,7 +110,7 @@ class ShiftSelector @JvmOverloads constructor(
         if (calViewModel.getEditMode() && addInitiated) {
             val currentShifts = sc.shifts.getNotArchived()
             if (lastShiftSize < currentShifts.size) {
-                val newShift = currentShifts[currentShifts.size - 1]
+                val newShift = currentShifts.maxByOrNull { it.id } ?: return
                 setShiftSelectorFab(newShift)
                 addInitiated = false
                 selectedShiftID = newShift.id

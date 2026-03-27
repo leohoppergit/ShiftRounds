@@ -7,6 +7,13 @@ import java.time.LocalDate
 class ShiftRepository(db: ShiftSwiftDB, rm: SCRepoManager) : CommonRepository(db, rm) {
 
     private val shiftDao = db.shiftDao()
+    private val dayShiftComparator = compareBy<Shift>(
+        { it.startTime.timeInMinutes },
+        { it.endDayOffset },
+        { it.endTime.timeInMinutes },
+        { it.sortOrder },
+        { it.id }
+    )
 
     fun add(shift: Shift) {
         shift.calendarId = calId
@@ -50,7 +57,7 @@ class ShiftRepository(db: ShiftSwiftDB, rm: SCRepoManager) : CommonRepository(db
     }
 
     fun getOn(date: LocalDate): List<Shift> {
-        return shiftDao.getOn(calId, date)
+        return shiftDao.getOn(calId, date).sortedWith(dayShiftComparator)
     }
 
     fun getNextId(): Int {

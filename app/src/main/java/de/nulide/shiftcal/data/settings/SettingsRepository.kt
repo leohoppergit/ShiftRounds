@@ -69,4 +69,8 @@ class SettingsRepository private constructor(private val context: Context) {
         reset(Settings.SERVER_SYNC_PW)
         reset(Settings.FAMILY_SYNC_LAST_UPLOAD_FAILED)
     }
+
+    fun exportSettings(): Map<String, String> {
+        return settings.settings.toMap()
+    }
 }

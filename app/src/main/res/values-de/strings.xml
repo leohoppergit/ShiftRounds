@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="Settings_Shifts">Schichten</string>
-    <string name="Settings_Export">Kalender exportieren</string>
+    <string name="Settings_Export">Export</string>
     <string name="Settings_Import">Kalender importieren</string>
     <string name="Settings_About">Info</string>
     <string name="Settings_Advanced_Settings">Erweiterte Einstellungen</string>
@@ -144,6 +144,10 @@
     <string name="feedback_hint">Ich mag …</string>
     <string name="feedback_description">Erzähl mir, was dir an der App gefällt oder was du dir anders wünschst.</string>
     <string name="feedback_thanks">Danke für dein Feedback.</string>
+    <string name="feedback_email_subject">ShiftRounds Feedback</string>
+    <string name="feedback_email_intro">Bitte prüfe die folgenden Angaben, bevor du die E-Mail versendest.</string>
+    <string name="feedback_email_message_label">Nachricht:</string>
+    <string name="feedback_no_mail_app">Auf diesem Gerät ist keine Mail-App verfügbar.</string>
     <string name="shift_block_creator_title">Schichtblock-Editor</string>
     <string name="shift_block_creator_shifts_title">Schichten</string>
     <string name="shift_block_creator_name_hint">Beispielblock</string>
@@ -164,7 +168,9 @@
     <string name="stats_tags_title">Tags</string>
     <string name="stats_empty_text">Für diesen Monat sind keine Schichten vorhanden. Genieß die freie Zeit!</string>
     <string name="shift_creator_alarm_rings_at">Klingelt um:</string>
-    <string name="warning_shift_not_saved">Deine aktuellen Änderungen wurden noch nicht gespeichert. Möchtest du wirklich zurückgehen?</string>
+    <string name="warning_shift_not_saved">Möchtest du wirklich abbrechen?</string>
+    <string name="no_return">Nein, zurück</string>
+    <string name="yes_abort">Ja, abbrechen</string>
     <string name="stats_from">Statistik für %1$s</string>
     <string name="notification_upcoming_alarm_title">Anstehender Alarm</string>
     <string name="notification_channel_upcoming_alarm_title">Benachrichtigungen zu anstehenden Alarmen</string>
@@ -186,4 +192,46 @@
     <string name="shift_creator_end_day_offset_short">+%1$d</string>
     <string name="shift_balance_type_positive">Feste Gutschrift</string>
     <string name="shift_balance_type_negative">Fester Abzug</string>
+    <string name="export_title">Export</string>
+    <string name="export_description">Exportiere deine Einstellungen, Schichten oder Kalenderdaten zur Sicherung oder Weiterverarbeitung.</string>
+    <string name="export_settings_title">Einstellungen exportieren</string>
+    <string name="export_settings_description">Speichere deine aktuellen App-Einstellungen als JSON.</string>
+    <string name="export_shifts_title">Schichten exportieren</string>
+    <string name="export_shifts_description">Speichere alle Schichtdefinitionen als JSON.</string>
+    <string name="export_calendar_title">Kalender exportieren</string>
+    <string name="export_calendar_description">Speichere deine Schichten als ICS-Kalenderdatei.</string>
+    <string name="export_calendar_scope_title">Kalenderexport</string>
+    <string name="export_calendar_scope_all">Gesamten Kalender</string>
+    <string name="export_calendar_scope_month">Monat wählen</string>
+    <string name="export_calendar_scope_range">Zeitraum wählen</string>
+    <string name="export_calendar_no_entries">Im ausgewählten Zeitraum sind keine Schichten zum Exportieren vorhanden.</string>
+    <string name="export_saved">Export gespeichert.</string>
+    <string name="export_failed">Export fehlgeschlagen.</string>
+    <string name="export_file_settings">ShiftRounds-settings-%1$s.json</string>
+    <string name="export_file_shifts">ShiftRounds-shifts-%1$s.json</string>
+    <string name="export_file_calendar_all">ShiftRounds-calendar-all.ics</string>
+    <string name="export_file_calendar_month">ShiftRounds-calendar-%1$s-%2$02d.ics</string>
+    <string name="export_file_calendar_range">ShiftRounds-calendar-%1$s_to_%2$s.ics</string>
+    <string name="export_range_invalid">Bitte wähle einen gültigen Zeitraum.</string>
+    <string name="export_event_summary">%1$s</string>
+    <string name="export_event_description">Kürzel: %1$s\nZeitbilanz: %2$s\nTagesnotiz: %3$s\nTagesanpassung: %4$s</string>
+    <string name="export_event_balance_default">Schichtdauer</string>
+    <string name="export_event_balance_positive">Feste Gutschrift</string>
+    <string name="export_event_balance_negative">Fester Abzug</string>
+    <string name="export_event_note_none">keine</string>
+    <string name="export_event_adjustment_none">keine</string>
+    <string name="swiftshift_import_title">Aus SwiftShift importieren?</string>
+    <string name="swiftshift_import_prompt">Auf diesem Gerät wurde SwiftShift erkannt. ShiftRounds kann die privaten App-Daten nicht direkt auslesen, aber eine kompatible SwiftShift-JSON-Datei wie shift-calendar.json oder sc.json importieren. Möchtest du jetzt eine solche Datei auswählen?</string>
+    <string name="swiftshift_import_start">Datei auswählen</string>
+    <string name="swiftshift_import_scan_folder">Ordner durchsuchen</string>
+    <string name="swiftshift_import_skip">Nicht jetzt</string>
+    <string name="swiftshift_import_failed">Import fehlgeschlagen. Bitte wähle eine kompatible SwiftShift-JSON-Datei aus.</string>
+    <string name="swiftshift_import_folder_failed">Im ausgewählten Ordner wurde keine kompatible SwiftShift-Datei gefunden.</string>
+    <string name="swiftshift_import_success">Die SwiftShift-Daten wurden erfolgreich importiert.</string>
+    <string name="swiftshift_import_existing_data">Bitte nutze diesen Import nur bei einer leeren ShiftRounds-Installation ohne vorhandene Daten.</string>
+    <string name="swiftshift_import_screen_description">Wähle eine kompatible SwiftShift-JSON-Datei wie shift-calendar.json oder sc.json aus, um deine Alt-Daten nach ShiftRounds zu importieren.</string>
+    <string name="swiftshift_import_help_text">Tipp: Suche im Dateimanager oder in deinen Backups nach Dateien mit dem Namen shift-calendar.json oder sc.json. Wenn SwiftShift von einem älteren Gerät übernommen wurde, können diese Dateien auch in alten App-Backups oder kopierten Speicherordnern liegen. Alternativ kann ShiftRounds einen ausgewählten Ordner selbst nach diesen Dateinamen durchsuchen.</string>
+    <string name="swiftshift_import_manual_description">Importiere ältere SwiftShift-Daten aus einer kompatiblen JSON-Datei.</string>
+    <string name="swiftshift_import_manual_button">SwiftShift-Import</string>
+    <string name="settings_extras_title">Extras</string>
 </resources>

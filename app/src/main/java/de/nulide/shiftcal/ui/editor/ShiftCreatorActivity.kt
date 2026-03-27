@@ -131,12 +131,16 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             } else {
                 selectedBalanceType = 0
             }
-            binding.breakMinutesEdit.setText(
-                getString(
-                    R.string.numberformat,
-                    toEditShift.breakMinutes
+            if (toEditShift.breakMinutes > 0) {
+                binding.breakMinutesEdit.setText(
+                    getString(
+                        R.string.numberformat,
+                        toEditShift.breakMinutes
+                    )
                 )
-            )
+            } else {
+                binding.breakMinutesEdit.text = null
+            }
             archived = toEditShift.archived
             updateButtonColors(toEditShift.color)
             updateTime()
@@ -150,11 +154,14 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
                     this@ShiftCreatorActivity.getString(R.string.warning_shift_not_saved)
                 )
                 warning.enableSaveButton { onClick(binding.fabDoneShift) }
-                warning.enablePositiveButton {
+                warning.setPositiveButton(R.string.yes_abort) { dialog, _ ->
                     this.isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
+                    dialog.dismiss()
                 }
-                warning.enableNegativeButton()
+                warning.setNegativeButton(R.string.no_return) { dialog, _ ->
+                    dialog.dismiss()
+                }
 
                 if (toEditShiftId != SpecialShifts.NONE_ID) {
                     val newShift = genShift()

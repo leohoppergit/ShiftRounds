@@ -250,7 +250,6 @@
                 android:textAlignment="center"
                 android:inputType="numberDecimal"
                 android:ems="10"
-                android:text="0"
                 tools:ignore="HardcodedText" />
 
             <TextView

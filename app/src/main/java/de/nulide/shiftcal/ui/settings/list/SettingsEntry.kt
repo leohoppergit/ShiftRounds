@@ -20,6 +20,7 @@ class SettingsEntry(
     companion object {
         const val ID_SHIFTS = 0
         const val ID_SHIFT_BLOCKS = 1
+        const val ID_EXPORT = 2
         const val ID_ADVANCED_SETTINGS = 3
         const val ID_FEEDBACK = 7
         const val ID_ABOUT = 8
@@ -40,6 +41,14 @@ class SettingsEntry(
                     R.string.Settings_Shift_Blocks,
                     R.drawable.ic_multi_shift_fab,
                     ID_SHIFT_BLOCKS
+                )
+            )
+            entries.add(
+                SettingsEntry(
+                    context,
+                    R.string.Settings_Export,
+                    R.drawable.ic_import_export,
+                    ID_EXPORT
                 )
             )
             entries.add(

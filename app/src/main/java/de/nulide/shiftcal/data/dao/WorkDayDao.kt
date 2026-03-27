@@ -92,8 +92,10 @@ interface WorkDayDao {
     fun getBetweenDays(cal: Int, start: Long, end: Long): List<WorkDay>
 
     @Query(
-        "SELECT * FROM work_day s WHERE calendarId = :cal" +
-                " AND day = :day"
+        "SELECT w.* FROM work_day w " +
+                "JOIN shift s ON w.shiftId = s.id AND w.calendarId = s.calendarId " +
+                "WHERE w.calendarId = :cal AND w.day = :day " +
+                "ORDER BY s.sortOrder ASC, s.id ASC, w.id ASC"
     )
     fun getOn(cal: Int, day: LocalDate): List<WorkDay>
 

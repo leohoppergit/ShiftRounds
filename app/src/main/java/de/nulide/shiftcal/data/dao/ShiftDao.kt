@@ -37,7 +37,8 @@ interface ShiftDao {
 
     @Query(
         "SELECT s.* FROM shift s JOIN work_day w ON w.calendarId = s.calendarId AND w.shiftId=s.id " +
-                "AND w.calendarId = :cal AND w.day = :day"
+                "AND w.calendarId = :cal AND w.day = :day " +
+                "ORDER BY s.sortOrder ASC, s.id ASC, w.id ASC"
     )
     fun getOn(cal: Int, day: LocalDate): List<Shift>
 

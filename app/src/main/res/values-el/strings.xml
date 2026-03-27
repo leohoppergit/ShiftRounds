@@ -139,6 +139,11 @@
     <string name="name_dialog_description">Πληκτρολόγησε το όνομα που θα εμφανίζεται μέσα στην εφαρμογή.</string>
     <string name="qr_code_content">Κωδικός QR</string>
     <string name="feedback_description">Πες μου τι σου αρέσει ή τι δεν σου αρέσει.</string>
+    <string name="feedback_thanks">Ευχαριστούμε για το feedback σου.</string>
+    <string name="feedback_email_subject">ShiftRounds Feedback</string>
+    <string name="feedback_email_intro">Παρακαλώ έλεγξε τα παρακάτω στοιχεία πριν στείλεις το email.</string>
+    <string name="feedback_email_message_label">Μήνυμα:</string>
+    <string name="feedback_no_mail_app">Δεν υπάρχει διαθέσιμη εφαρμογή email σε αυτή τη συσκευή.</string>
     <string name="shift_block_creator_name_hint">Παράδειγμα μπλοκ</string>
     <string name="shift_block_creator_shift_block_title">Μπλοκ βαρδιών</string>
     <string name="calendar_shift_block_selector_tooltip">Προσθέστε πολλές βάρδιες ταυτόχρονα.</string>
@@ -154,7 +159,9 @@
     <string name="tags_dialog_title">Επίλεξε ετικέτες</string>
     <string name="stats_tags_title">Ετικέτες</string>
     <string name="stats_empty_text">Δεν υπάρχουν βάρδιες αυτόν τον μήνα. Απόλαυσε το!</string>
-    <string name="warning_shift_not_saved">Οι τρέχουσες αλλαγές δεν έχουν αποθηκευτεί. Είσαι σίγουρος ότι θέλεις να επιστρέψεις?</string>
+    <string name="warning_shift_not_saved">Είσαι σίγουρος ότι θέλεις να ακυρώσεις;</string>
+    <string name="no_return">Όχι, επιστροφή</string>
+    <string name="yes_abort">Ναι, ακύρωση</string>
     <string name="stats_from">Στατιστικά από: %1$s</string>
     <string name="notification_upcoming_alarm_title">Επερχόμενος συναγερμός</string>
     <string name="notification_channel_upcoming_alarm_title">Ειδοποίηση για επερχόμενο συναγερμό</string>

@@ -38,6 +38,7 @@ public class Settings {
     public static final String ALARM_SNOOZED_NEW_TIME = "ALARM_SNOOZED_TIME";
     public static final String DB_MIGRATION_COMPLETED = "DB_MIGRATION";
     public static final String DB_MIGRATION_SHARED_RETRIEVED_COMPLETED = "DB_MIGRATION_SHARED";
+    public static final String SWIFTSHIFT_IMPORT_PROMPT_HANDLED = "SWIFTSHIFT_IMPORT_PROMPT_HANDLED";
 
 
     public Settings() {
@@ -82,6 +83,7 @@ public class Settings {
                 case DB_MIGRATION_COMPLETED:
                 case DB_MIGRATION_SHARED_RETRIEVED_COMPLETED:
                 case INTRO_FAB_MENU_EXPLANATION:
+                case SWIFTSHIFT_IMPORT_PROMPT_HANDLED:
                     return Boolean.valueOf(false).toString();
                 case ALARM_TONE:
                 case SERVER_SYNC_UUID:

@@ -12,6 +12,7 @@ import de.nulide.shiftcal.ui.editor.ShiftBlocksActivity
 import de.nulide.shiftcal.ui.editor.ShiftsActivity
 import de.nulide.shiftcal.ui.helper.FeedbackDialog
 import de.nulide.shiftcal.ui.helper.SFragment
+import de.nulide.shiftcal.ui.settings.export.ExportActivity
 import de.nulide.shiftcal.ui.settings.list.SettingsEntry
 import de.nulide.shiftcal.ui.settings.list.SettingsEntry.Companion.getSettingsEntries
 import de.nulide.shiftcal.ui.settings.list.SettingsViewAdapter
@@ -55,6 +56,11 @@ class SettingsFragment : SFragment(), AdapterView.OnItemClickListener {
 
             SettingsEntry.ID_SHIFT_BLOCKS -> {
                 intent = Intent(ctx, ShiftBlocksActivity::class.java)
+                startActivity(intent)
+            }
+
+            SettingsEntry.ID_EXPORT -> {
+                intent = Intent(ctx, ExportActivity::class.java)
                 startActivity(intent)
             }
 
