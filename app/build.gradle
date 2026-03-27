@@ -31,8 +31,8 @@ android {
         applicationId "app.shiftrounds.android"
         minSdkVersion 26
         targetSdk 36
-        versionCode 3001005
-        versionName "3.0.1-shiftrounds.5"
+        versionCode 3001006
+        versionName "3.0.1-shiftrounds.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
