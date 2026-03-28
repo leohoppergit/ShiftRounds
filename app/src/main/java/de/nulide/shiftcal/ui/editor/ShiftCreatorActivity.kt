@@ -9,10 +9,12 @@ import android.view.View
 import android.widget.RadioGroup
 import android.widget.CompoundButton
 import android.widget.EditText
+import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
+import androidx.core.view.children
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
@@ -22,11 +24,15 @@ import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.model.Shift
 import de.nulide.shiftcal.data.model.ShiftTime
 import de.nulide.shiftcal.data.repository.SCRepoManager
+import de.nulide.shiftcal.data.settings.Settings
+import de.nulide.shiftcal.data.settings.SettingsRepository
+import de.nulide.shiftcal.data.settings.SpecialAccount
 import de.nulide.shiftcal.databinding.ActivityShiftCreatorBinding
 import de.nulide.shiftcal.ui.helper.SpecialShifts
 import de.nulide.shiftcal.ui.helper.WarningDialog
 import de.nulide.shiftcal.utils.ColorHelper
 import de.nulide.shiftcal.utils.Snack
+import java.util.Locale
 
 class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener {
@@ -51,6 +57,7 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
     }
 
     private lateinit var sc: SCRepoManager
+    private lateinit var settingsRepository: SettingsRepository
 
     private var toEditShiftId = SpecialShifts.NONE_ID
     private lateinit var shiftStartTime: ShiftTime
@@ -61,6 +68,9 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
 
     private var shiftColor: Int = -1
     private var selectedBalanceType = 0
+    private var selectedSpecialAccountType = 2
+    private var selectedSpecialAccountId: String? = null
+    private var specialAccounts: List<SpecialAccount> = emptyList()
 
     private lateinit var binding: ActivityShiftCreatorBinding
 
@@ -78,6 +88,8 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         }
 
         sc = SCRepoManager.getInstance(this)
+        settingsRepository = SettingsRepository.getInstance(this)
+        specialAccounts = settingsRepository.getSpecialAccounts()
 
         setSupportActionBar(binding.topAppBar)
         binding.topAppBar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -93,19 +105,31 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
 
         binding.shortShiftNameEdit.addTextChangedListener(this)
         binding.breakMinutesEdit.addTextChangedListener(this)
+        binding.overtimeMultiplierEdit.addTextChangedListener(this)
         binding.balanceHoursEdit.addTextChangedListener(this)
         binding.balanceMinutesEdit.addTextChangedListener(this)
+        binding.specialAccountHoursEdit.addTextChangedListener(this)
+        binding.specialAccountMinutesEdit.addTextChangedListener(this)
 
         binding.startTimeButton.setOnClickListener(this)
 
         binding.endTimeButton.setOnClickListener(this)
         binding.endDayOffsetGroup.setOnCheckedChangeListener(this)
         binding.balanceTypeGroup.setOnCheckedChangeListener(this)
+        binding.specialAccountTypeGroup.setOnCheckedChangeListener(this)
+        binding.specialAccountSwitch.setOnCheckedChangeListener(this)
+        binding.overtimeMultiplierSwitch.setOnCheckedChangeListener(this)
+        binding.specialAccountSpinner.setOnItemClickListener { _, _, position, _ ->
+            selectedSpecialAccountId = specialAccounts.getOrNull(position)?.id
+            updateTime()
+        }
 
         shiftStartTime = ShiftTime(7, 0)
         shiftEndTime = ShiftTime(15, 0)
         selectedBalanceType = 1
         binding.breakMinutesEdit.setText("30")
+        binding.overtimeMultiplierSwitch.isChecked = false
+        binding.overtimeMultiplierEdit.setText(formatOvertimeMultiplier(1.0))
         binding.balanceHoursEdit.setText("8")
         updateTime()
 
@@ -115,6 +139,13 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
 
         if (toEditShiftId != SpecialShifts.NONE_ID) {
             val toEditShift = sc.shifts.get(toEditShiftId)
+            if (toEditShift.specialAccountId != null && specialAccounts.none { it.id == toEditShift.specialAccountId }) {
+                specialAccounts = specialAccounts + SpecialAccount(
+                    toEditShift.specialAccountId,
+                    settingsRepository.getSpecialAccount(toEditShift.specialAccountId)?.name
+                        ?: getString(R.string.special_account_missing_name)
+                )
+            }
             binding.shiftNameEdit.setText(toEditShift.name)
             binding.shortShiftNameEdit.setText(toEditShift.shortName)
             shiftStartTime = toEditShift.startTime
@@ -134,6 +165,22 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             } else {
                 selectedBalanceType = 0
             }
+            binding.overtimeMultiplierSwitch.isChecked = toEditShift.overtimeMultiplier != 1.0
+            binding.overtimeMultiplierEdit.setText(formatOvertimeMultiplier(toEditShift.overtimeMultiplier))
+            if (toEditShift.specialAccountId != null && toEditShift.specialAccountMinutes != null) {
+                selectedSpecialAccountId = toEditShift.specialAccountId
+                val specialMinutes = kotlin.math.abs(toEditShift.specialAccountMinutes)
+                selectedSpecialAccountType = if (toEditShift.specialAccountMinutes < 0) 2 else 1
+                val hours = specialMinutes / 60
+                val minutes = specialMinutes % 60
+                binding.specialAccountSwitch.isChecked = true
+                if (hours > 0) {
+                    binding.specialAccountHoursEdit.setText(hours.toString())
+                }
+                if (minutes > 0) {
+                    binding.specialAccountMinutesEdit.setText(minutes.toString())
+                }
+            }
             if (toEditShift.breakMinutes > 0) {
                 binding.breakMinutesEdit.setText(
                     getString(
@@ -149,6 +196,8 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             updateTime()
             updateEditText()
         }
+
+        updateSpecialAccountOptions()
 
         val backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -186,6 +235,11 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
     override fun onClick(view: View) {
         when (view) {
             binding.fabDoneShift -> {
+                val specialAccountValidationError = getSpecialAccountValidationError()
+                if (specialAccountValidationError != null) {
+                    Snack.not(view, specialAccountValidationError)
+                    return
+                }
                 val newShift = genShift()
 
                 if (newShift.name.isNotEmpty() && newShift.shortName.isNotEmpty() && newShift.durationMinutes > 0) {
@@ -253,11 +307,25 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         }
         val balanceHours = binding.balanceHoursEdit.text.toString().toIntOrNull() ?: 0
         val balanceMinutes = binding.balanceMinutesEdit.text.toString().toIntOrNull() ?: 0
-        val customBalanceMinutes = when (selectedBalanceType) {
-            1 -> balanceHours * 60 + balanceMinutes
-            2 -> -(balanceHours * 60 + balanceMinutes)
-            else -> null
+        val useSpecialAccount = isSpecialAccountActive()
+        val customBalanceMinutes = if (useSpecialAccount) {
+            null
+        } else {
+            when (selectedBalanceType) {
+                1 -> balanceHours * 60 + balanceMinutes
+                2 -> -(balanceHours * 60 + balanceMinutes)
+                else -> null
+            }
         }
+        val specialAccountMinutes = if (useSpecialAccount) {
+            val hours = binding.specialAccountHoursEdit.text.toString().toIntOrNull() ?: 0
+            val minutes = binding.specialAccountMinutesEdit.text.toString().toIntOrNull() ?: 0
+            val absMinutes = (hours * 60) + minutes
+            if (selectedSpecialAccountType == 2) -absMinutes else absMinutes
+        } else {
+            null
+        }
+        val overtimeMultiplier = getEffectiveOvertimeMultiplier()
         val nS = Shift(
             shiftID,
             calId,
@@ -267,6 +335,9 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             shiftEndTime,
             shiftEndDayOffset,
             customBalanceMinutes,
+            if (useSpecialAccount) selectedSpecialAccountId else null,
+            specialAccountMinutes,
+            overtimeMultiplier,
             sortOrder,
             breakMinutes,
             null,
@@ -338,7 +409,18 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
                 else -> binding.balanceDefaultOption.id
             }
         )
-        val useCustomBalance = selectedBalanceType != 0
+        val useOvertimeMultiplier = binding.overtimeMultiplierSwitch.isChecked
+        val overtimeMultiplierVisibility = if (useOvertimeMultiplier) View.VISIBLE else View.GONE
+        binding.overtimeMultiplierValueLabel.visibility = overtimeMultiplierVisibility
+        binding.overtimeMultiplierEdit.visibility = overtimeMultiplierVisibility
+        binding.overtimeMultiplierInfoText.visibility = overtimeMultiplierVisibility
+        val specialFeatureAvailable = isSpecialAccountFeatureAvailable()
+        val useSpecialAccount = isSpecialAccountActive()
+        binding.specialAccountTypeGroup.check(
+            if (selectedSpecialAccountType == 1) binding.specialAccountPositiveOption.id
+            else binding.specialAccountNegativeOption.id
+        )
+        val useCustomBalance = selectedBalanceType != 0 && !useSpecialAccount
         binding.balanceHoursEdit.isEnabled = useCustomBalance
         binding.balanceMinutesEdit.isEnabled = useCustomBalance
         binding.breakMinutesEdit.isEnabled = true
@@ -347,6 +429,21 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         binding.balanceHoursEdit.visibility = if (useCustomBalance) View.VISIBLE else View.GONE
         binding.balanceMinutesLabel.visibility = if (useCustomBalance) View.VISIBLE else View.GONE
         binding.balanceMinutesEdit.visibility = if (useCustomBalance) View.VISIBLE else View.GONE
+        setRadioGroupEnabled(binding.balanceTypeGroup, !useSpecialAccount)
+        binding.balanceTypeGroup.alpha = if (useSpecialAccount) 0.45f else 1f
+        setSpecialAccountSectionVisible(specialFeatureAvailable)
+        binding.specialAccountDescriptionText.visibility = if (specialFeatureAvailable && useSpecialAccount) View.VISIBLE else View.GONE
+        val specialAccountDetailVisibility = if (specialFeatureAvailable && useSpecialAccount) View.VISIBLE else View.GONE
+        binding.specialAccountLabel.visibility = specialAccountDetailVisibility
+        binding.specialAccountInputLayout.visibility = specialAccountDetailVisibility
+        binding.specialAccountTypeLabel.visibility = specialAccountDetailVisibility
+        binding.specialAccountTypeGroup.visibility = specialAccountDetailVisibility
+        binding.specialAccountHoursLabel.visibility = specialAccountDetailVisibility
+        binding.specialAccountHoursEdit.visibility = specialAccountDetailVisibility
+        binding.specialAccountMinutesLabel.visibility = specialAccountDetailVisibility
+        binding.specialAccountMinutesEdit.visibility = specialAccountDetailVisibility
+        binding.specialAccountPreviewLabel.visibility = specialAccountDetailVisibility
+        binding.specialAccountPreviewText.visibility = specialAccountDetailVisibility
         val durationMinutes = Shift(
             0,
             0,
@@ -356,6 +453,9 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             shiftEndTime,
             shiftEndDayOffset,
             null,
+            null,
+            null,
+            getEffectiveOvertimeMultiplier(),
             0,
             0,
             null,
@@ -366,7 +466,9 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         val hours = durationMinutes / 60
         val minutes = durationMinutes % 60
         binding.durationValueText.text = getString(R.string.time_stat, hours, minutes)
-        val balancePreviewMinutes = if (useCustomBalance) {
+        val balancePreviewMinutes = if (useSpecialAccount) {
+            0
+        } else if (useCustomBalance) {
             val balanceHours = binding.balanceHoursEdit.text.toString().toIntOrNull() ?: 0
             val balanceMinutes = binding.balanceMinutesEdit.text.toString().toIntOrNull() ?: 0
             val absMinutes = (balanceHours * 60) + balanceMinutes
@@ -382,6 +484,36 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
             absPreview / 60,
             absPreview % 60
         )
+        if (specialFeatureAvailable) {
+            val specialAbsMinutes =
+                (binding.specialAccountHoursEdit.text.toString().toIntOrNull() ?: 0) * 60 +
+                    (binding.specialAccountMinutesEdit.text.toString().toIntOrNull() ?: 0)
+            val signedSpecialMinutes = if (selectedSpecialAccountType == 2) -specialAbsMinutes else specialAbsMinutes
+            val absSpecial = kotlin.math.abs(signedSpecialMinutes)
+            binding.specialAccountPreviewText.text = getString(
+                R.string.time_stat_signed,
+                if (signedSpecialMinutes < 0) "-" else "",
+                absSpecial / 60,
+                absSpecial % 60
+            )
+        }
+    }
+
+    private fun parseOvertimeMultiplier(): Double {
+        val normalized = binding.overtimeMultiplierEdit.text.toString().trim().replace(',', '.')
+        return normalized.toDoubleOrNull()?.takeIf { it > 0.0 } ?: 1.0
+    }
+
+    private fun getEffectiveOvertimeMultiplier(): Double {
+        return if (binding.overtimeMultiplierSwitch.isChecked) parseOvertimeMultiplier() else 1.0
+    }
+
+    private fun formatOvertimeMultiplier(value: Double): String {
+        return if (value % 1.0 == 0.0) {
+            String.format(Locale.US, "%.1f", value)
+        } else {
+            value.toString()
+        }
     }
 
     private fun updateEditText() {
@@ -418,7 +550,9 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        // Alarm options were removed from the editor.
+        if (buttonView == binding.specialAccountSwitch || buttonView == binding.overtimeMultiplierSwitch) {
+            updateTime()
+        }
     }
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
@@ -432,6 +566,66 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
                 else -> 0
             }
             updateTime()
+        } else if (group == binding.specialAccountTypeGroup) {
+            selectedSpecialAccountType = if (checkedId == binding.specialAccountPositiveOption.id) 1 else 2
+            updateTime()
+        }
+    }
+
+    private fun updateSpecialAccountOptions() {
+        val accountNames = specialAccounts.map { it.name }
+        binding.specialAccountSpinner.setAdapter(
+            ArrayAdapter(this, R.layout.item_spinner, accountNames)
+        )
+        if (selectedSpecialAccountId != null) {
+            val currentAccount = specialAccounts.firstOrNull { it.id == selectedSpecialAccountId }
+            if (currentAccount != null) {
+                binding.specialAccountSpinner.setText(currentAccount.name, false)
+            }
+        } else {
+            binding.specialAccountSpinner.setText("", false)
+        }
+        updateTime()
+    }
+
+    private fun isSpecialAccountFeatureAvailable(): Boolean {
+        return (settingsRepository.getBoolean(Settings.SPECIAL_ACCOUNTS_ENABLED) && specialAccounts.isNotEmpty()) ||
+            selectedSpecialAccountId != null
+    }
+
+    private fun isSpecialAccountActive(): Boolean {
+        return isSpecialAccountFeatureAvailable() && binding.specialAccountSwitch.isChecked
+    }
+
+    private fun setSpecialAccountSectionVisible(visible: Boolean) {
+        val sectionVisibility = if (visible) View.VISIBLE else View.GONE
+        binding.specialAccountDivider.visibility = sectionVisibility
+        binding.specialAccountTitle.visibility = sectionVisibility
+        binding.specialAccountSwitch.visibility = sectionVisibility
+    }
+
+    private fun setRadioGroupEnabled(group: RadioGroup, enabled: Boolean) {
+        group.isEnabled = enabled
+        group.children.forEach { child -> child.isEnabled = enabled }
+    }
+
+    private fun getSpecialAccountValidationError(): String? {
+        if (!isSpecialAccountActive()) {
+            return null
+        }
+        val accountId = selectedSpecialAccountId ?: specialAccounts.firstOrNull {
+            it.name == binding.specialAccountSpinner.text.toString()
+        }?.id
+        if (accountId == null) {
+            return getString(R.string.shift_creator_special_account_missing)
+        }
+        selectedSpecialAccountId = accountId
+        val hours = binding.specialAccountHoursEdit.text.toString().toIntOrNull() ?: 0
+        val minutes = binding.specialAccountMinutesEdit.text.toString().toIntOrNull() ?: 0
+        return if ((hours * 60) + minutes <= 0) {
+            getString(R.string.shift_creator_special_account_amount_missing)
+        } else {
+            null
         }
     }
 

@@ -32,7 +32,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
+                android:alpha="0.9"
                 android:text="@string/fab_month_note"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:contentDescription="@string/fab_month_note"
                 app:layout_anchorGravity="bottom|end"
                 app:icon="@drawable/ic_note" />
@@ -52,8 +54,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/shift_creator_shift_title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold"
                 android:contentDescription="@string/fab_shift_selection"
                 app:icon="@drawable/ic_shift_fab" />
 

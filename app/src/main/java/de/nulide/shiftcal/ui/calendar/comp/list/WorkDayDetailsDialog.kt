@@ -1,16 +1,23 @@
 package de.nulide.shiftcal.ui.calendar.comp.list
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
+import de.nulide.shiftcal.data.model.Shift
 import de.nulide.shiftcal.data.model.WorkDay
+import java.util.Locale
 
 class WorkDayDetailsDialog(
     private val context: Context,
+    private val shift: Shift,
     private val workDay: WorkDay,
     private val onSave: (WorkDay) -> Unit
 ) {
@@ -23,6 +30,8 @@ class WorkDayDetailsDialog(
         val timeTypeGroup = dialogView.findViewById<RadioGroup>(R.id.workDayTimeTypeGroup)
         val overtimeOption = dialogView.findViewById<RadioButton>(R.id.workDayOvertimeOption)
         val lessWorkOption = dialogView.findViewById<RadioButton>(R.id.workDayLessWorkOption)
+        val multiplierInfoText = dialogView.findViewById<TextView>(R.id.workDayMultiplierInfoText)
+        val multiplierPreviewText = dialogView.findViewById<TextView>(R.id.workDayMultiplierPreviewText)
 
         noteEdit.setText(workDay.note)
         val absoluteMinutes = kotlin.math.abs(workDay.overtimeMinutes)
@@ -44,6 +53,51 @@ class WorkDayDetailsDialog(
             timeTypeGroup.check(overtimeOption.id)
         }
 
+        fun updateMultiplierInfo() {
+            if (shift.overtimeMultiplier == 1.0) {
+                multiplierInfoText.visibility = View.GONE
+                multiplierPreviewText.visibility = View.GONE
+                return
+            }
+
+            multiplierInfoText.visibility = View.VISIBLE
+            multiplierInfoText.text = context.getString(
+                R.string.work_day_details_multiplier_active,
+                formatMultiplier(shift.overtimeMultiplier)
+            )
+
+            val hours = overtimeHoursEdit.text.toString().toIntOrNull() ?: 0
+            val minutesInput = overtimeMinutesEdit.text.toString().toIntOrNull() ?: 0
+            val totalMinutes = (hours * 60) + minutesInput
+            val showPreview = timeTypeGroup.checkedRadioButtonId == overtimeOption.id && totalMinutes > 0
+            if (!showPreview) {
+                multiplierPreviewText.visibility = View.GONE
+                return
+            }
+
+            val adjusted = shift.adjustedOvertimeMinutes(totalMinutes)
+            multiplierPreviewText.visibility = View.VISIBLE
+            multiplierPreviewText.text = context.getString(
+                R.string.work_day_details_multiplier_preview,
+                totalMinutes / 60,
+                totalMinutes % 60,
+                adjusted / 60,
+                adjusted % 60
+            )
+        }
+
+        val multiplierWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) {
+                updateMultiplierInfo()
+            }
+        }
+        overtimeHoursEdit.addTextChangedListener(multiplierWatcher)
+        overtimeMinutesEdit.addTextChangedListener(multiplierWatcher)
+        timeTypeGroup.setOnCheckedChangeListener { _, _ -> updateMultiplierInfo() }
+        updateMultiplierInfo()
+
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.work_day_details_title)
             .setView(dialogView)
@@ -63,5 +117,13 @@ class WorkDayDetailsDialog(
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun formatMultiplier(value: Double): String {
+        return if (value % 1.0 == 0.0) {
+            String.format(Locale.US, "%.1f", value)
+        } else {
+            value.toString()
+        }
     }
 }

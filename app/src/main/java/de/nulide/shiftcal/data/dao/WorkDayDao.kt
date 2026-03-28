@@ -35,6 +35,7 @@ interface WorkDayDao {
     // Sum the whole working time(respect workdays that get over midnight and subtract the breaktime
     @Query(
         "SELECT SUM(CASE " +
+                "WHEN s.specialAccountId IS NOT NULL AND s.specialAccountMinutes IS NOT NULL THEN 0 " +
                 "WHEN s.customBalanceMinutes IS NOT NULL THEN s.customBalanceMinutes " +
                 "ELSE (((s.endDayOffset * 24 * 60) + s.endTime) - s.startTime) - s.breakMinutes " +
                 "END) FROM work_day w " +
@@ -44,15 +45,30 @@ interface WorkDayDao {
     fun getWorkMinutesBetween(cal: Int, start: LocalDate, end: LocalDate): Int
 
     @Query(
-        "SELECT SUM(s.breakMinutes) AS total FROM work_day w " +
+        "SELECT SUM(CASE " +
+                "WHEN s.specialAccountId IS NOT NULL AND s.specialAccountMinutes IS NOT NULL THEN 0 " +
+                "ELSE s.breakMinutes END) AS total FROM work_day w " +
                 "JOIN shift s ON w.shiftId = s.id AND w.calendarId = s.calendarId" +
                 " WHERE s.calendarId = :cal and day BETWEEN :start AND :end"
     )
     fun getBreakMinutesBetween(cal: Int, start: LocalDate, end: LocalDate): Long
 
     @Query(
-        "SELECT COALESCE(SUM(overtimeMinutes), 0) FROM work_day " +
-                "WHERE calendarId = :cal AND day BETWEEN :start AND :end"
+        "SELECT COALESCE(SUM(CASE " +
+                "WHEN s.specialAccountId = :accountId THEN COALESCE(s.specialAccountMinutes, 0) " +
+                "ELSE 0 END), 0) FROM work_day w " +
+                "JOIN shift s ON w.shiftId = s.id AND w.calendarId = s.calendarId " +
+                "WHERE w.calendarId = :cal AND day BETWEEN :start AND :end"
+    )
+    fun getSpecialAccountMinutesBetween(cal: Int, start: LocalDate, end: LocalDate, accountId: String): Int
+
+    @Query(
+        "SELECT COALESCE(SUM(CASE " +
+                "WHEN w.overtimeMinutes > 0 THEN CAST(ROUND(w.overtimeMinutes * COALESCE(s.overtimeMultiplier, 1.0), 0) AS INTEGER) " +
+                "ELSE w.overtimeMinutes END), 0) " +
+                "FROM work_day w " +
+                "LEFT JOIN shift s ON w.shiftId = s.id AND w.calendarId = s.calendarId " +
+                "WHERE w.calendarId = :cal AND w.day BETWEEN :start AND :end"
     )
     fun getOvertimeMinutesBetween(cal: Int, start: LocalDate, end: LocalDate): Int
 

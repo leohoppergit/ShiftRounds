@@ -21,11 +21,12 @@ import de.nulide.shiftcal.databinding.ActivityShiftsBinding
 import de.nulide.shiftcal.ui.editor.list.ShiftListAdapter
 import de.nulide.shiftcal.ui.helper.SpecialShifts
 import de.nulide.shiftcal.ui.helper.SpecialShifts.Companion.getArchivedShift
+import de.nulide.shiftcal.ui.helper.WarningDialog
 import java.util.LinkedList
 
 class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
-        private const val MENU_DUPLICATE_SHIFT = 1
+        private const val MENU_DUPLICATE_SHIFT = 1001
     }
 
     private lateinit var sc: SCRepoManager
@@ -122,7 +123,11 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
         val shift = shifts.getOrNull(index) ?: return
         if (shift.id < 0) return
         PopupMenu(this, anchor).apply {
-            menu.add(0, MENU_DUPLICATE_SHIFT, 0, getString(R.string.shift_duplicate))
+            menuInflater.inflate(
+                if (archivedMode) R.menu.menu_archived_shifts_actions else R.menu.menu_shifts_actions,
+                menu
+            )
+            menu.add(0, MENU_DUPLICATE_SHIFT, menu.size(), getString(R.string.shift_duplicate))
             setOnMenuItemClickListener { item -> onShiftActionSelected(item, shift) }
             show()
         }
@@ -130,6 +135,32 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun onShiftActionSelected(item: MenuItem, shift: Shift): Boolean {
         return when (item.itemId) {
+            R.id.action_edit -> {
+                startActivity(
+                    Intent(this, ShiftCreatorActivity::class.java).apply {
+                        putExtra(ShiftCreatorActivity.SHIFT_ID_TAG, shift.id)
+                    }
+                )
+                true
+            }
+
+            R.id.action_delete -> {
+                confirmDeleteShift(shift)
+                true
+            }
+
+            R.id.action_archive -> {
+                sc.shifts.update(shift.copy(archived = true))
+                updateShifts()
+                true
+            }
+
+            R.id.action_unarchive -> {
+                sc.shifts.update(shift.copy(archived = false))
+                updateShifts()
+                true
+            }
+
             MENU_DUPLICATE_SHIFT -> {
                 duplicateShift(shift)
                 true
@@ -137,6 +168,19 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
 
             else -> false
         }
+    }
+
+    private fun confirmDeleteShift(shift: Shift) {
+        val warningDialog = WarningDialog(
+            this,
+            getString(R.string.warning_delete_item, shift.name)
+        )
+        warningDialog.setPositiveButton(R.string.yes) { _, _ ->
+            sc.shifts.delete(shift)
+            updateShifts()
+        }
+        warningDialog.enableNegativeButton()
+        warningDialog.show()
     }
 
     private fun duplicateShift(source: Shift) {

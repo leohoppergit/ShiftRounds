@@ -253,6 +253,64 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:id="@+id/overtimeMultiplierLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_overtime_multiplier_label" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/overtimeMultiplierSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_gravity="center"
+                android:text="@string/shift_creator_overtime_multiplier_enable" />
+
+            <TextView
+                android:id="@+id/overtimeMultiplierValueLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_overtime_multiplier_value_label" />
+
+            <EditText
+                android:id="@+id/overtimeMultiplierEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                app:layout_gravity="center"
+                android:textAlignment="center"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/overtimeMultiplierInfoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.75"
+                app:layout_columnSpan="2"
+                android:text="@string/shift_creator_overtime_multiplier_info" />
+
+            <TextView
+                android:id="@+id/normalBalanceTitle"
+                style="@style/Text.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                app:layout_columnSpan="2"
+                android:text="@string/shift_creator_balance_section_title" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -341,6 +399,168 @@
                 android:inputType="number"
                 android:textAlignment="center"
                 android:visibility="gone" />
+
+            <View
+                android:id="@+id/specialAccountDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                app:layout_columnSpan="2"
+                android:background="?android:attr/listDivider"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountTitle"
+                style="@style/Text.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:layout_columnSpan="2"
+                android:text="@string/shift_creator_special_account_title"
+                android:visibility="gone" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/specialAccountSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:layout_columnSpan="2"
+                android:text="@string/shift_creator_special_account_enable"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountDescriptionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginHorizontal="4dp"
+                app:layout_columnSpan="2"
+                android:text="@string/shift_creator_special_account_description"
+                android:textColor="@color/textColorWaterMark"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_special_account_label"
+                android:visibility="gone" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/specialAccountInputLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:visibility="gone">
+
+                <AutoCompleteTextView
+                    android:id="@+id/specialAccountSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/shift_creator_special_account_hint"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/specialAccountTypeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_special_account_type_label"
+                android:visibility="gone" />
+
+            <RadioGroup
+                android:id="@+id/specialAccountTypeGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <RadioButton
+                    android:id="@+id/specialAccountPositiveOption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shift_creator_special_account_positive" />
+
+                <RadioButton
+                    android:id="@+id/specialAccountNegativeOption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/shift_creator_special_account_negative" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/specialAccountHoursLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_special_account_hours"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/specialAccountHoursEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/work_day_details_hours_hint"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountMinutesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_special_account_minutes"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/specialAccountMinutesEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/work_day_details_minutes_hint"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountPreviewLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:text="@string/shift_creator_special_account_preview_label"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/specialAccountPreviewText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="-8:00 h" />
 
 
             <View

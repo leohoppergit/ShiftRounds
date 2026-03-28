@@ -147,6 +147,28 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/specialAccountsSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Text.SectionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/stats_special_accounts_title" />
+
+                <LinearLayout
+                    android:id="@+id/specialAccountsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/tagsSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

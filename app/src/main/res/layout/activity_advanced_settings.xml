@@ -110,6 +110,66 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/calendar_box"
                 android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    style="@style/Text.SectionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/settings_special_accounts_title" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_special_accounts_description" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/specialAccountsSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_special_accounts_enable" />
+
+                <LinearLayout
+                    android:id="@+id/specialAccountsManageSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/specialAccountsEmptyText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="@string/settings_special_accounts_empty" />
+
+                    <LinearLayout
+                        android:id="@+id/specialAccountsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/addSpecialAccountButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="@string/settings_special_accounts_add" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/calendar_box"
+                android:layout_marginTop="10dp"
                 android:padding="8dp"
                 android:orientation="vertical">
 
@@ -126,10 +186,11 @@
                     android:layout_margin="4dp"
                     android:text="@string/settings_dual_shift_description" />
 
-                <CheckBox
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/dualShiftCheckBox"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
                     android:text="@string/Enable" />
 
             </LinearLayout>
@@ -161,10 +222,11 @@
                         android:layout_margin="4dp"
                         android:text="@string/settings_sync_description" />
 
-                    <CheckBox
+                    <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/syncCheckBox"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
                         android:text="@string/Enable" />
 
                 </LinearLayout>

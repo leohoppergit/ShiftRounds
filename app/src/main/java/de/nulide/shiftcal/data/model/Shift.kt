@@ -3,6 +3,7 @@ package de.nulide.shiftcal.data.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import kotlin.math.roundToInt
 
 @Entity(
     tableName = "shift",
@@ -28,6 +29,9 @@ data class Shift(
     val endTime: ShiftTime,
     val endDayOffset: Int,
     val customBalanceMinutes: Int?,
+    val specialAccountId: String?,
+    val specialAccountMinutes: Int?,
+    val overtimeMultiplier: Double,
     var sortOrder: Int,
     val breakMinutes: Int,
     val alarmLeadMinutes: Int?,
@@ -35,7 +39,7 @@ data class Shift(
     val toAlarm: Boolean,
     var archived: Boolean
 ) {
-    constructor() : this(0, 0, "", "", ShiftTime(0, 0), ShiftTime(0, 0), 0, null, 0, 0, null, 0, false, false)
+    constructor() : this(0, 0, "", "", ShiftTime(0, 0), ShiftTime(0, 0), 0, null, null, null, 1.0, 0, 0, null, 0, false, false)
 
     constructor(
         name: String,
@@ -44,6 +48,9 @@ data class Shift(
         endTime: ShiftTime,
         endDayOffset: Int,
         customBalanceMinutes: Int?,
+        specialAccountId: String?,
+        specialAccountMinutes: Int?,
+        overtimeMultiplier: Double,
         sortOrder: Int,
         breakMinutes: Int,
         alarmLeadMinutes: Int?,
@@ -60,6 +67,9 @@ data class Shift(
                 endTime,
                 endDayOffset,
                 customBalanceMinutes,
+                specialAccountId,
+                specialAccountMinutes,
+                overtimeMultiplier,
                 sortOrder,
                 breakMinutes,
                 alarmLeadMinutes,
@@ -78,7 +88,15 @@ data class Shift(
         get() = (endDayOffset * 24 * 60) + endTime.timeInMinutes - startTime.timeInMinutes
 
     val effectiveWorkMinutes: Int
-        get() = customBalanceMinutes ?: (durationMinutes - breakMinutes)
+        get() = if (specialAccountId != null && specialAccountMinutes != null) 0 else customBalanceMinutes ?: (durationMinutes - breakMinutes)
+
+    fun adjustedOvertimeMinutes(rawMinutes: Int): Int {
+        return if (rawMinutes > 0) {
+            (rawMinutes * overtimeMultiplier).roundToInt()
+        } else {
+            rawMinutes
+        }
+    }
 
     override fun toString(): String {
         val s = StringBuilder()
@@ -87,6 +105,9 @@ data class Shift(
             .append(startTime.toString()).append("|").append(endTime).append("|")
             .append(endDayOffset).append("|")
             .append(customBalanceMinutes).append("|")
+            .append(specialAccountId).append("|")
+            .append(specialAccountMinutes).append("|")
+            .append(overtimeMultiplier).append("|")
             .append(sortOrder).append("|")
             .append(breakMinutes).append("|").append(alarmLeadMinutes)
             .append("\n").append("color").append("\n").append(toAlarm).append("\n").append(archived)

@@ -49,12 +49,14 @@ class FeedbackDialog(context: Context) {
             append(msg.trim())
         }
 
-        val mailUri = Uri.parse("mailto:$FEEDBACK_MAIL").buildUpon()
-            .appendQueryParameter("subject", context.getString(R.string.feedback_email_subject))
-            .appendQueryParameter("body", body)
-            .build()
+        val mailUri = Uri.fromParts("mailto", FEEDBACK_MAIL, null)
 
-        val intent = Intent(Intent.ACTION_SENDTO, mailUri)
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = mailUri
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(FEEDBACK_MAIL))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.feedback_email_subject))
+            putExtra(Intent.EXTRA_TEXT, body)
+        }
         try {
             context.startActivity(intent)
             Toast.makeText(context, R.string.feedback_thanks, Toast.LENGTH_SHORT).show()

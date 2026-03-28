@@ -39,6 +39,8 @@ public class Settings {
     public static final String DB_MIGRATION_COMPLETED = "DB_MIGRATION";
     public static final String DB_MIGRATION_SHARED_RETRIEVED_COMPLETED = "DB_MIGRATION_SHARED";
     public static final String SWIFTSHIFT_IMPORT_PROMPT_HANDLED = "SWIFTSHIFT_IMPORT_PROMPT_HANDLED";
+    public static final String SPECIAL_ACCOUNTS_ENABLED = "SPECIAL_ACCOUNTS_ENABLED";
+    public static final String SPECIAL_ACCOUNTS = "SPECIAL_ACCOUNTS";
 
 
     public Settings() {
@@ -84,6 +86,7 @@ public class Settings {
                 case DB_MIGRATION_SHARED_RETRIEVED_COMPLETED:
                 case INTRO_FAB_MENU_EXPLANATION:
                 case SWIFTSHIFT_IMPORT_PROMPT_HANDLED:
+                case SPECIAL_ACCOUNTS_ENABLED:
                     return Boolean.valueOf(false).toString();
                 case ALARM_TONE:
                 case SERVER_SYNC_UUID:
@@ -91,6 +94,7 @@ public class Settings {
                 case SERVER_SYNC_PW:
                 case SERVER_SYNC_SPECTATOR_UUID:
                 case SERVER_SYNC_SPECTATOR_PW:
+                case SPECIAL_ACCOUNTS:
                     return "";
 
             }

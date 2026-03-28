@@ -53,8 +53,21 @@ class SCRepoManager(ctx: Context) {
         }
     }
 
+    private val migration5To6 = object : Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE shift ADD COLUMN specialAccountId TEXT")
+            db.execSQL("ALTER TABLE shift ADD COLUMN specialAccountMinutes INTEGER")
+        }
+    }
+
+    private val migration6To7 = object : Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE shift ADD COLUMN overtimeMultiplier REAL NOT NULL DEFAULT 1.0")
+        }
+    }
+
     private val db = Room.databaseBuilder(ctx, ShiftSwiftDB::class.java, ShiftSwiftDB.DB_NAME)
-        .addMigrations(migration1To2, migration2To3, migration3To4, migration4To5)
+        .addMigrations(migration1To2, migration2To3, migration3To4, migration4To5, migration5To6, migration6To7)
         .allowMainThreadQueries().build()
 
     val calendar = CalendarRepository(db, this)

@@ -182,12 +182,12 @@ class ShiftMonthDayBinder(
         return when {
             shift.customBalanceMinutes == null -> shift.shortName
             shift.customBalanceMinutes < 0 -> "${shift.shortName}-"
-            else -> "${shift.shortName}+"
+            else -> shift.shortName
         }
     }
 
     private fun applyShiftMarker(textView: android.widget.TextView, shift: de.nulide.shiftcal.data.model.Shift) {
-        if (shift.customBalanceMinutes != null) {
+        if (shift.customBalanceMinutes != null && shift.customBalanceMinutes < 0) {
             textView.setTypeface(null, Typeface.BOLD)
             val marker = ContextCompat.getDrawable(context, R.drawable.today_box)?.mutate()
             marker?.alpha = 90

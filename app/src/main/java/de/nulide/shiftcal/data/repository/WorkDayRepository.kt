@@ -56,6 +56,11 @@ class WorkDayRepository(db: ShiftSwiftDB, rm: SCRepoManager) : CommonRepository(
         return workDayDao.getOvertimeMinutesBetween(calId, start, end)
     }
 
+    fun getSpecialAccountMinutesForMonth(year: Int, month: Int, accountId: String): Int {
+        val (start, end) = getStartEndMonth(year, month)
+        return workDayDao.getSpecialAccountMinutesBetween(calId, start, end, accountId)
+    }
+
     fun getUpcoming(respectAlarm: Boolean, preMinutes: Int): WorkDay? {
         val day = LocalDate.now()
         val time = ShiftTime.now()

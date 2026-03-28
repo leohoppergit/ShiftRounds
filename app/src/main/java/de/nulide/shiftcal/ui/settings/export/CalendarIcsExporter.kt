@@ -44,10 +44,11 @@ object CalendarIcsExporter {
                 else -> context.getString(R.string.export_event_balance_positive)
             }
             val noteText = workDay.note.ifBlank { context.getString(R.string.export_event_note_none) }
-            val adjustmentText = if (workDay.overtimeMinutes == 0) {
+            val displayedAdjustmentMinutes = shift.adjustedOvertimeMinutes(workDay.overtimeMinutes)
+            val adjustmentText = if (displayedAdjustmentMinutes == 0) {
                 context.getString(R.string.export_event_adjustment_none)
             } else {
-                formatDuration(workDay.overtimeMinutes)
+                formatDuration(displayedAdjustmentMinutes)
             }
 
             builder.appendLine("BEGIN:VEVENT")

@@ -2,16 +2,22 @@ package de.nulide.shiftcal.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
+import de.nulide.shiftcal.data.settings.SpecialAccount
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityAdvancedSettingsBinding
@@ -22,6 +28,7 @@ import de.nulide.shiftcal.ui.settings.feature.FeatureStateListener
 import de.nulide.shiftcal.utils.permission.PermissionManager
 import java.text.DateFormatSymbols
 import java.util.LinkedList
+import java.util.UUID
 
 
 class AdvancedSettingsActivity : AppCompatActivity(),
@@ -86,6 +93,8 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
         binding.weekOfYearSwitch.setOnCheckedChangeListener(this)
         binding.swiftShiftImportButton.setOnClickListener(this)
+        binding.specialAccountsSwitch.setOnCheckedChangeListener(this)
+        binding.addSpecialAccountButton.setOnClickListener(this)
 
     }
 
@@ -121,12 +130,17 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             settings.set(Settings.DUAL_SHIFT, isChecked)
         } else if (buttonView == binding.weekOfYearSwitch) {
             settings.set(Settings.WEEK_OF_YEAR, isChecked)
+        } else if (buttonView == binding.specialAccountsSwitch) {
+            settings.set(Settings.SPECIAL_ACCOUNTS_ENABLED, isChecked)
+            updateSpecialAccountsUi()
         }
     }
 
     override fun onClick(v: View?) {
         if (v == binding.swiftShiftImportButton) {
             startActivity(Intent(this, SwiftShiftImportActivity::class.java))
+        } else if (v == binding.addSpecialAccountButton) {
+            showSpecialAccountDialog(null)
         }
     }
 
@@ -145,6 +159,9 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         //Sync
         val syncEnabled = calSyncFeature.isEnabled()
         binding.syncCheckBox.isChecked = syncEnabled
+
+        binding.specialAccountsSwitch.isChecked = settings.getBoolean(Settings.SPECIAL_ACCOUNTS_ENABLED)
+        updateSpecialAccountsUi()
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -157,6 +174,70 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
     override fun onFeatureStateChanged(state: Feature.Companion.STATE) {
         updateViews()
+    }
+
+    private fun updateSpecialAccountsUi() {
+        val enabled = settings.getBoolean(Settings.SPECIAL_ACCOUNTS_ENABLED)
+        binding.specialAccountsManageSection.visibility = if (enabled) View.VISIBLE else View.GONE
+
+        val accounts = settings.getSpecialAccounts()
+        binding.specialAccountsEmptyText.visibility = if (accounts.isEmpty()) View.VISIBLE else View.GONE
+        binding.specialAccountsList.removeAllViews()
+
+        val inflater = LayoutInflater.from(this)
+        for (account in accounts) {
+            val row = inflater.inflate(R.layout.item_special_account, binding.specialAccountsList, false)
+            row.findViewById<TextView>(R.id.specialAccountNameText).text = account.name
+            row.findViewById<ImageButton>(R.id.editSpecialAccountButton).setOnClickListener {
+                showSpecialAccountDialog(account)
+            }
+            row.findViewById<ImageButton>(R.id.deleteSpecialAccountButton).setOnClickListener {
+                deleteSpecialAccount(account)
+            }
+            binding.specialAccountsList.addView(row)
+        }
+    }
+
+    private fun showSpecialAccountDialog(existingAccount: SpecialAccount?) {
+        val nameEdit = EditText(this).apply {
+            setText(existingAccount?.name.orEmpty())
+            hint = getString(R.string.special_account_name_hint)
+            setSelection(text.length)
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(if (existingAccount == null) R.string.special_account_add_title else R.string.special_account_edit_title)
+            .setView(nameEdit)
+            .setPositiveButton(R.string.save) { _, _ ->
+                val name = nameEdit.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    val accounts = settings.getSpecialAccounts().toMutableList()
+                    if (existingAccount == null) {
+                        accounts.add(SpecialAccount(UUID.randomUUID().toString(), name))
+                    } else {
+                        val index = accounts.indexOfFirst { it.id == existingAccount.id }
+                        if (index >= 0) {
+                            accounts[index] = existingAccount.copy(name = name)
+                        }
+                    }
+                    settings.setSpecialAccounts(accounts)
+                    updateSpecialAccountsUi()
+                }
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteSpecialAccount(account: SpecialAccount) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.special_account_delete_title)
+            .setMessage(getString(R.string.special_account_delete_message, account.name))
+            .setPositiveButton(R.string.delete) { _, _ ->
+                settings.setSpecialAccounts(settings.getSpecialAccounts().filter { it.id != account.id })
+                updateSpecialAccountsUi()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
 }

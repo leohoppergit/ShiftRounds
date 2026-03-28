@@ -21,7 +21,7 @@ import de.nulide.shiftcal.data.model.WorkDay
 
 @Database(
     entities = [User::class, ShiftCalendar::class, Shift::class, MonthNote::class, ShiftBlockEntry::class, ShiftBlock::class, WorkDay::class],
-    version = 5
+    version = 7
 )
 @TypeConverters(value = [Converter::class])
 abstract class ShiftSwiftDB : RoomDatabase() {

@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = 'ShiftCal'
+rootProject.name = 'ShiftRounds'

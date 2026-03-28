@@ -56,7 +56,7 @@ class DBMigrator(val ctx: Context) {
             sc.shifts.add(
                 Shift(
                     s.id, 0, s.name, s.short_name,
-                    start, end, if (end.timeInMinutes <= start.timeInMinutes) 1 else 0, null, s.id, s.breakMinutes,
+                    start, end, if (end.timeInMinutes <= start.timeInMinutes) 1 else 0, null, null, null, 1.0, s.id, s.breakMinutes,
                     preAlarmMinutes, s.color, s.isToAlarm, s.isArchived
                 )
             )

@@ -63,8 +63,7 @@ open class ExpandableLinearLayout @JvmOverloads constructor(
             setChildrenVisibility(VISIBLE)
         }
 
-        this.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        var targetHeight = measuredHeight
+        var targetHeight = getMeasuredTrueHeight()
         if (useCollapseSize) {
             targetHeight = sizeOnCollapse
         }
@@ -79,6 +78,8 @@ open class ExpandableLinearLayout @JvmOverloads constructor(
             requestLayout()
         }
         animator.addListener(onEnd = {
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            requestLayout()
             onExpandableLinearLayoutExpandedListener?.onExpanded(this)
         })
         animator.duration = 200 // duration in milliseconds
@@ -90,15 +91,14 @@ open class ExpandableLinearLayout @JvmOverloads constructor(
 
     fun expandNow() {
         if (isExpanded) {
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            requestLayout()
             return
         }
         if (hideChildren) {
             setChildrenVisibility(VISIBLE)
         }
-        this.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        val targetHeight = measuredHeight
-
-        layoutParams.height = targetHeight
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         visibility = View.VISIBLE
         requestLayout()
         isExpanded = true
@@ -113,6 +113,10 @@ open class ExpandableLinearLayout @JvmOverloads constructor(
             layoutParams.height = animatedValue
             requestLayout()
         }
+        animator.addListener(onEnd = {
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            requestLayout()
+        })
 
         animator.duration = 200 // duration in milliseconds
         animator.interpolator = AccelerateDecelerateInterpolator()

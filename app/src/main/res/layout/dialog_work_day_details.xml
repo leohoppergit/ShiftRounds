@@ -66,4 +66,20 @@
             android:inputType="number" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/workDayMultiplierInfoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:alpha="0.85"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/workDayMultiplierPreviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
 </LinearLayout>

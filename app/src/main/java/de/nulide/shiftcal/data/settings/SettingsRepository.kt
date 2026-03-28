@@ -78,4 +78,27 @@ class SettingsRepository private constructor(private val context: Context) {
         settings.settings = HashMap(importedSettings)
         saveSettings()
     }
+
+    fun getSpecialAccounts(): List<SpecialAccount> {
+        val json = get(Settings.SPECIAL_ACCOUNTS)
+        if (json.isBlank()) {
+            return emptyList()
+        }
+        return try {
+            JIO.getObjectMapper().readerForListOf(SpecialAccount::class.java).readValue(json)
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    fun setSpecialAccounts(accounts: List<SpecialAccount>) {
+        set(Settings.SPECIAL_ACCOUNTS, JIO.toJSON(accounts))
+    }
+
+    fun getSpecialAccount(accountId: String?): SpecialAccount? {
+        if (accountId.isNullOrBlank()) {
+            return null
+        }
+        return getSpecialAccounts().firstOrNull { it.id == accountId }
+    }
 }

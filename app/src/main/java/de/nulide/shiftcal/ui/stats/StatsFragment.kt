@@ -121,6 +121,37 @@ class StatsFragment : SFragment() {
             binding.listViewShifts.setHasFixedSize(true)
 
             val settings = SettingsRepository.getInstance(ctx)
+            val configuredAccounts = settings.getSpecialAccounts()
+            val relevantSpecialAccountIds = LinkedHashSet<String>()
+            configuredAccounts.mapTo(relevantSpecialAccountIds) { it.id }
+            shifts.mapNotNullTo(relevantSpecialAccountIds) { it.specialAccountId }
+            if (relevantSpecialAccountIds.isEmpty()) {
+                binding.specialAccountsSection.visibility = View.GONE
+            } else {
+                binding.specialAccountsSection.visibility = View.VISIBLE
+                binding.specialAccountsContainer.removeAllViews()
+                val inflater = LayoutInflater.from(ctx)
+                for (accountId in relevantSpecialAccountIds) {
+                    val row = inflater.inflate(R.layout.item_week_day_stat, binding.specialAccountsContainer, false)
+                    val accountName = configuredAccounts.firstOrNull { it.id == accountId }?.name
+                        ?: getString(R.string.special_account_missing_name)
+                    val accountMinutes = sc.workDays.getSpecialAccountMinutesForMonth(
+                        yearMonth.year,
+                        yearMonth.monthValue,
+                        accountId
+                    )
+                    val absoluteMinutes = kotlin.math.abs(accountMinutes)
+                    row.findViewById<TextView>(R.id.statsWeekDayLabel).text = "$accountName:"
+                    row.findViewById<TextView>(R.id.statsWeekDayCount).text = ctx.getString(
+                        R.string.time_stat_signed,
+                        if (accountMinutes < 0) "-" else "",
+                        absoluteMinutes / 60,
+                        absoluteMinutes % 60
+                    )
+                    binding.specialAccountsContainer.addView(row)
+                }
+            }
+
             val firstDayOfWeekIndex = settings.getInt(Settings.START_OF_WEEK)
             val daysOfWeek = daysOfWeek(DayOfWeek.of(firstDayOfWeekIndex + 1))
             val weekDayStats = IntArray(7)
