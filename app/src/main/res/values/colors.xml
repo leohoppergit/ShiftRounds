@@ -22,4 +22,17 @@
 
     <color name="newColor">#aac7ff</color>
 
+    <color name="shiftRoundsCanvas">#F6F3EE</color>
+    <color name="shiftRoundsPanelSurface">#DDEFF4F1</color>
+    <color name="shiftRoundsPanelStroke">#8FC6D0CF</color>
+    <color name="shiftRoundsActionSurface">#E4EFF9FB</color>
+    <color name="shiftRoundsActionInk">#39576E</color>
+    <color name="shiftRoundsToolbarActionSurface">#E4EFF9FB</color>
+    <color name="shiftRoundsToolbarActionStroke">#B8D0DEE8</color>
+    <color name="shiftRoundsToolbarActionInk">#39576E</color>
+    <color name="shiftRoundsSelection">#628893</color>
+    <color name="shiftRoundsTitleInk">#213433</color>
+    <color name="shiftRoundsMutedInk">#6E7877</color>
+    <color name="shiftRoundsGlassShadow">#140C1620</color>
+
 </resources>

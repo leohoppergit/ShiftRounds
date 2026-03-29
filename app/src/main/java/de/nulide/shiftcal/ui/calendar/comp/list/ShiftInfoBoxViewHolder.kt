@@ -51,7 +51,7 @@ class ShiftInfoBoxViewHolder(
     lateinit var wday: WorkDayDTO
     var pos = -1
 
-    fun bind(wday: WorkDayDTO, position: Int, isUpdate: Boolean) {
+    fun bind(wday: WorkDayDTO, position: Int) {
         Runner.runCo {
             this.pos = position
             shiftInfoBox.setOnExpandableLinerLayoutCollapsedListener(this)
@@ -60,7 +60,7 @@ class ShiftInfoBoxViewHolder(
             val isEditable = wday.wday.calendarId == sc.calendar.getLocal()
 
             val newBackground =
-                ContextCompat.getDrawable(context, R.drawable.calendar_box)?.mutate()
+                ContextCompat.getDrawable(context, R.drawable.shift_rounds_shift_card)?.mutate()
             newBackground?.setTint(shift.color)
             shiftInfoBox.background = newBackground
 
@@ -73,7 +73,7 @@ class ShiftInfoBoxViewHolder(
             if (isToday && wday.isRunning) {
                 val layer = arrayOfNulls<Drawable>(2)
                 val secondBackground =
-                    ContextCompat.getDrawable(context, R.drawable.loading_box)?.mutate()
+                    ContextCompat.getDrawable(context, R.drawable.shift_rounds_loading_box)?.mutate()
                 if (ColorHelper.isTooBright(shift.color)) {
                     newBackground?.setTint(ColorHelper.brightenColor(shift.color))
                     secondBackground?.setTint(shift.color)
@@ -202,11 +202,7 @@ class ShiftInfoBoxViewHolder(
                 shiftInfoBox.setOnClickListener(null)
             }
 
-            if (isUpdate) {
-                shiftInfoBox.expandNow()
-            } else {
-                shiftInfoBox.expand()
-            }
+            shiftInfoBox.expandNow()
             initialized = true
         }
     }
@@ -257,14 +253,14 @@ class ShiftInfoBoxViewHolder(
 
     private fun createInfoBackground(forBrightShift: Boolean): GradientDrawable {
         return GradientDrawable().apply {
-            cornerRadius = 24f
+            cornerRadius = 28f
             setColor(
                 ContextCompat.getColor(
                     context,
                     if (forBrightShift) android.R.color.white else android.R.color.black
                 )
             )
-            alpha = if (forBrightShift) 150 else 95
+            alpha = if (forBrightShift) 158 else 72
         }
     }
 

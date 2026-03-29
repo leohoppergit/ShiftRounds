@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mikepenz.aboutlibraries.util.parseData
+import de.nulide.shiftcal.BuildConfig
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.databinding.ActivityAboutBinding
 
@@ -36,6 +37,9 @@ class AboutActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        binding.aboutVersion.text =
+            getString(R.string.about_version_label, BuildConfig.VERSION_NAME)
 
         val json = resources.openRawResource(R.raw.aboutlibraries).bufferedReader().use {
             it.readText()

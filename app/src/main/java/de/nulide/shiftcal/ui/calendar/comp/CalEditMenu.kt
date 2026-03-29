@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.Lifecycle
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.repository.SCRepoManager
@@ -21,14 +22,15 @@ class CalEditMenu @JvmOverloads constructor(
     private val sc = SCRepoManager.getInstance(context)
     private lateinit var calViewModel: CalViewModel
     private var easterEggHandler: EasterEggHandler
+    private val editFabButton by lazy { binding.editFab as AppCompatImageButton }
 
 
     init {
         val layoutInflator = LayoutInflater.from(context)
         binding = CompCalEditMenuBinding.inflate(layoutInflator, this, true)
 
-        easterEggHandler = EasterEggHandler(context, binding.editFab)
-        binding.editFab.setOnClickListener(this)
+        easterEggHandler = EasterEggHandler(context, editFabButton)
+        editFabButton.setOnClickListener(this)
         binding.fabContainer.hideItems(false)
 
     }
@@ -50,18 +52,18 @@ class CalEditMenu @JvmOverloads constructor(
     fun updateVisiblity() {
         if (sc.familyMode) {
             if (calViewModel.getEditMode()) {
-                onClick(binding.editFab)
+                onClick(editFabButton)
             }
-            binding.editFab.visibility = GONE
+            editFabButton.visibility = GONE
         } else {
-            binding.editFab.visibility = VISIBLE
+            editFabButton.visibility = VISIBLE
         }
     }
 
     override fun onClick(p0: View?) {
         easterEggHandler.onClick()
         if (calViewModel.getEditMode()) {
-            binding.editFab.setIconResource(R.drawable.ic_edit)
+            editFabButton.setImageResource(R.drawable.ic_edit)
             binding.fabContainer.collapse()
             calViewModel.setEditMode(false)
 
@@ -70,7 +72,7 @@ class CalEditMenu @JvmOverloads constructor(
 
         } else {
             binding.fabContainer.expand()
-            binding.editFab.setIconResource(R.drawable.ic_done)
+            editFabButton.setImageResource(R.drawable.ic_done)
             calViewModel.setEditMode(true)
         }
     }

@@ -30,9 +30,11 @@ public class ColorHelper {
     }
 
     public static boolean isTooBright(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        return hsv[2] > 0.75;
+        double luminance =
+                (0.299 * Color.red(color) +
+                        0.587 * Color.green(color) +
+                        0.114 * Color.blue(color)) / 255.0;
+        return luminance > 0.62;
     }
 
     public static int getColorAttr(Context context, Integer attr) {

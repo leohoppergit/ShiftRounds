@@ -1,0 +1,15 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:angle="90"
+        android:startColor="@color/shiftRoundsActionSurface"
+        android:endColor="#CFE0EDF4" />
+
+    <stroke
+        android:width="1dp"
+        android:color="@color/shiftRoundsToolbarActionStroke" />
+
+    <corners android:radius="22dp" />
+
+</shape>

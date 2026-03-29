@@ -134,6 +134,7 @@
     <string name="about_description">A shift calendar.</string>
     <string name="about_credit_title">About This App</string>
     <string name="about_credit_body">ShiftRounds is a private fork based on ShiftCal / ShiftSwift by Nulide.\n\nOriginal concept and foundation by Nulide.\nThis version continues the app as an independently maintained personal edition.</string>
+    <string name="about_version_label">Version %1$s</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="special_account_add_title">Add special account</string>

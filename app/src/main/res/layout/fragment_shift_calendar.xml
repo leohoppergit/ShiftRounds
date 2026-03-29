@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/shiftRoundsCanvas"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.calendar.ShiftCalendarFragment">
 
@@ -19,17 +20,20 @@
             android:id="@+id/shiftCalendarContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/shiftRoundsCanvas"
             android:orientation="vertical">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="16dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -53,6 +57,7 @@
                             android:id="@+id/infos"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingHorizontal="4dp"
                             android:orientation="vertical">
 
                             <de.nulide.shiftcal.ui.calendar.comp.MonthNoteBox
@@ -94,9 +99,17 @@
             android:visibility="gone"
             android:layout_margin="12dp"
             android:text=""
+            android:minWidth="74dp"
+            android:minHeight="74dp"
             android:paddingStart="0dp"
+            android:paddingTop="0dp"
             android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            app:backgroundTint="@color/shiftRoundsActionSurface"
+            app:cornerRadius="24dp"
+            app:elevation="4dp"
+            app:iconTint="@color/shiftRoundsActionInk"
             app:icon="@drawable/ic_swap_cal"
             android:src="@android:color/transparent" />
 

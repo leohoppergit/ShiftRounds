@@ -33,9 +33,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:alpha="0.9"
+                android:textColor="@color/shiftRoundsActionInk"
                 android:text="@string/fab_month_note"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:contentDescription="@string/fab_month_note"
+                app:backgroundTint="@color/shiftRoundsActionSurface"
+                app:iconTint="@color/shiftRoundsActionInk"
                 app:layout_anchorGravity="bottom|end"
                 app:icon="@drawable/ic_note" />
 
@@ -44,9 +47,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
+                android:textColor="@color/shiftRoundsActionInk"
                 android:text="@string/shift_block_creator_shift_block_title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:contentDescription="@string/fab_shift_block_selection"
+                app:backgroundTint="@color/shiftRoundsActionSurface"
+                app:iconTint="@color/shiftRoundsActionInk"
                 app:icon="@drawable/ic_multi_shift_fab" />
 
             <de.nulide.shiftcal.ui.calendar.comp.ShiftSelector
@@ -55,26 +61,29 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:layout_marginTop="10dp"
+                android:textColor="@color/shiftRoundsActionInk"
                 android:text="@string/shift_creator_shift_title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold"
                 android:contentDescription="@string/fab_shift_selection"
+                app:backgroundTint="@color/shiftRoundsActionSurface"
+                app:iconTint="@color/shiftRoundsActionInk"
                 app:icon="@drawable/ic_shift_fab" />
 
         </de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/editFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="74dp"
+            android:layout_height="74dp"
             android:layout_margin="6dp"
-            android:text=""
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="@drawable/shift_rounds_edit_fab_bg"
+            android:padding="22dp"
+            android:scaleType="centerInside"
             android:contentDescription="@string/fab_edit"
-            app:icon="@drawable/ic_edit"
-            android:src="@android:color/transparent" />
+            android:elevation="4dp"
+            android:tint="@color/shiftRoundsActionInk"
+            app:srcCompat="@drawable/ic_edit" />
 
     </LinearLayout>
 

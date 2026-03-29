@@ -1,10 +1,10 @@
 package de.nulide.shiftcal.utils
 
 import android.content.Context
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import android.view.View
 import de.nulide.shiftcal.ui.editor.list.ShiftBlockGradientBackground
 
-class EasterEggHandler(val context: Context, val editFab: ExtendedFloatingActionButton) {
+class EasterEggHandler(val context: Context, val editFab: View) {
 
     private var easterEggLastClick = 0L
     private var easterEggClickC = 0
@@ -14,7 +14,6 @@ class EasterEggHandler(val context: Context, val editFab: ExtendedFloatingAction
         if (easterEggLastClick + 750 > easterEggNow) {
             easterEggClickC += 1
             if (easterEggClickC > 2) {
-                editFab.backgroundTintList = null
                 editFab.background = ShiftBlockGradientBackground.getRainbowBackground()
             }
         } else {

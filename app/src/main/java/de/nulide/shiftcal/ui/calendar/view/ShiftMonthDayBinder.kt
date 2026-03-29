@@ -45,7 +45,7 @@ class ShiftMonthDayBinder(
             container.secondShiftTextView.background = null
 
             val selectorDrawable =
-                ContextCompat.getDrawable(context, R.drawable.rounded_box_outline)
+                ContextCompat.getDrawable(context, R.drawable.shift_rounds_selected_day_outline)
             val todayBoxDrawable = ContextCompat.getDrawable(context, R.drawable.today_box)
 
             container.calViewModel = calViewModel

@@ -2,7 +2,7 @@
     android:layout_width="wrap_content"
     android:layout_height="0dp"
     android:textSize="11sp"
-    android:textColor="?attr/colorPrimary"
+    android:textColor="@color/shiftRoundsMutedInk"
     android:layout_weight="1"
     android:ems="2"
     android:gravity="center" />

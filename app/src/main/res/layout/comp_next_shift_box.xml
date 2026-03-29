@@ -11,10 +11,13 @@
         android:id="@+id/nextShiftText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:layout_margin="2dp"
+        android:background="@drawable/shift_rounds_calendar_action_bg"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
         android:textStyle="bold"
-        android:textColor="@color/onSurfaceWaterMark"
+        android:textColor="@color/shiftRoundsActionInk"
         android:textAlignment="center" />
 
 </LinearLayout>

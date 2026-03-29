@@ -132,6 +132,7 @@
     <string name="about_description">Ein Schichtkalender.</string>
     <string name="about_credit_title">Über diese App</string>
     <string name="about_credit_body">ShiftRounds ist ein privater Fork auf Basis von ShiftCal beziehungsweise ShiftSwift von Nulide.\n\nUrsprüngliches Konzept und Fundament von Nulide.\nDiese Version wird als eigenständig gepflegte persönliche Edition weitergeführt.</string>
+    <string name="about_version_label">Version %1$s</string>
     <string name="save">Speichern</string>
     <string name="delete">Löschen</string>
     <string name="special_account_add_title">Sonderkonto hinzufügen</string>

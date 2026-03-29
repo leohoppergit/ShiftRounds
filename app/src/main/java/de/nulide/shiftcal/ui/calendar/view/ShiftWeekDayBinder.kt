@@ -36,7 +36,7 @@ class ShiftWeekDayBinder(
 
         if (calViewModel.getLastSelectedDay().date == data.date) {
             val selectorDrawable =
-                ContextCompat.getDrawable(context, R.drawable.rounded_box_outline)
+                ContextCompat.getDrawable(context, R.drawable.shift_rounds_selected_day_outline)
             container.root.background = selectorDrawable
         } else {
             container.root.background = null

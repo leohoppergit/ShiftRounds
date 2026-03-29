@@ -24,6 +24,10 @@ class ShiftInfoBox @JvmOverloads constructor(
     init {
         adapter = shiftInfoBoxAdapter
         layoutManager = LinearLayoutManager(context)
+        // The cards already animate their own expand/collapse state.
+        // Disabling RecyclerView item animations avoids transient oversize flashes
+        // when switching between empty days and populated days.
+        itemAnimator = null
     }
 
     override fun receiveViewModel(

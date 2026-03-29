@@ -1,19 +1,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingEnd="16dp"
+    android:paddingEnd="6dp"
     tools:ignore="RtlSymmetry">
 
-    <com.google.android.material.button.MaterialButton android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:iconTint="?attr/colorOnSurfaceVariant"
-        app:iconPadding="0dp"
-        android:padding="0dp"
-        android:minWidth="0dp"
-        app:iconSize="30dp"
-        app:cornerRadius="16dp" />
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/actionButton"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shift_rounds_toolbar_action_circle"
+        android:padding="16dp"
+        android:scaleType="centerInside"
+        android:elevation="4dp"
+        android:tint="@color/shiftRoundsToolbarActionInk"
+        app:srcCompat="@drawable/ic_goto" />
 
 </FrameLayout>

@@ -9,9 +9,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.button.MaterialButton
 import de.nulide.monthyearpicker.MonthYearPickerBuilder
 import de.nulide.monthyearpicker.OnMonthYearSelectedListener
 import de.nulide.shiftcal.R
@@ -45,8 +45,8 @@ class ShiftCalendarFragment : SFragment(),
 
     lateinit var calViewModel: CalViewModel
 
-    private lateinit var goToButton: MaterialButton
-    private lateinit var shareButton: MaterialButton
+    private lateinit var goToButton: View
+    private lateinit var shareButton: View
     private lateinit var switchCalendarViewUseCase: SwitchCalendarViewUseCase
 
     private lateinit var switchCalendarDataUseCase: SwitchCalendarDataUseCase
@@ -124,11 +124,11 @@ class ShiftCalendarFragment : SFragment(),
         shareButton = createMenuItem(menu, R.id.share, R.drawable.ic_share)
     }
 
-    fun createMenuItem(menu: Menu?, itemRes: Int, iconRes: Int): MaterialButton {
+    fun createMenuItem(menu: Menu?, itemRes: Int, iconRes: Int): View {
         val actionView =
             layoutInflater.inflate(R.layout.action_view_menu_item, null) as FrameLayout
-        val actionButton = (actionView.getChildAt(0) as MaterialButton)
-        actionButton.setIconResource(iconRes)
+        val actionButton = actionView.findViewById<AppCompatImageButton>(R.id.actionButton)
+        actionButton.setImageResource(iconRes)
         actionButton.setOnClickListener(this)
         menu?.findItem(itemRes)?.actionView = actionView
         return actionButton
