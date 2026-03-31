@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.view.Gravity
 import android.view.View
@@ -14,8 +15,11 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.CalendarView
 import com.kizitonwose.calendar.view.MonthDayBinder
 import de.nulide.shiftcal.R
+import de.nulide.shiftcal.data.calendar.CalendarSpecialDate
+import de.nulide.shiftcal.data.calendar.CalendarSpecialDateRepository
 import de.nulide.shiftcal.data.repository.SCRepoManager
 import de.nulide.shiftcal.ui.calendar.CalViewModel
+import de.nulide.shiftcal.ui.calendar.specialdate.CalendarSpecialDateUiHelper
 import de.nulide.shiftcal.utils.ColorHelper
 import de.nulide.shiftcal.utils.Runner
 import java.time.LocalDate
@@ -30,6 +34,10 @@ class ShiftMonthDayBinder(
 
     private val today = LocalDate.now()
     private var defaultTextColor = -1
+    private val specialDateRepository = CalendarSpecialDateRepository(
+        context,
+        de.nulide.shiftcal.data.settings.SettingsRepository.getInstance(context)
+    )
 
     override fun bind(container: DayViewContainer, data: CalendarDay) {
         Runner.runCo {
@@ -43,6 +51,7 @@ class ShiftMonthDayBinder(
             container.secondShiftTextView.setTypeface(null, Typeface.NORMAL)
             container.shiftTextView.background = null
             container.secondShiftTextView.background = null
+            clearSpecialDateMarkers(container)
 
             val selectorDrawable =
                 ContextCompat.getDrawable(context, R.drawable.shift_rounds_selected_day_outline)
@@ -134,6 +143,12 @@ class ShiftMonthDayBinder(
                 container.secondShiftTextView.background = null
             }
 
+            applySpecialDateMarkers(
+                container,
+                specialDateRepository.getEntriesOn(data.date),
+                container.dayContainer.background != null
+            )
+
             // Show Box over Today's day
             if (data.date == today) {
                 var layer = arrayOfNulls<Drawable>(2)
@@ -179,21 +194,46 @@ class ShiftMonthDayBinder(
     }
 
     private fun decorateShiftShortName(shift: de.nulide.shiftcal.data.model.Shift): String {
-        return when {
-            shift.customBalanceMinutes == null -> shift.shortName
-            shift.customBalanceMinutes < 0 -> "${shift.shortName}-"
-            else -> shift.shortName
-        }
+        val baseShortName = shift.shortName.trim()
+        return if (baseShortName.length <= 4) baseShortName else baseShortName.take(4)
     }
 
     private fun applyShiftMarker(textView: android.widget.TextView, shift: de.nulide.shiftcal.data.model.Shift) {
-        if (shift.customBalanceMinutes != null && shift.customBalanceMinutes < 0) {
-            textView.setTypeface(null, Typeface.BOLD)
-            val marker = ContextCompat.getDrawable(context, R.drawable.today_box)?.mutate()
-            marker?.alpha = 90
-            textView.background = marker
+        textView.background = null
+    }
+
+    private fun clearSpecialDateMarkers(container: DayViewContainer) {
+        container.specialDateMarkerViews.forEach {
+            it.visibility = View.GONE
+            it.background = null
+        }
+    }
+
+    private fun applySpecialDateMarkers(
+        container: DayViewContainer,
+        specialDates: List<CalendarSpecialDate>,
+        hasShiftBackground: Boolean
+    ) {
+        val uniqueTypes = specialDates.map { it.type }.distinct().take(container.specialDateMarkerViews.size)
+        val strokeColor = if (hasShiftBackground) {
+            context.getColor(R.color.textColorWhite)
         } else {
-            textView.background = null
+            context.getColor(R.color.shiftRoundsPanelStroke)
+        }
+
+        container.specialDateMarkerViews.forEachIndexed { index, view ->
+            val type = uniqueTypes.getOrNull(index)
+            if (type == null) {
+                view.visibility = View.GONE
+                view.background = null
+            } else {
+                view.visibility = View.VISIBLE
+                view.background = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setColor(CalendarSpecialDateUiHelper.getColor(context, type))
+                    setStroke(1, strokeColor)
+                }
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package de.nulide.shiftcal.utils.pdf
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.core.content.FileProvider
 import com.itextpdf.kernel.colors.DeviceRgb
 import de.nulide.shiftcal.data.model.Shift
@@ -42,15 +43,20 @@ class PDFHelper {
 
         fun sharePDF(context: Context) {
             val pdfFile = File(context.cacheDir, PDF_FILE)
-            val uri =
-                FileProvider.getUriForFile(context, context.packageName + ".fileprovider", pdfFile)
+            shareFile(context, pdfFile, "application/pdf")
+        }
 
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.setType("application/pdf")
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        fun shareFile(context: Context, file: File, mimeType: String) {
+            val uri: Uri =
+                FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file)
 
-            context.startActivity(shareIntent)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = mimeType
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            context.startActivity(Intent.createChooser(shareIntent, null))
         }
 
     }

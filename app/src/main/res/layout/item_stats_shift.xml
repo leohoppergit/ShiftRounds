@@ -31,14 +31,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/shiftNameText"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="21sp" />
+        <TextView
+            android:id="@+id/shiftNameText"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/shiftRoundsTitleInk"
+            android:textSize="21sp" />
 
     <TextView
         android:id="@+id/shiftCountText"
@@ -47,5 +48,6 @@
         android:textAlignment="viewEnd"
         android:layout_marginHorizontal="12dp"
         android:ems="2"
+        android:textColor="@color/shiftRoundsMutedInk"
         android:textSize="21sp" />
 </LinearLayout>

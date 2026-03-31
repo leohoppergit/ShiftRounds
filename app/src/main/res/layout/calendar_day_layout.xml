@@ -2,9 +2,9 @@
     android:id="@+id/dayContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="3dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="4dp"
+    android:layout_margin="2dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="3dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -36,27 +36,71 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="3dp"
-        android:layout_marginHorizontal="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginHorizontal="1dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/shiftText"
-            android:singleLine="true"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="6sp"
+            android:autoSizeMaxTextSize="10sp"
+            android:autoSizeStepGranularity="1sp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:textAlignment="center"
             android:textSize="10sp" />
 
         <TextView
             android:id="@+id/secondShiftText"
-            android:singleLine="true"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="6sp"
+            android:autoSizeMaxTextSize="10sp"
+            android:autoSizeStepGranularity="1sp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
             android:textAlignment="center"
             android:textSize="10sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/specialDateMarkerRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/specialDateMarker1"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginHorizontal="1dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/specialDateMarker2"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginHorizontal="1dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/specialDateMarker3"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginHorizontal="1dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

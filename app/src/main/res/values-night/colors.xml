@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="shiftRoundsCanvas">#0D1320</color>
+    <color name="shiftRoundsPanelSurface">#182334</color>
+    <color name="shiftRoundsPanelStroke">#2F455E</color>
+    <color name="shiftRoundsActionSurface">#1A2A3A</color>
+    <color name="shiftRoundsActionInk">#E6F0F5</color>
+    <color name="shiftRoundsToolbarActionSurface">#223548</color>
+    <color name="shiftRoundsToolbarActionStroke">#42627F</color>
+    <color name="shiftRoundsToolbarActionInk">#EEF7FB</color>
+    <color name="shiftRoundsSelection">#7FA9BA</color>
+    <color name="shiftRoundsTitleInk">#F3F8FB</color>
+    <color name="shiftRoundsMutedInk">#B3C2CC</color>
+    <color name="shiftRoundsGlassShadow">#33000000</color>
+    <color name="calendarSpecialDateHoliday">#E8695C</color>
+    <color name="calendarSpecialDateSchoolBreak">#5DA2F0</color>
+    <color name="calendarSpecialDateKindergartenClosure">#E3A04F</color>
+    <color name="calendarSpecialDateCustom">#A57AF0</color>
+
     <color name="spinnerText">@color/textColorWhite</color>
     <color name="textColor">@color/textColorWhite</color>
     <color name="reversedTextColor">@color/textColorBlack</color>
 
-
     <color name="onSurfaceWaterMark">@color/onSurfaceWaterMarkNight</color>
-
 </resources>

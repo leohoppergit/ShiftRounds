@@ -1,0 +1,58 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/shiftRoundsCanvas</item>
+        <item name="colorSurface">@color/shiftRoundsCanvas</item>
+        <item name="colorSurfaceContainerHigh">@color/shiftRoundsPanelSurface</item>
+        <item name="colorSurfaceContainerHighest">@color/shiftRoundsPanelSurface</item>
+        <item name="colorOnSurface">@color/shiftRoundsTitleInk</item>
+        <item name="colorOnSurfaceVariant">@color/shiftRoundsMutedInk</item>
+        <item name="colorPrimary">@color/shiftRoundsTitleInk</item>
+        <item name="colorSecondary">@color/shiftRoundsActionSurface</item>
+        <item name="colorOnSecondary">@color/shiftRoundsActionInk</item>
+        <item name="buttonStyle">@style/ButtonStyle</item>
+        <item name="coordinatorLayoutStyle">@style/ActivityStyle</item>
+        <item name="appBarLayoutStyle">@style/AppBarStyle</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme.WithActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">@color/shiftRoundsCanvas</item>
+        <item name="colorSurface">@color/shiftRoundsCanvas</item>
+        <item name="colorSurfaceContainerHigh">@color/shiftRoundsPanelSurface</item>
+        <item name="colorSurfaceContainerHighest">@color/shiftRoundsPanelSurface</item>
+        <item name="colorOnSurface">@color/shiftRoundsTitleInk</item>
+        <item name="colorOnSurfaceVariant">@color/shiftRoundsMutedInk</item>
+        <item name="colorPrimary">@color/shiftRoundsTitleInk</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+    </style>
+
+    <style name="Text.SectionTitle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/shiftRoundsTitleInk</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="Text.SectionTitleLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textColor">@color/shiftRoundsTitleInk</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/shiftRoundsActionSurface</item>
+        <item name="tint">@color/shiftRoundsActionInk</item>
+    </style>
+
+    <style name="ActivityStyle" parent="Widget.Support.CoordinatorLayout">
+        <item name="background">@color/shiftRoundsCanvas</item>
+    </style>
+
+    <style name="AppBarStyle" parent="Widget.Material3.AppBarLayout">
+        <item name="statusBarBackground">@color/shiftRoundsCanvas</item>
+        <item name="backgroundTint">@color/shiftRoundsCanvas</item>
+    </style>
+
+</resources>

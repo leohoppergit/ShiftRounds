@@ -41,6 +41,11 @@ public class Settings {
     public static final String SWIFTSHIFT_IMPORT_PROMPT_HANDLED = "SWIFTSHIFT_IMPORT_PROMPT_HANDLED";
     public static final String SPECIAL_ACCOUNTS_ENABLED = "SPECIAL_ACCOUNTS_ENABLED";
     public static final String SPECIAL_ACCOUNTS = "SPECIAL_ACCOUNTS";
+    public static final String HOLIDAYS_ENABLED = "HOLIDAYS_ENABLED";
+    public static final String HOLIDAY_REGION = "HOLIDAY_REGION";
+    public static final String CALENDAR_MARKERS = "CALENDAR_MARKERS";
+    public static final String SCHOOL_BREAKS_ENABLED = "SCHOOL_BREAKS_ENABLED";
+    public static final String SCHOOL_BREAK_STATES = "SCHOOL_BREAK_STATES";
 
 
     public Settings() {
@@ -87,6 +92,8 @@ public class Settings {
                 case INTRO_FAB_MENU_EXPLANATION:
                 case SWIFTSHIFT_IMPORT_PROMPT_HANDLED:
                 case SPECIAL_ACCOUNTS_ENABLED:
+                case HOLIDAYS_ENABLED:
+                case SCHOOL_BREAKS_ENABLED:
                     return Boolean.valueOf(false).toString();
                 case ALARM_TONE:
                 case SERVER_SYNC_UUID:
@@ -95,7 +102,11 @@ public class Settings {
                 case SERVER_SYNC_SPECTATOR_UUID:
                 case SERVER_SYNC_SPECTATOR_PW:
                 case SPECIAL_ACCOUNTS:
+                case CALENDAR_MARKERS:
+                case SCHOOL_BREAK_STATES:
                     return "";
+                case HOLIDAY_REGION:
+                    return "AT_NATIONAL";
 
             }
         }

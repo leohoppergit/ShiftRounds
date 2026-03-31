@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/shiftRoundsCanvas"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.stats.StatsFragment">
 
@@ -47,6 +48,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsMutedInk"
                     android:text="@string/stats_time_work_label" />
 
                 <TextView
@@ -55,6 +57,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsTitleInk"
                     android:textAlignment="textEnd" />
 
                 <TextView
@@ -62,6 +65,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsMutedInk"
                     android:text="@string/stats_time_break_label" />
 
                 <TextView
@@ -70,6 +74,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsTitleInk"
                     android:textAlignment="textEnd" />
 
                 <TextView
@@ -78,6 +83,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsMutedInk"
                     android:text="@string/stats_time_overtime_label" />
 
                 <TextView
@@ -86,6 +92,7 @@
                     app:layout_columnWeight="1"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
+                    android:textColor="@color/shiftRoundsTitleInk"
                     android:textAlignment="textEnd" />
 
             </androidx.gridlayout.widget.GridLayout>

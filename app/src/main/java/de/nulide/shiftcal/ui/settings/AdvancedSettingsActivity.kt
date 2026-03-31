@@ -10,22 +10,34 @@ import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.util.Pair
+import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import de.nulide.shiftcal.data.calendar.AustriaSchoolBreakProvider
+import de.nulide.shiftcal.data.calendar.AustriaSchoolBreakUpdateManager
+import de.nulide.shiftcal.data.settings.CalendarMarker
+import de.nulide.shiftcal.data.settings.CalendarMarkerType
+import de.nulide.shiftcal.data.settings.HolidayRegion
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.settings.SpecialAccount
 import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityAdvancedSettingsBinding
+import de.nulide.shiftcal.ui.calendar.specialdate.CalendarSpecialDateUiHelper
 import de.nulide.shiftcal.ui.importer.SwiftShiftImportActivity
 import de.nulide.shiftcal.ui.settings.feature.CalSyncFeature
 import de.nulide.shiftcal.ui.settings.feature.Feature
 import de.nulide.shiftcal.ui.settings.feature.FeatureStateListener
 import de.nulide.shiftcal.utils.permission.PermissionManager
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.text.DateFormatSymbols
 import java.util.LinkedList
 import java.util.UUID
@@ -44,6 +56,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     lateinit var settings: SettingsRepository
 
     private lateinit var calSyncFeature: CalSyncFeature
+    private lateinit var schoolBreakUpdateManager: AustriaSchoolBreakUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +65,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         settings = SettingsRepository.getInstance(this)
+        schoolBreakUpdateManager = AustriaSchoolBreakUpdateManager(this)
 
         val permissionManager = PermissionManager(this)
 
@@ -95,6 +109,21 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.swiftShiftImportButton.setOnClickListener(this)
         binding.specialAccountsSwitch.setOnCheckedChangeListener(this)
         binding.addSpecialAccountButton.setOnClickListener(this)
+        binding.holidaySwitch.setOnCheckedChangeListener(this)
+        binding.schoolBreaksSwitch.setOnCheckedChangeListener(this)
+        binding.addCalendarMarkerButton.setOnClickListener(this)
+        binding.selectSchoolBreakStatesButton.setOnClickListener(this)
+        binding.updateSchoolBreaksButton.setOnClickListener(this)
+
+        val holidayRegions = listOf(getString(R.string.settings_holiday_region_austria))
+        val holidayRegionAdapter = ArrayAdapter(
+            applicationContext,
+            R.layout.item_spinner,
+            holidayRegions
+        )
+        binding.holidayRegionSpinner.setAdapter(holidayRegionAdapter)
+        binding.holidayRegionSpinner.setText(holidayRegions.first(), false)
+        binding.holidayRegionSpinner.onItemClickListener = this
 
     }
 
@@ -133,6 +162,11 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         } else if (buttonView == binding.specialAccountsSwitch) {
             settings.set(Settings.SPECIAL_ACCOUNTS_ENABLED, isChecked)
             updateSpecialAccountsUi()
+        } else if (buttonView == binding.holidaySwitch) {
+            settings.set(Settings.HOLIDAYS_ENABLED, isChecked)
+        } else if (buttonView == binding.schoolBreaksSwitch) {
+            settings.set(Settings.SCHOOL_BREAKS_ENABLED, isChecked)
+            updateSchoolBreakStatesSummary()
         }
     }
 
@@ -141,6 +175,12 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             startActivity(Intent(this, SwiftShiftImportActivity::class.java))
         } else if (v == binding.addSpecialAccountButton) {
             showSpecialAccountDialog(null)
+        } else if (v == binding.addCalendarMarkerButton) {
+            showCalendarMarkerRangePicker(null)
+        } else if (v == binding.selectSchoolBreakStatesButton) {
+            showSchoolBreakStatesDialog()
+        } else if (v == binding.updateSchoolBreaksButton) {
+            showSchoolBreakUpdatePreparedDialog()
         }
     }
 
@@ -162,6 +202,18 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
         binding.specialAccountsSwitch.isChecked = settings.getBoolean(Settings.SPECIAL_ACCOUNTS_ENABLED)
         updateSpecialAccountsUi()
+
+        binding.holidaySwitch.isChecked = settings.getBoolean(Settings.HOLIDAYS_ENABLED)
+        binding.schoolBreaksSwitch.isChecked = settings.getBoolean(Settings.SCHOOL_BREAKS_ENABLED)
+        binding.holidayRegionSpinner.setText(
+            when (settings.getHolidayRegion()) {
+                HolidayRegion.AUSTRIA_NATIONAL -> getString(R.string.settings_holiday_region_austria)
+                else -> getString(R.string.settings_holiday_region_austria)
+            },
+            false
+        )
+        updateSchoolBreakStatesSummary()
+        updateCalendarMarkersUi()
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -169,6 +221,8 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             if (!settings.has(Settings.START_OF_WEEK) || settings.getInt(Settings.START_OF_WEEK) != position) {
                 settings.set(Settings.START_OF_WEEK, position)
             }
+        } else if (parent?.adapter == binding.holidayRegionSpinner.adapter) {
+            settings.set(Settings.HOLIDAY_REGION, HolidayRegion.AUSTRIA_NATIONAL)
         }
     }
 
@@ -238,6 +292,193 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private fun updateCalendarMarkersUi() {
+        val markers = settings.getCalendarMarkers()
+        binding.calendarMarkersEmptyText.visibility = if (markers.isEmpty()) View.VISIBLE else View.GONE
+        binding.calendarMarkersList.removeAllViews()
+
+        val inflater = LayoutInflater.from(this)
+        markers.sortedWith(compareBy<CalendarMarker>({ it.startDate }, { it.name })).forEach { marker ->
+            val row = inflater.inflate(R.layout.item_calendar_marker, binding.calendarMarkersList, false)
+            row.findViewById<View>(R.id.calendarMarkerColorDot).backgroundTintList =
+                android.content.res.ColorStateList.valueOf(CalendarSpecialDateUiHelper.getColor(this, marker.type))
+            row.findViewById<TextView>(R.id.calendarMarkerNameText).text = marker.name
+            row.findViewById<TextView>(R.id.calendarMarkerMetaText).text =
+                "${CalendarSpecialDateUiHelper.getTypeLabel(this, marker.type)} • ${formatMarkerRange(marker)}"
+            row.findViewById<ImageButton>(R.id.editCalendarMarkerButton).setOnClickListener {
+                showCalendarMarkerRangePicker(marker)
+            }
+            row.findViewById<ImageButton>(R.id.deleteCalendarMarkerButton).setOnClickListener {
+                deleteCalendarMarker(marker)
+            }
+            binding.calendarMarkersList.addView(row)
+        }
+    }
+
+    private fun showSchoolBreakStatesDialog() {
+        val states = AustriaSchoolBreakProvider.states
+        val labels = states.map { it.label }.toTypedArray()
+        val currentSelection = settings.getSchoolBreakStates()
+        val checkedItems = states.map { currentSelection.contains(it.code) }.toBooleanArray()
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.settings_school_break_states_select)
+            .setMultiChoiceItems(labels, checkedItems) { _, which, isChecked ->
+                checkedItems[which] = isChecked
+            }
+            .setPositiveButton(R.string.save) { _, _ ->
+                val selectedStates = states
+                    .filterIndexed { index, _ -> checkedItems[index] }
+                    .map { it.code }
+                    .toSet()
+                settings.setSchoolBreakStates(selectedStates)
+                updateSchoolBreakStatesSummary()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun updateSchoolBreakStatesSummary() {
+        val selected = settings.getSchoolBreakStates()
+        val labels = AustriaSchoolBreakProvider.states
+            .filter { selected.contains(it.code) }
+            .map { it.label }
+        binding.schoolBreakStatesSummaryText.text = if (labels.isEmpty()) {
+            getString(R.string.settings_school_break_states_empty)
+        } else {
+            labels.joinToString(", ")
+        }
+        val enabled = binding.schoolBreaksSwitch.isChecked
+        binding.schoolBreakStatesSummaryText.alpha = if (enabled) 1f else 0.55f
+        binding.selectSchoolBreakStatesButton.isEnabled = enabled
+        binding.updateSchoolBreaksButton.alpha = if (enabled) 1f else 0.55f
+        binding.schoolBreakDataSourceText.alpha = if (enabled) 1f else 0.55f
+        binding.schoolBreakDataSourceText.text = schoolBreakUpdateManager.getDataSourceSummary()
+    }
+
+    private fun showSchoolBreakUpdatePreparedDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.settings_school_break_update)
+            .setMessage(schoolBreakUpdateManager.getPreparedUpdateSummary())
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
+    private fun showCalendarMarkerRangePicker(existingMarker: CalendarMarker?) {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(
+                if (existingMarker == null) R.string.settings_calendar_marker_range_add
+                else R.string.settings_calendar_marker_range_edit
+            )
+            .apply {
+                val start = existingMarker?.startDate?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+                val end = existingMarker?.endDate?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+                if (start != null && end != null) {
+                    val zone = ZoneId.systemDefault()
+                    setSelection(
+                        Pair(
+                            start.atStartOfDay(zone).toInstant().toEpochMilli(),
+                            end.atStartOfDay(zone).toInstant().toEpochMilli()
+                        )
+                    )
+                }
+            }
+            .build()
+
+        picker.addOnPositiveButtonClickListener { selection ->
+            val startMillis = selection.first
+            val endMillis = selection.second
+            if (startMillis == null || endMillis == null) return@addOnPositiveButtonClickListener
+            val zone = ZoneId.systemDefault()
+            val start = Instant.ofEpochMilli(startMillis).atZone(zone).toLocalDate()
+            val end = Instant.ofEpochMilli(endMillis).atZone(zone).toLocalDate()
+            if (end.isBefore(start)) return@addOnPositiveButtonClickListener
+            showCalendarMarkerDetailsDialog(existingMarker, start, end)
+        }
+
+        picker.show(supportFragmentManager, "calendar-marker-range")
+    }
+
+    private fun showCalendarMarkerDetailsDialog(existingMarker: CalendarMarker?, start: LocalDate, end: LocalDate) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_calendar_marker, null)
+        val nameEdit = dialogView.findViewById<EditText>(R.id.calendarMarkerNameEdit)
+        val typeSpinner = dialogView.findViewById<android.widget.AutoCompleteTextView>(R.id.calendarMarkerTypeSpinner)
+        val rangeText = dialogView.findViewById<TextView>(R.id.calendarMarkerRangeText)
+
+        val typeOptions = listOf(
+            CalendarMarkerType.SCHOOL_BREAK to getString(R.string.calendar_special_date_type_school_break),
+            CalendarMarkerType.KINDERGARTEN_CLOSURE to getString(R.string.calendar_special_date_type_kindergarten_closure),
+            CalendarMarkerType.CUSTOM to getString(R.string.calendar_special_date_type_custom)
+        )
+
+        nameEdit.setText(existingMarker?.name.orEmpty())
+        nameEdit.hint = getString(R.string.settings_calendar_marker_name_hint)
+        rangeText.text = CalendarSpecialDateUiHelper.formatRange(start, end)
+
+        val typeAdapter = ArrayAdapter(
+            this,
+            R.layout.item_spinner,
+            typeOptions.map { it.second }
+        )
+        typeSpinner.setAdapter(typeAdapter)
+        val selectedIndex = typeOptions.indexOfFirst { it.first == existingMarker?.type }.takeIf { it >= 0 } ?: 0
+        typeSpinner.setText(typeOptions[selectedIndex].second, false)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(if (existingMarker == null) R.string.settings_calendar_marker_add else R.string.settings_calendar_marker_edit)
+            .setView(dialogView)
+            .setPositiveButton(R.string.save) { _, _ ->
+                val name = nameEdit.text.toString().trim()
+                if (name.isEmpty()) return@setPositiveButton
+
+                val chosenType = typeOptions.firstOrNull { it.second == typeSpinner.text.toString() }?.first
+                    ?: CalendarMarkerType.CUSTOM
+
+                val markers = settings.getCalendarMarkers().toMutableList()
+                val marker = CalendarMarker(
+                    id = existingMarker?.id ?: UUID.randomUUID().toString(),
+                    name = name,
+                    type = chosenType,
+                    startDate = start.toString(),
+                    endDate = end.toString()
+                )
+                if (existingMarker == null) {
+                    markers.add(marker)
+                } else {
+                    val index = markers.indexOfFirst { it.id == existingMarker.id }
+                    if (index >= 0) {
+                        markers[index] = marker
+                    }
+                }
+                settings.setCalendarMarkers(markers)
+                updateCalendarMarkersUi()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun deleteCalendarMarker(marker: CalendarMarker) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.settings_calendar_marker_delete)
+            .setMessage(getString(R.string.settings_calendar_marker_delete_message, marker.name))
+            .setPositiveButton(R.string.delete) { _, _ ->
+                settings.setCalendarMarkers(settings.getCalendarMarkers().filter { it.id != marker.id })
+                updateCalendarMarkersUi()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun formatMarkerRange(marker: CalendarMarker): String {
+        val start = runCatching { LocalDate.parse(marker.startDate) }.getOrNull()
+        val end = runCatching { LocalDate.parse(marker.endDate) }.getOrNull()
+        return if (start != null && end != null) {
+            CalendarSpecialDateUiHelper.formatRange(start, end)
+        } else {
+            ""
+        }
     }
 
 }

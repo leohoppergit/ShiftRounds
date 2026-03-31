@@ -1,6 +1,7 @@
 package de.nulide.shiftcal.ui.calendar.comp.list
 
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -11,6 +12,7 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
@@ -58,10 +60,15 @@ class ShiftInfoBoxViewHolder(
             this.wday = wday
             val shift = wday.shift
             val isEditable = wday.wday.calendarId == sc.calendar.getLocal()
+            val isNightMode =
+                (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            val displayShiftColor =
+                if (isNightMode) ColorUtils.blendARGB(shift.color, android.graphics.Color.BLACK, 0.18f)
+                else shift.color
 
             val newBackground =
                 ContextCompat.getDrawable(context, R.drawable.shift_rounds_shift_card)?.mutate()
-            newBackground?.setTint(shift.color)
+            newBackground?.setTint(displayShiftColor)
             shiftInfoBox.background = newBackground
 
             val today = LocalDate.now()
@@ -74,11 +81,11 @@ class ShiftInfoBoxViewHolder(
                 val layer = arrayOfNulls<Drawable>(2)
                 val secondBackground =
                     ContextCompat.getDrawable(context, R.drawable.shift_rounds_loading_box)?.mutate()
-                if (ColorHelper.isTooBright(shift.color)) {
-                    newBackground?.setTint(ColorHelper.brightenColor(shift.color))
-                    secondBackground?.setTint(shift.color)
+                if (ColorHelper.isTooBright(displayShiftColor)) {
+                    newBackground?.setTint(ColorHelper.brightenColor(displayShiftColor))
+                    secondBackground?.setTint(displayShiftColor)
                 } else {
-                    secondBackground?.setTint(ColorHelper.darkenColor(shift.color))
+                    secondBackground?.setTint(ColorHelper.darkenColor(displayShiftColor))
                 }
                 secondBackground?.setLevel((wday.amountFinished * 10000).toInt())
                 layer[0] = newBackground
@@ -86,7 +93,7 @@ class ShiftInfoBoxViewHolder(
                 shiftInfoBox.background = LayerDrawable(layer)
             }
             iconHolder.removeAllViewsInLayout()
-            if (ColorHelper.isTooBright(shift.color)) {
+            if (ColorHelper.isTooBright(displayShiftColor)) {
                 val black = ContextCompat.getColor(context, R.color.textColorBlack)
                 shiftNameText.setTextColor(black)
                 startTimeText.setTextColor(black)

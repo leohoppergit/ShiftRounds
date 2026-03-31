@@ -16,6 +16,11 @@ class DayViewContainer(view: View) : ViewContainer(view) {
     val secondDigitDayTextView = view.findViewById<TextView>(R.id.secondDigitCalendarDayText)
     val shiftTextView = view.findViewById<TextView>(R.id.shiftText)
     val secondShiftTextView = view.findViewById<TextView>(R.id.secondShiftText)
+    val specialDateMarkerViews = listOf(
+        view.findViewById<View>(R.id.specialDateMarker1),
+        view.findViewById<View>(R.id.specialDateMarker2),
+        view.findViewById<View>(R.id.specialDateMarker3)
+    )
 
     lateinit var calViewModel: CalViewModel
     private var onDayClickedListeners = LinkedList<OnDayClickedListener>()

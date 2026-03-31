@@ -12,11 +12,14 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.monthyearpicker.MonthYearPickerBuilder
 import de.nulide.monthyearpicker.OnMonthYearSelectedListener
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.factory.TimeFactory
 import de.nulide.shiftcal.data.repository.SCRepoManager
+import de.nulide.shiftcal.data.repository.wrapper.WorkDayDTO
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.FragmentShiftCalendarBinding
 import de.nulide.shiftcal.ui.calendar.comp.helper.ViewModelReceiver
@@ -28,9 +31,14 @@ import de.nulide.shiftcal.utils.Runner
 import de.nulide.shiftcal.utils.Snack
 import de.nulide.shiftcal.utils.pdf.PDFCreator
 import de.nulide.shiftcal.utils.pdf.PDFHelper
+import de.nulide.shiftcal.ui.settings.export.CalendarIcsExporter
+import de.nulide.shiftcal.ui.settings.export.ExportFileNameHelper
+import java.io.File
+import java.time.Instant
 import java.text.DateFormatSymbols
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 
 
 class ShiftCalendarFragment : SFragment(),
@@ -50,8 +58,6 @@ class ShiftCalendarFragment : SFragment(),
     private lateinit var switchCalendarViewUseCase: SwitchCalendarViewUseCase
 
     private lateinit var switchCalendarDataUseCase: SwitchCalendarDataUseCase
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -166,11 +172,7 @@ class ShiftCalendarFragment : SFragment(),
     override fun onClick(v: View?) {
         when (v) {
             shareButton -> {
-                if (PDFCreator.convertMonthToPDF(ctx, sc, calViewModel.getCurrentMonth())) {
-                    PDFHelper.sharePDF(ctx)
-                } else {
-                    Snack.not(binding.root, getString(R.string.pdf_no_calendar))
-                }
+                showShareScopeDialog()
             }
 
             goToButton -> {
@@ -194,6 +196,147 @@ class ShiftCalendarFragment : SFragment(),
             scrollToDate = date
         }
         calViewModel.trigger(calViewModel.scrollTo, scrollToDate)
+    }
+
+    private fun showShareScopeDialog() {
+        val options = arrayOf(
+            getString(R.string.share_calendar_scope_current_month),
+            getString(R.string.export_calendar_scope_all),
+            getString(R.string.export_calendar_scope_month),
+            getString(R.string.export_calendar_scope_range)
+        )
+        MaterialAlertDialogBuilder(ctx)
+            .setTitle(R.string.share_calendar_scope_title)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showShareFormatDialog(
+                        ShareScope(
+                            start = calViewModel.getCurrentMonth().atDay(1),
+                            end = calViewModel.getCurrentMonth().atEndOfMonth()
+                        )
+                    )
+                    1 -> {
+                        val allWorkDays = sc.workDays.getAll()
+                        if (allWorkDays.isEmpty()) {
+                            Snack.not(binding.root, getString(R.string.pdf_no_calendar))
+                        } else {
+                            showShareFormatDialog(
+                                ShareScope(
+                                    start = allWorkDays.minOf { it.day },
+                                    end = allWorkDays.maxOf { it.day }
+                                )
+                            )
+                        }
+                    }
+                    2 -> showShareMonthPicker()
+                    3 -> showShareRangePicker()
+                }
+            }
+            .show()
+    }
+
+    private fun showShareMonthPicker() {
+        val picker = MonthYearPickerBuilder(ctx)
+        picker.setYearRange(
+            calViewModel.getOldestMonth().year,
+            calViewModel.getNewestMonth().year,
+            true
+        )
+        picker.setOnMonthYearSelectedListener(object : OnMonthYearSelectedListener {
+            override fun onMonthYearSelected(yearMonth: YearMonth) {
+                showShareFormatDialog(
+                    ShareScope(
+                        start = yearMonth.atDay(1),
+                        end = yearMonth.atEndOfMonth()
+                    )
+                )
+            }
+        })
+        picker.show()
+    }
+
+    private fun showShareRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(R.string.export_calendar_scope_range)
+            .build()
+        picker.addOnPositiveButtonClickListener { selection ->
+            val startMillis = selection.first
+            val endMillis = selection.second
+            if (startMillis == null || endMillis == null) {
+                Snack.not(binding.root, getString(R.string.export_range_invalid))
+                return@addOnPositiveButtonClickListener
+            }
+            val start = Instant.ofEpochMilli(startMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+            val end = Instant.ofEpochMilli(endMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+            if (end.isBefore(start)) {
+                Snack.not(binding.root, getString(R.string.export_range_invalid))
+                return@addOnPositiveButtonClickListener
+            }
+            showShareFormatDialog(ShareScope(start, end))
+        }
+        picker.show(parentFragmentManager, "share-range")
+    }
+
+    private fun showShareFormatDialog(scope: ShareScope) {
+        val options = arrayOf(
+            getString(R.string.share_calendar_format_pdf),
+            getString(R.string.share_calendar_format_ics)
+        )
+        MaterialAlertDialogBuilder(ctx)
+            .setTitle(R.string.share_calendar_format_title)
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> shareCalendarAsPdf(scope)
+                    1 -> shareCalendarAsIcs(scope)
+                }
+            }
+            .show()
+    }
+
+    private fun shareCalendarAsPdf(scope: ShareScope) {
+        if (PDFCreator.convertRangeToPDF(ctx, sc, scope.start, scope.end)) {
+            val pdfSource = File(ctx.cacheDir, PDFHelper.PDF_FILE)
+            val pdfTarget = File(ctx.cacheDir, buildShareCalendarFileName(scope, "pdf"))
+            pdfSource.copyTo(pdfTarget, overwrite = true)
+            PDFHelper.shareFile(ctx, pdfTarget, "application/pdf")
+        } else {
+            Snack.not(binding.root, getString(R.string.pdf_no_calendar))
+        }
+    }
+
+    private fun shareCalendarAsIcs(scope: ShareScope) {
+        val workDays = sc.workDays.getAll().filter { !it.day.isBefore(scope.start) && !it.day.isAfter(scope.end) }
+        if (workDays.isEmpty()) {
+            Snack.not(binding.root, getString(R.string.pdf_no_calendar))
+            return
+        }
+        val events = workDays
+            .map { workDay -> WorkDayDTO(workDay, sc.shifts.get(workDay.shiftId)) }
+            .sortedWith(
+                compareBy<WorkDayDTO>(
+                    { it.wday.day },
+                    { it.shift.startTime.timeInMinutes },
+                    { it.shift.endDayOffset },
+                    { it.shift.endTime.timeInMinutes },
+                    { it.shift.id }
+                )
+            )
+
+        val icsContent = CalendarIcsExporter.create(ctx, events)
+        val fileName = buildShareCalendarFileName(scope, "ics")
+        val targetFile = File(ctx.cacheDir, fileName)
+        targetFile.writeText(icsContent)
+        PDFHelper.shareFile(ctx, targetFile, "text/calendar")
+    }
+
+    private fun buildShareCalendarFileName(scope: ShareScope, extension: String): String {
+        val workDays = sc.workDays.getAll()
+        val fullRange: ClosedRange<LocalDate>? = if (workDays.isEmpty()) {
+            null
+        } else {
+            workDays.minOf { it.day }..workDays.maxOf { it.day }
+        }
+        return ExportFileNameHelper.calendarFile(scope.start, scope.end, extension, fullRange)
     }
 
     override fun backPressed(): Boolean {
@@ -226,4 +369,8 @@ class ShiftCalendarFragment : SFragment(),
         }
     }
 
+    private data class ShareScope(
+        val start: LocalDate,
+        val end: LocalDate
+    )
 }

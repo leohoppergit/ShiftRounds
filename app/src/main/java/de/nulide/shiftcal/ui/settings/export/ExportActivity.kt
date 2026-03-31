@@ -24,9 +24,9 @@ import de.nulide.shiftcal.databinding.ActivityExportBinding
 import java.io.OutputStreamWriter
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
 
@@ -100,10 +100,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         )
         queueExport(
             mimeType = "application/json",
-            fileName = getString(
-                R.string.export_file_settings,
-                timestampForFileName()
-            ),
+            fileName = ExportFileNameHelper.settingsJson(LocalDateTime.now()),
             content = JIO.toJSON(payload)
         )
     }
@@ -116,10 +113,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         )
         queueExport(
             mimeType = "application/json",
-            fileName = getString(
-                R.string.export_file_shifts,
-                timestampForFileName()
-            ),
+            fileName = ExportFileNameHelper.shiftsJson(LocalDateTime.now()),
             content = JIO.toJSON(payload)
         )
     }
@@ -132,10 +126,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         )
         queueExport(
             mimeType = "application/json",
-            fileName = getString(
-                R.string.export_file_backup,
-                timestampForFileName()
-            ),
+            fileName = ExportFileNameHelper.backupJson(LocalDateTime.now()),
             content = JIO.toJSON(payload)
         )
     }
@@ -183,7 +174,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         }
         val start = workDays.minOf { it.day }
         val end = workDays.maxOf { it.day }
-        exportCalendarRange(start, end, getString(R.string.export_file_calendar_all))
+        exportCalendarRange(start, end, ExportFileNameHelper.calendarFile(start, end, "ics", start..end))
     }
 
     private fun showMonthPicker() {
@@ -198,7 +189,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         exportCalendarRange(
             yearMonth.atDay(1),
             yearMonth.atEndOfMonth(),
-            getString(R.string.export_file_calendar_month, yearMonth.year.toString(), yearMonth.monthValue)
+            ExportFileNameHelper.calendarFile(yearMonth.atDay(1), yearMonth.atEndOfMonth(), "ics")
         )
     }
 
@@ -222,7 +213,7 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
             exportCalendarRange(
                 start,
                 end,
-                getString(R.string.export_file_calendar_range, start.toString(), end.toString())
+                ExportFileNameHelper.calendarFile(start, end, "ics")
             )
         }
         picker.show(supportFragmentManager, "export-range")
@@ -288,7 +279,4 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         }
     }
 
-    private fun timestampForFileName(): String {
-        return DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").format(java.time.LocalDateTime.now())
-    }
 }

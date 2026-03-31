@@ -101,4 +101,37 @@ class SettingsRepository private constructor(private val context: Context) {
         }
         return getSpecialAccounts().firstOrNull { it.id == accountId }
     }
+
+    fun getHolidayRegion(): String {
+        return get(Settings.HOLIDAY_REGION).ifBlank { HolidayRegion.AUSTRIA_NATIONAL }
+    }
+
+    fun getCalendarMarkers(): List<CalendarMarker> {
+        val json = get(Settings.CALENDAR_MARKERS)
+        if (json.isBlank()) {
+            return emptyList()
+        }
+        return try {
+            JIO.getObjectMapper().readerForListOf(CalendarMarker::class.java).readValue(json)
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    fun setCalendarMarkers(markers: List<CalendarMarker>) {
+        set(Settings.CALENDAR_MARKERS, JIO.toJSON(markers))
+    }
+
+    fun getSchoolBreakStates(): Set<String> {
+        val raw = get(Settings.SCHOOL_BREAK_STATES)
+        if (raw.isBlank()) return emptySet()
+        return raw.split(",")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .toSet()
+    }
+
+    fun setSchoolBreakStates(states: Set<String>) {
+        set(Settings.SCHOOL_BREAK_STATES, states.sorted().joinToString(","))
+    }
 }

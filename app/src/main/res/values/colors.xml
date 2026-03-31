@@ -34,5 +34,9 @@
     <color name="shiftRoundsTitleInk">#213433</color>
     <color name="shiftRoundsMutedInk">#6E7877</color>
     <color name="shiftRoundsGlassShadow">#140C1620</color>
+    <color name="calendarSpecialDateHoliday">#D94C3D</color>
+    <color name="calendarSpecialDateSchoolBreak">#3D84D9</color>
+    <color name="calendarSpecialDateKindergartenClosure">#D98A33</color>
+    <color name="calendarSpecialDateCustom">#8A59D6</color>
 
 </resources>

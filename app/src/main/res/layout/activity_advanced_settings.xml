@@ -118,6 +118,108 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:text="@string/settings_special_dates_title" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_special_dates_description" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/holidaySwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_holidays_enable" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/schoolBreaksSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_school_breaks_enable" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/holidayRegionSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/schoolBreakStatesSummaryText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_school_break_states_empty" />
+
+                <TextView
+                    android:id="@+id/schoolBreakDataSourceText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/selectSchoolBreakStatesButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_school_break_states_select" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/updateSchoolBreaksButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_school_break_update" />
+
+                <TextView
+                    android:id="@+id/calendarMarkersEmptyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_calendar_markers_empty" />
+
+                <LinearLayout
+                    android:id="@+id/calendarMarkersList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addCalendarMarkerButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="@string/settings_calendar_markers_add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/calendar_box"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    style="@style/Text.SectionTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/settings_special_accounts_title" />
 
                 <TextView
