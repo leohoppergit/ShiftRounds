@@ -1,28 +1,51 @@
 # ShiftRounds
 
-A privately maintained shift calendar fork based on ShiftCal / ShiftSwift by Nulide.
+<p align="center">
+  <img src="release-assets/rendered/shiftrounds-icon-1.0.0.png" alt="ShiftRounds Icon" width="128" />
+</p>
+
+<p align="center">
+  <a href="https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/leohoppergit/ShiftRounds">
+    <img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="54" />
+  </a>
+</p>
+
+ShiftRounds is a privately maintained shift calendar app based on ShiftCal / ShiftSwift by Nulide.
 
 ## Credit
 
-ShiftRounds is based on the original ShiftCal / ShiftSwift project by Nulide.
-Original concept and foundation by Nulide.
+Original concept and core foundation remain fully credited to [Nulide / ShiftCal](https://github.com/Nulide/ShiftCal).
 
-## Fork Notes
+ShiftRounds continues that base as a separately maintained app line with its own UI, release cycle, and feature direction.
 
-- This fork is intended as a personally maintained version.
-- The app id of this fork is `app.shiftrounds.android`.
-- Alarm functionality has been removed in this fork.
+## Current App Identity
+
+- Package name: `app.shiftrounds.android`
+- Current standalone version line: `1.x.x`
+- First standalone release: `1.0.0`
 
 ## Features
 
-- Create your Shifts
-- Add multiple shifts at once
-- Synchronize with other people
-- Personalize the calendar
-- Enable DoNotDisturb while working
-- See your shifts in your local calendar
-- Add day notes and time adjustments
-- Support shifts longer than 24 hours
+- Create, edit, archive, duplicate, and reorder your shifts
+- Assign shifts directly in the calendar
+- Add day notes, monthly notes, overtime, and "left early" adjustments
+- Optional overtime multiplier for manually entered overtime
+- Configurable special accounts tracked separately from normal work time
+- Local calendar export and sharing as PDF or ICS
+- Full backup and restore of settings, shifts, notes, and calendar entries
+- Austrian public holidays in the calendar
+- Austrian school holidays by selected federal states
+- Custom date markers for school breaks, kindergarten closures, and personal ranges
+- Dark mode with the same core design language as the day theme
+- Support for shifts longer than 24 hours
+
+## Privacy / Data Handling
+
+- No internet permission is currently required for the shipped app
+- No cloud sync or remote telemetry is active
+- Android system auto-backup is disabled
+- Export, restore, and sharing are handled locally on-device
+- Optional school holiday online update infrastructure exists in code, but is not active in the shipped app
 
 ## Release Signing
 
@@ -35,18 +58,19 @@ If `keystore.properties` is missing, release builds fall back to the debug key. 
 
 ## Versioning
 
-This fork uses its own versioning scheme:
+ShiftRounds now uses its own standalone versioning scheme:
 
-- `versionName`: `3.0.1-shiftrounds.6`
-- `versionCode`: `3001006`
+- `versionName`: `1.0.0`
+- `versionCode`: `10000000`
 
 Recommended pattern:
 
-- `3.0.1-shiftrounds.1` -> `3001001`
-- `3.0.1-shiftrounds.2` -> `3001002`
-- `3.0.2-shiftrounds.1` -> `3002001`
+- `1.0.0` -> `10000000`
+- `1.0.1` -> `10000001`
+- `1.1.0` -> `10100000`
+- `2.0.0` -> `20000000`
 
-Rule:
+Rules:
 
 - Always increase `versionCode`
 - Keep `versionName` human-readable
@@ -63,19 +87,19 @@ The easiest update path is GitHub Releases:
 
 Recommended release tag format:
 
-- `v3.0.1-shiftrounds.1`
-- `v3.0.1-shiftrounds.2`
+- `v1.0.0`
+- `v1.0.1`
 
 Recommended GitHub Release title:
 
-- `ShiftRounds 3.0.1-shiftrounds.1`
+- `ShiftRounds 1.0.0`
 
 Recommended asset:
 
 - `app-prod-release.apk`
 
-Suggested release notes template:
+## Development Notes
 
-- `ShiftRounds private fork release`
-- `Based on ShiftCal / ShiftSwift by Nulide`
-- `Main changes in this release: ...`
+- `prod` is the main release flavor
+- The app is intended to stay focused, offline-friendly, and practical in everyday use
+- Cleanup of legacy code and dead UI paths is an active maintenance goal
