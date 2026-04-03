@@ -3,6 +3,4 @@
     <color name="onSurfaceWaterMark">@color/material_dynamic_neutral50</color>
     <color name="onSurfaceWaterMarkNight">@color/material_dynamic_neutral60</color>
 
-    <color name="alarmRippleColor">@color/material_dynamic_primary50</color>
-
 </resources>

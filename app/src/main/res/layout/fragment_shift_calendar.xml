@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/shiftRoundsCanvas"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.calendar.ShiftCalendarFragment">
 
@@ -20,7 +19,6 @@
             android:id="@+id/shiftCalendarContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/shiftRoundsCanvas"
             android:orientation="vertical">
 
             <androidx.core.widget.NestedScrollView
@@ -30,57 +28,51 @@
                 android:fillViewport="true">
 
                 <LinearLayout
+                    android:id="@+id/tabletSplit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="16dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/tabletSplit"
+                    <de.nulide.shiftcal.ui.calendar.comp.MonthCal
+                        android:id="@+id/monthCal"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <de.nulide.shiftcal.ui.calendar.comp.WeekCal
+                        android:id="@+id/weekCal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/infos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="4dp"
                         android:orientation="vertical">
 
-                        <de.nulide.shiftcal.ui.calendar.comp.MonthCal
-                            android:id="@+id/monthCal"
+                        <de.nulide.shiftcal.ui.calendar.comp.MonthNoteBox
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                        <de.nulide.shiftcal.ui.calendar.comp.WeekCal
-                            android:id="@+id/weekCal"
+                        <de.nulide.shiftcal.ui.calendar.comp.CalendarSpecialDateBox
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:visibility="gone" />
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="8dp"
+                            android:visibility="gone"
+                            app:cardBackgroundColor="@color/shiftRoundsPanelSurface"
+                            app:strokeColor="@color/shiftRoundsPanelStroke"
+                            app:strokeWidth="1dp"
+                            app:cardCornerRadius="28dp" />
 
-                        <LinearLayout
-                            android:id="@+id/infos"
+                        <de.nulide.shiftcal.ui.calendar.comp.ShiftInfoBox
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="4dp"
-                            android:orientation="vertical">
+                            android:layout_height="wrap_content" />
 
-                            <de.nulide.shiftcal.ui.calendar.comp.MonthNoteBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                            <de.nulide.shiftcal.ui.calendar.comp.CalendarSpecialDateBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="16dp"
-                                android:layout_marginTop="4dp"
-                                android:layout_marginBottom="8dp"
-                                android:visibility="gone"
-                                app:cardBackgroundColor="@color/shiftRoundsPanelSurface"
-                                app:strokeColor="@color/shiftRoundsPanelStroke"
-                                app:strokeWidth="1dp"
-                                app:cardCornerRadius="28dp" />
-
-                            <de.nulide.shiftcal.ui.calendar.comp.ShiftInfoBox
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>

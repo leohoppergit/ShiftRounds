@@ -11,10 +11,10 @@
             a34,34 0 1,1 0,-68"
         android:trimPathStart="0"
         android:trimPathEnd="0.846"
-        android:strokeColor="@android:color/black"
+        android:strokeColor="#F1FDFF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="8" />
+        android:strokeWidth="6" />
 
     <path
         android:fillColor="#00000000"
@@ -23,10 +23,10 @@
             a22,22 0 1,1 0,-44"
         android:trimPathStart="0"
         android:trimPathEnd="0.82"
-        android:strokeColor="@android:color/black"
+        android:strokeColor="#A7D9FF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="7" />
+        android:strokeWidth="5" />
 
     <path
         android:fillColor="#00000000"
@@ -35,9 +35,9 @@
             a14,14 0 1,1 0,-28"
         android:trimPathStart="0"
         android:trimPathEnd="0.774"
-        android:strokeColor="@android:color/black"
+        android:strokeColor="#D4C6FF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="7" />
+        android:strokeWidth="5" />
 
 </vector>

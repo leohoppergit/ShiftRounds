@@ -3,13 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingVertical="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginVertical="4dp">
 
         <TextView
@@ -18,15 +20,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLength="4"
-            android:ems="4"
-            android:textSize="24sp"
+            android:ems="3"
+            android:minWidth="54dp"
+            android:textSize="18sp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textAlignment="center"
-            android:paddingVertical="14dp"
+            android:paddingVertical="10dp"
             android:textStyle="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -37,17 +40,19 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
+            android:gravity="start|center_vertical"
             android:textColor="@color/shiftRoundsTitleInk"
-            android:textSize="21sp" />
+            android:textSize="18sp" />
 
     <TextView
         android:id="@+id/shiftCountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="viewEnd"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
         android:ems="2"
         android:textColor="@color/shiftRoundsMutedInk"
-        android:textSize="21sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 </LinearLayout>

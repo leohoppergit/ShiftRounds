@@ -22,7 +22,11 @@ class UserNameRowHelper(val context: Context, binding: CompWeekShiftCalBinding) 
         val weekDayName = binding.root.findViewById<LinearLayout>(R.id.weekTitlesContainer)
 
         val dummyView =
-            LayoutInflater.from(context).inflate(R.layout.calendar_week_day_layout, null)
+            LayoutInflater.from(context).inflate(
+                R.layout.calendar_week_day_layout,
+                LinearLayout(context),
+                false
+            )
         dummyView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,  // or a fixed width if needed
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -47,9 +51,9 @@ class UserNameRowHelper(val context: Context, binding: CompWeekShiftCalBinding) 
             if (subscribed != null && subscribed.name.isNotEmpty()) {
                 nameList[subscribed.name] = sc.fromNet { sc.workDays.hasDualShift() } == true
             }
+            val inflater = LayoutInflater.from(context)
             for (name in nameList) {
-                val inflater = LayoutInflater.from(context)
-                val view = inflater.inflate(R.layout.item_shift, null) as FrameLayout
+                val view = inflater.inflate(R.layout.item_shift, userNameRow, false) as FrameLayout
                 val textView = view.findViewById<TextView>(R.id.shiftName)
                 textView.text = name.key.substring(0, 1)
                 textView.setTextColor(
@@ -62,7 +66,8 @@ class UserNameRowHelper(val context: Context, binding: CompWeekShiftCalBinding) 
                 userNameRow.addView(view)
 
                 if (name.value) {
-                    val filler = inflater.inflate(R.layout.item_shift, null) as FrameLayout
+                    val filler =
+                        inflater.inflate(R.layout.item_shift, userNameRow, false) as FrameLayout
                     val fillerTextView = filler.findViewById<TextView>(R.id.shiftName)
                     fillerTextView.text = " "
                     userNameRow.addView(filler)

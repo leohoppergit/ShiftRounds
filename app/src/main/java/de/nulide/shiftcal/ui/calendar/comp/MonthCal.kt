@@ -1,9 +1,10 @@
 package de.nulide.shiftcal.ui.calendar.comp
 
-import android.animation.LayoutTransition
 import android.content.Context
+import android.util.TypedValue
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
@@ -39,6 +40,7 @@ class MonthCal(context: Context, attrs: AttributeSet) :
     private val settings = SettingsRepository.getInstance(context)
     private lateinit var calViewModel: CalViewModel
     private lateinit var weekOfYearHelper: WeekOfYearHelper
+    private var monthDayBinder: ShiftMonthDayBinder? = null
 
     var ignoreOneScrolling = false
 
@@ -50,14 +52,7 @@ class MonthCal(context: Context, attrs: AttributeSet) :
     fun setupCalendar() {
         weekOfYearHelper =
             WeekOfYearHelper(context, binding.root.findViewById(R.id.weekOfYearRow), settings)
-
-
-        val layoutTransition = LayoutTransition()
-        layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        layoutTransition.setDuration(300) // Set your desired duration in milliseconds
-        binding.calendarBoxView.setLayoutTransition(
-            layoutTransition
-        )
+        applyMonthTileScale()
 
         //Calendar
         val firstDayOfWeekIndex = settings.getInt(Settings.START_OF_WEEK)
@@ -71,10 +66,11 @@ class MonthCal(context: Context, attrs: AttributeSet) :
                 textView.text = title.subSequence(0, 1)
             }
 
-        binding.calendarView.dayBinder = ShiftMonthDayBinder(
+        monthDayBinder = ShiftMonthDayBinder(
             context, calViewModel,
             binding.calendarView, sc,
         )
+        binding.calendarView.dayBinder = monthDayBinder
         val currentMonth = calViewModel.getCurrentMonth()
         var startMonth = currentMonth.minusMonths(12)
         val oldestWday = sc.workDays.getOldest()
@@ -93,6 +89,80 @@ class MonthCal(context: Context, attrs: AttributeSet) :
         binding.calendarView.monthScrollListener = this
         invoke(CalendarMonth(currentMonth, listOf()))
     }
+
+    private fun applyMonthTileScale() {
+        val scale = settings.getInt(Settings.MONTH_TILE_SCALE).coerceIn(0, 2)
+        val (horizontalMargin, panelPadding, minDayHeight, titleSizeSp) = when (scale) {
+            0 -> MonthTileScaleConfig(
+                horizontalMarginDp = 16,
+                panelPaddingDp = 14,
+                minDayHeightDp = 40,
+                titleSizeSp = 17f
+            )
+            2 -> MonthTileScaleConfig(
+                horizontalMarginDp = 8,
+                panelPaddingDp = 8,
+                minDayHeightDp = 52,
+                titleSizeSp = 19f
+            )
+            else -> MonthTileScaleConfig(
+                horizontalMarginDp = 12,
+                panelPaddingDp = 10,
+                minDayHeightDp = 46,
+                titleSizeSp = 18f
+            )
+        }
+
+        binding.calendarBoxView.setPadding(
+            dp(panelPadding),
+            dp(panelPadding),
+            dp(panelPadding),
+            dp(panelPadding)
+        )
+        (binding.calendarBoxView.layoutParams as? MarginLayoutParams)?.let { params ->
+            params.marginStart = dp(horizontalMargin)
+            params.marginEnd = dp(horizontalMargin)
+            binding.calendarBoxView.layoutParams = params
+        }
+
+        binding.root.findViewById<ViewGroup>(R.id.titlesContainer).children
+            .map { it as TextView }
+            .forEach { textView ->
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleSizeSp)
+            }
+
+        binding.calendarView.post {
+            binding.calendarView.children.forEach { monthView ->
+                applyMinHeightToDayCells(monthView, dp(minDayHeight))
+            }
+        }
+    }
+
+    private fun applyMinHeightToDayCells(root: View, minHeightPx: Int) {
+        if (root.id == R.id.dayContainer) {
+            root.minimumHeight = minHeightPx
+        }
+        if (root is ViewGroup) {
+            root.children.forEach { child ->
+                applyMinHeightToDayCells(child, minHeightPx)
+            }
+        }
+    }
+
+    private fun dp(value: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            value.toFloat(),
+            resources.displayMetrics
+        ).toInt()
+    }
+
+    private data class MonthTileScaleConfig(
+        val horizontalMarginDp: Int,
+        val panelPaddingDp: Int,
+        val minDayHeightDp: Int,
+        val titleSizeSp: Float
+    )
 
     override fun receiveViewModel(
         lifecycle: Lifecycle,
@@ -115,6 +185,7 @@ class MonthCal(context: Context, attrs: AttributeSet) :
         calViewModel.register(
             lifecycle, calViewModel.dayUpdated
         ) { day ->
+            monthDayBinder?.invalidateDate(day)
             binding.calendarView.notifyDateChanged(day, DayPosition.InDate)
             binding.calendarView.notifyDateChanged(
                 day,
@@ -152,14 +223,6 @@ class MonthCal(context: Context, attrs: AttributeSet) :
             weekOfYearHelper.updateWeekOfYearRow(newCurrentYearMonth)
         }
         ignoreOneScrolling = false
-        if (!calViewModel.getEditMode()) {
-            var selectedDay = calViewModel.getLastSelectedDay()
-            val yearMonth = newCurrentYearMonth.yearMonth
-
-            if (selectedDay.date.monthValue == yearMonth.monthValue && selectedDay.date.year == yearMonth.year) {
-                calViewModel.setLastSelectedDay(selectedDay)
-            }
-        }
     }
 
     fun scrollTo(scrollTo: YearMonth) {

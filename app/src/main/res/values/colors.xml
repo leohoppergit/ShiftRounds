@@ -9,12 +9,8 @@
 
     <color name="spinnerText">@color/textColorBlack</color>
     <color name="textColor">@color/textColorBlack</color>
-    <color name="reversedTextColor">@color/textColorWhite</color>
-
     <color name="onSurfaceWaterMark">#76777D</color>
     <color name="onSurfaceWaterMarkNight">#909097</color>
-
-    <color name="alarmRippleColor">#6076AC</color>
 
     <color name="syncCalColor">#008577</color>
 
@@ -27,13 +23,11 @@
     <color name="shiftRoundsPanelStroke">#8FC6D0CF</color>
     <color name="shiftRoundsActionSurface">#E4EFF9FB</color>
     <color name="shiftRoundsActionInk">#39576E</color>
-    <color name="shiftRoundsToolbarActionSurface">#E4EFF9FB</color>
     <color name="shiftRoundsToolbarActionStroke">#B8D0DEE8</color>
     <color name="shiftRoundsToolbarActionInk">#39576E</color>
     <color name="shiftRoundsSelection">#628893</color>
     <color name="shiftRoundsTitleInk">#213433</color>
     <color name="shiftRoundsMutedInk">#6E7877</color>
-    <color name="shiftRoundsGlassShadow">#140C1620</color>
     <color name="calendarSpecialDateHoliday">#D94C3D</color>
     <color name="calendarSpecialDateSchoolBreak">#3D84D9</color>
     <color name="calendarSpecialDateKindergartenClosure">#D98A33</color>

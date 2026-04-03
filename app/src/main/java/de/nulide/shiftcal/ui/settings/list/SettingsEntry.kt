@@ -46,7 +46,7 @@ class SettingsEntry(
             entries.add(
                 SettingsEntry(
                     context,
-                    R.string.Settings_Export,
+                    R.string.Settings_Export_Restore,
                     R.drawable.ic_import_export,
                     ID_EXPORT
                 )

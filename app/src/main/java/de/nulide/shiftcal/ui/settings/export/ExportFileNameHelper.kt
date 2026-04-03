@@ -19,6 +19,9 @@ object ExportFileNameHelper {
     fun backupJson(now: LocalDateTime = LocalDateTime.now()): String =
         "ShiftRounds_Backup_${now.format(timestampFormatter)}.json"
 
+    fun backupDiagnosticsTxt(now: LocalDateTime = LocalDateTime.now()): String =
+        "ShiftRounds_Backup_Diagnostics_${now.format(timestampFormatter)}.txt"
+
     fun calendarFile(start: LocalDate, end: LocalDate, extension: String, fullCalendarRange: ClosedRange<LocalDate>? = null): String {
         val isFullCalendar = fullCalendarRange != null &&
             start == fullCalendarRange.start &&

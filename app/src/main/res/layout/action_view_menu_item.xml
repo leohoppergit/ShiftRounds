@@ -16,6 +16,6 @@
         android:scaleType="centerInside"
         android:elevation="4dp"
         android:tint="@color/shiftRoundsToolbarActionInk"
-        app:srcCompat="@drawable/ic_goto" />
+        app:srcCompat="@drawable/ic_calendar" />
 
 </FrameLayout>

@@ -1,10 +1,11 @@
 package de.nulide.shiftcal.ui.stats
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
@@ -19,10 +20,10 @@ import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.FragmentStatsBinding
 import de.nulide.shiftcal.ui.calendar.CalViewModel
 import de.nulide.shiftcal.ui.helper.SFragment
-import de.nulide.shiftcal.ui.helper.TagsSelectorDialog
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.time.DayOfWeek
+import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -31,6 +32,10 @@ class StatsFragment : SFragment() {
     private lateinit var binding: FragmentStatsBinding
     override val fragmentName = "stats"
     lateinit var calViewModel: CalViewModel
+    private var statsMonth: YearMonth? = null
+    private var monthSwipeStartX = 0f
+    private var monthSwipeStartY = 0f
+    private var monthSwipeHandled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +52,15 @@ class StatsFragment : SFragment() {
     }
 
     override fun updateActivity() {
+        if (statsMonth == null) {
+            statsMonth = calViewModel.getCurrentMonth()
+        }
+        setupMonthSwipe()
+        renderStats(statsMonth ?: calViewModel.getCurrentMonth())
+    }
+
+    private fun renderStats(yearMonth: YearMonth) {
         val months = DateFormatSymbols().months.toList()
-        val yearMonth = calViewModel.getCurrentMonth()
         val sc = SCRepoManager.getInstance(ctx)
         if (sc.familyMode) {
             binding.statsFromText.visibility = View.VISIBLE
@@ -141,7 +153,8 @@ class StatsFragment : SFragment() {
                         accountId
                     )
                     val absoluteMinutes = kotlin.math.abs(accountMinutes)
-                    row.findViewById<TextView>(R.id.statsWeekDayLabel).text = "$accountName:"
+                    row.findViewById<TextView>(R.id.statsWeekDayLabel).text =
+                        getString(R.string.stats_special_account_label, accountName)
                     row.findViewById<TextView>(R.id.statsWeekDayCount).text = ctx.getString(
                         R.string.time_stat_signed,
                         if (accountMinutes < 0) "-" else "",
@@ -168,39 +181,65 @@ class StatsFragment : SFragment() {
                     layout.findViewById<TextView>(R.id.statsWeekDayCount).text =
                         ctx.getString(R.string.numberformat, weekDayStats[index])
                 }
-
-
-            val iconStats = HashMap<Int, Int>()
-            for (wday in workDays) {
-                for (icon in wday.icons) {
-                    iconStats[icon] = (iconStats[icon] ?: 0) + 1
-                }
-            }
-            if (iconStats.isEmpty()) {
-                binding.tagsSection.visibility = View.GONE
-            } else {
-                binding.tagsSection.visibility = View.VISIBLE
-
-                binding.tagsContainer.children
-                    .map { it as LinearLayout }
-                    .forEachIndexed { index, layout ->
-                        layout.findViewById<ImageView>(R.id.tagIcon)
-                            .setImageResource(TagsSelectorDialog.getIconRes(index))
-                        var iconStatsText = "0"
-                        if (iconStats.containsKey(index)) {
-                            iconStatsText = iconStats[index].toString()
-                        }
-                        layout.findViewById<TextView>(R.id.tagCount).text = iconStatsText
-                    }
-            }
-
-
         } else {
             binding.emptyStatsContent.visibility = View.VISIBLE
             binding.statsContent.visibility = View.GONE
         }
 
 
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupMonthSwipe() {
+        main.binding.topAppBar.setOnClickListener { }
+        main.binding.topAppBar.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    monthSwipeStartX = event.x
+                    monthSwipeStartY = event.y
+                    monthSwipeHandled = false
+                    view.parent?.requestDisallowInterceptTouchEvent(true)
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaX = event.x - monthSwipeStartX
+                    val deltaY = event.y - monthSwipeStartY
+                    val minDistancePx = 28f * resources.displayMetrics.density
+                    if (!monthSwipeHandled &&
+                        kotlin.math.abs(deltaX) >= minDistancePx &&
+                        kotlin.math.abs(deltaX) > kotlin.math.abs(deltaY) * 1.1f
+                    ) {
+                        if (deltaX < 0) {
+                            statsMonth = (statsMonth ?: calViewModel.getCurrentMonth()).plusMonths(1)
+                        } else {
+                            statsMonth = (statsMonth ?: calViewModel.getCurrentMonth()).minusMonths(1)
+                        }
+                        renderStats(statsMonth ?: calViewModel.getCurrentMonth())
+                        monthSwipeHandled = true
+                        view.performClick()
+                        true
+                    } else {
+                        true
+                    }
+                }
+
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    view.performClick()
+                    monthSwipeHandled
+                }
+
+                else -> true
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onPause() {
+        super.onPause()
+        runCatching {
+            main.binding.topAppBar.setOnTouchListener(null)
+        }
     }
 
 }

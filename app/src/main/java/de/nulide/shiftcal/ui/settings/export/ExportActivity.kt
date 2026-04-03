@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.monthyearpicker.MonthYearPickerBuilder
@@ -18,6 +19,7 @@ import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.factory.JIO
 import de.nulide.shiftcal.data.repository.SCRepoManager
 import de.nulide.shiftcal.data.repository.wrapper.FullBackupDTO
+import de.nulide.shiftcal.data.repository.wrapper.FullBackupImportParser
 import de.nulide.shiftcal.data.repository.wrapper.WorkDayDTO
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityExportBinding
@@ -27,6 +29,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
 
@@ -59,10 +64,12 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
                 Toast.makeText(this, R.string.restore_failed, Toast.LENGTH_SHORT).show()
                 return@registerForActivityResult
             }
-            when (restoreBackup(uri)) {
-                BackupRestoreResult.SUCCESS -> Toast.makeText(this, R.string.restore_success, Toast.LENGTH_SHORT).show()
-                BackupRestoreResult.INVALID_FILE -> Toast.makeText(this, R.string.restore_invalid_file, Toast.LENGTH_SHORT).show()
-                BackupRestoreResult.FAILED -> Toast.makeText(this, R.string.restore_failed, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                when (restoreBackup(uri)) {
+                    BackupRestoreResult.SUCCESS -> Toast.makeText(this@ExportActivity, R.string.restore_success, Toast.LENGTH_SHORT).show()
+                    BackupRestoreResult.INVALID_FILE -> Toast.makeText(this@ExportActivity, R.string.restore_invalid_file, Toast.LENGTH_SHORT).show()
+                    BackupRestoreResult.FAILED -> Toast.makeText(this@ExportActivity, R.string.restore_failed, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -264,18 +271,25 @@ class ExportActivity : AppCompatActivity(), OnMonthYearSelectedListener {
         }
     }
 
-    private fun restoreBackup(uri: Uri): BackupRestoreResult {
-        return try {
-            val json = contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() }
-                ?: return BackupRestoreResult.FAILED
-            val backup = JIO.fromJSON(json, FullBackupDTO::class.java)
+    private suspend fun restoreBackup(uri: Uri): BackupRestoreResult = withContext(Dispatchers.IO) {
+        try {
+            val json = contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+                ?: return@withContext BackupRestoreResult.FAILED
+            val backup = FullBackupImportParser.parse(json)
+                ?: run {
+                    BackupRestoreDebugState.setError("Backup parser rejected file as incompatible.")
+                    return@withContext BackupRestoreResult.INVALID_FILE
+                }
             if (backup.backupVersion <= 0 || backup.appName.isBlank()) {
-                return BackupRestoreResult.INVALID_FILE
+                BackupRestoreDebugState.setError("Backup metadata is incomplete or invalid.")
+                return@withContext BackupRestoreResult.INVALID_FILE
             }
             sc.restoreLocalBackup(backup, settings)
+            BackupRestoreDebugState.clear()
             BackupRestoreResult.SUCCESS
-        } catch (_: Exception) {
-            BackupRestoreResult.INVALID_FILE
+        } catch (exception: Exception) {
+            BackupRestoreDebugState.setException(exception)
+            BackupRestoreResult.FAILED
         }
     }
 

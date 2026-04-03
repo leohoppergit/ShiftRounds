@@ -53,7 +53,7 @@ class ShiftCalendarFragment : SFragment(),
 
     lateinit var calViewModel: CalViewModel
 
-    private lateinit var goToButton: View
+    private lateinit var todayButton: View
     private lateinit var shareButton: View
     private lateinit var switchCalendarViewUseCase: SwitchCalendarViewUseCase
 
@@ -126,13 +126,17 @@ class ShiftCalendarFragment : SFragment(),
 
     override fun onCreateMenu(menu: Menu?, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_shift_calendar, menu)
-        goToButton = createMenuItem(menu, R.id.goTo, R.drawable.ic_goto)
+        todayButton = createMenuItem(menu, R.id.today, R.drawable.ic_calendar)
         shareButton = createMenuItem(menu, R.id.share, R.drawable.ic_share)
     }
 
     fun createMenuItem(menu: Menu?, itemRes: Int, iconRes: Int): View {
         val actionView =
-            layoutInflater.inflate(R.layout.action_view_menu_item, null) as FrameLayout
+            layoutInflater.inflate(
+                R.layout.action_view_menu_item,
+                FrameLayout(requireContext()),
+                false
+            ) as FrameLayout
         val actionButton = actionView.findViewById<AppCompatImageButton>(R.id.actionButton)
         actionButton.setImageResource(iconRes)
         actionButton.setOnClickListener(this)
@@ -171,12 +175,12 @@ class ShiftCalendarFragment : SFragment(),
     @SuppressLint("ResourceType")
     override fun onClick(v: View?) {
         when (v) {
-            shareButton -> {
-                showShareScopeDialog()
+            todayButton -> {
+                calViewModel.trigger(calViewModel.scrollTo, LocalDate.now())
             }
 
-            goToButton -> {
-                showMonthYearPicker()
+            shareButton -> {
+                showShareScopeDialog()
             }
         }
     }
@@ -340,13 +344,7 @@ class ShiftCalendarFragment : SFragment(),
     }
 
     override fun backPressed(): Boolean {
-        val now = YearMonth.now()
-        if (calViewModel.getCurrentMonth() == now) {
-            return false
-        } else {
-            calViewModel.trigger(calViewModel.scrollTo, LocalDate.now())
-        }
-        return true
+        return false
     }
 
     fun sendToViewModelReceiver() {

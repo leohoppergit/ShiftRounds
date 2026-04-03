@@ -21,7 +21,6 @@ public class Settings {
     public static final String INFO_SHIFT_SELECTOR_COUNT = "INFO_SHIFT_SELECTOR_COUNT";
     public static final String INTRO_FAB_MENU_EXPLANATION = "INFO_FAB_MENU_EXPLANATION";
     public static final String ALARM_SNOOZE_MINUTES = "ALARM_SNOOZE_MINUTES";
-    public static final String PERM_ONE_PLUS_BACKGROUND_ACTIVITY = "PERM_ONE_PLUS_BACKGROUND_ACTIVITY";
     public static final String SERVER_SYNC_UUID = "SERVER_SYNC_UUID";
     public static final String SERVER_SYNC_HPW = "SERVER_SYNC_HPW";
     public static final String SERVER_SYNC_PW = "SERVER_SYNC_PW";
@@ -38,7 +37,6 @@ public class Settings {
     public static final String ALARM_SNOOZED_NEW_TIME = "ALARM_SNOOZED_TIME";
     public static final String DB_MIGRATION_COMPLETED = "DB_MIGRATION";
     public static final String DB_MIGRATION_SHARED_RETRIEVED_COMPLETED = "DB_MIGRATION_SHARED";
-    public static final String SWIFTSHIFT_IMPORT_PROMPT_HANDLED = "SWIFTSHIFT_IMPORT_PROMPT_HANDLED";
     public static final String SPECIAL_ACCOUNTS_ENABLED = "SPECIAL_ACCOUNTS_ENABLED";
     public static final String SPECIAL_ACCOUNTS = "SPECIAL_ACCOUNTS";
     public static final String HOLIDAYS_ENABLED = "HOLIDAYS_ENABLED";
@@ -46,6 +44,7 @@ public class Settings {
     public static final String CALENDAR_MARKERS = "CALENDAR_MARKERS";
     public static final String SCHOOL_BREAKS_ENABLED = "SCHOOL_BREAKS_ENABLED";
     public static final String SCHOOL_BREAK_STATES = "SCHOOL_BREAK_STATES";
+    public static final String MONTH_TILE_SCALE = "MONTH_TILE_SCALE";
 
 
     public Settings() {
@@ -67,6 +66,7 @@ public class Settings {
                     return Long.valueOf(-1L).toString();
                 case START_OF_WEEK:
                 case INFO_SHIFT_SELECTOR_COUNT:
+                case MONTH_TILE_SCALE:
                     return "0";
                 case ALARM_SNOOZE_MINUTES:
                     return "5";
@@ -79,7 +79,6 @@ public class Settings {
                 case WEEK_OF_YEAR:
                 case INTRO_PRIVACY:
                 case INTRO_SHIFT_SELECTOR:
-                case PERM_ONE_PLUS_BACKGROUND_ACTIVITY:
                 case CALENDAR_IN_FAMILY_MODE:
                 case SERVER_SYNC_SPECTATOR_LOGOUT:
                 case FAMILY_SYNC_INTRO_SHOWN:
@@ -90,7 +89,6 @@ public class Settings {
                 case DB_MIGRATION_COMPLETED:
                 case DB_MIGRATION_SHARED_RETRIEVED_COMPLETED:
                 case INTRO_FAB_MENU_EXPLANATION:
-                case SWIFTSHIFT_IMPORT_PROMPT_HANDLED:
                 case SPECIAL_ACCOUNTS_ENABLED:
                 case HOLIDAYS_ENABLED:
                 case SCHOOL_BREAKS_ENABLED:

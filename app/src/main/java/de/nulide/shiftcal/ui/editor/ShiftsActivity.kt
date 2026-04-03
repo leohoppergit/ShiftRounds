@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.size
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -127,7 +128,7 @@ class ShiftsActivity : AppCompatActivity(), View.OnClickListener {
                 if (archivedMode) R.menu.menu_archived_shifts_actions else R.menu.menu_shifts_actions,
                 menu
             )
-            menu.add(0, MENU_DUPLICATE_SHIFT, menu.size(), getString(R.string.shift_duplicate))
+            menu.add(0, MENU_DUPLICATE_SHIFT, menu.size, getString(R.string.shift_duplicate))
             setOnMenuItemClickListener { item -> onShiftActionSelected(item, shift) }
             show()
         }

@@ -22,6 +22,7 @@ class SCRepoManager(ctx: Context) {
 
     var curCalId: Int
     var familyMode: Boolean
+    private val appContext = ctx.applicationContext
 
     private val migration1To2 = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
@@ -199,53 +200,107 @@ class SCRepoManager(ctx: Context) {
 
     fun restoreLocalBackup(backup: FullBackupDTO, settingsRepository: SettingsRepository) {
         val localCalId = calendar.getLocal()
+        val shiftIdMap = mutableMapOf<Int, Int>()
+        val importedShiftCount = backup.shifts.count { it.id >= 0 }
+        val importedWorkDayCount = backup.workDays.count { it.shiftId in backup.shifts.map { shift -> shift.id }.toSet() }
 
-        db.shiftBlockEntryDao().deleteAll(localCalId)
-        db.shiftBlockDao().deleteAll(localCalId)
-        db.workDayDao().deleteAll(localCalId)
-        db.monthNoteDao().deleteAll(localCalId)
-        db.shiftDao().deleteAll(localCalId)
+        db.runInTransaction {
+            db.shiftBlockEntryDao().deleteAll(localCalId)
+            db.shiftBlockDao().deleteAll(localCalId)
+            db.workDayDao().deleteAll(localCalId)
+            db.monthNoteDao().deleteAll(localCalId)
+            db.shiftDao().deleteAll(localCalId)
 
-        backup.shifts
-            .filter { it.id >= 0 }
-            .sortedWith(compareBy<de.nulide.shiftcal.data.model.Shift>({ it.sortOrder }, { it.id }))
-            .forEach { shift ->
-                db.shiftDao().insert(shift.copy(calendarId = localCalId))
+            var nextShiftId = (runCatching { db.shiftDao().getHighestID(localCalId) }.getOrDefault(0)).coerceAtLeast(0) + 1
+            backup.shifts
+                .filter { it.id >= 0 }
+                .sortedWith(compareBy<de.nulide.shiftcal.data.model.Shift>({ it.sortOrder }, { it.id }))
+                .forEach { shift ->
+                    val newShiftId = nextShiftId++
+                    val restoredShift = shift.copy(
+                        id = newShiftId,
+                        calendarId = localCalId
+                    )
+                    db.shiftDao().insert(restoredShift)
+                    shiftIdMap[shift.id] = newShiftId
+                }
+
+            backup.monthNotes.forEach { monthNote ->
+                db.monthNoteDao().insert(monthNote.copy(calendarId = localCalId))
             }
 
-        backup.monthNotes.forEach { monthNote ->
-            db.monthNoteDao().insert(monthNote.copy(calendarId = localCalId))
-        }
-
-        backup.workDays
-            .sortedWith(compareBy({ it.day }, { it.id }))
-            .forEach { workDay ->
-                db.workDayDao().insert(workDay.copy(calendarId = localCalId))
-            }
-
-        backup.shiftBlocks.forEach { shiftBlockDTO ->
-            val block = shiftBlockDTO.block.copy(calendarId = localCalId)
-            db.shiftBlockDao().add(block)
-            shiftBlockDTO.entries
-                .sortedBy { it.pos }
-                .forEach { entry ->
-                    db.shiftBlockEntryDao().add(
-                        ShiftBlockEntry(
-                            shiftBlockId = block.id,
-                            id = 0,
+            var nextWorkDayId = (runCatching { db.workDayDao().getHighestID(localCalId) }.getOrDefault(0)).coerceAtLeast(0) + 1
+            backup.workDays
+                .sortedWith(compareBy({ it.day }, { it.id }))
+                .forEach { workDay ->
+                    val mappedShiftId = shiftIdMap[workDay.shiftId] ?: return@forEach
+                    db.workDayDao().insert(
+                        workDay.copy(
+                            id = nextWorkDayId++,
                             calendarId = localCalId,
-                            pos = entry.pos,
-                            shiftId = entry.shiftId
+                            shiftId = mappedShiftId
                         )
                     )
                 }
+
+            var nextShiftBlockId = (runCatching { db.shiftBlockDao().getHighestID(localCalId) }.getOrDefault(0)).coerceAtLeast(0) + 1
+            backup.shiftBlocks.forEach { shiftBlockDTO ->
+                val newShiftBlockId = nextShiftBlockId++
+                val block = shiftBlockDTO.block.copy(
+                    id = newShiftBlockId,
+                    calendarId = localCalId
+                )
+                db.shiftBlockDao().add(block)
+                shiftBlockDTO.entries
+                    .sortedBy { it.pos }
+                    .forEach { entry ->
+                        val mappedShiftId = shiftIdMap[entry.shiftId] ?: return@forEach
+                        db.shiftBlockEntryDao().add(
+                            ShiftBlockEntry(
+                                shiftBlockId = newShiftBlockId,
+                                id = 0,
+                                calendarId = localCalId,
+                                pos = entry.pos,
+                                shiftId = mappedShiftId
+                            )
+                        )
+                    }
+            }
+
+            val restoredShiftCount = db.shiftDao().getAll(localCalId).size
+            val restoredWorkDayCount = db.workDayDao().getAll(localCalId).size
+            if (restoredShiftCount != importedShiftCount || restoredWorkDayCount != importedWorkDayCount) {
+                throw IllegalStateException(
+                    "Backup restore verification failed: expected $importedShiftCount shifts and $importedWorkDayCount work days, got $restoredShiftCount shifts and $restoredWorkDayCount work days."
+                )
+            }
         }
 
-        settingsRepository.importSettings(backup.settings)
+        settingsRepository.importSettings(
+            backup.settings
+                .toMutableMap()
+                .apply {
+                    this[Settings.DB_MIGRATION_COMPLETED] = true.toString()
+                    this[Settings.DB_MIGRATION_SHARED_RETRIEVED_COMPLETED] = true.toString()
+                    this[Settings.LAST_POST_PROCESS_FAILED] = false.toString()
+                }
+        )
+        deleteLegacyCalendarFiles()
         users.setName(backup.userName)
         curCalId = localCalId
         familyMode = false
         postDataChange()
+    }
+
+    private fun deleteLegacyCalendarFiles() {
+        listOf("shift-calendar.json", "sc.json").forEach { fileName ->
+            runCatching {
+                val file = appContext.filesDir.resolve(fileName)
+                if (file.exists()) {
+                    file.delete()
+                }
+            }
+        }
     }
 
 }

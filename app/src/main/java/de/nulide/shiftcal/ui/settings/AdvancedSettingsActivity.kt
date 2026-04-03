@@ -1,6 +1,7 @@
 package de.nulide.shiftcal.ui.settings
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +14,15 @@ import android.widget.TextView
 import androidx.core.util.Pair
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.widget.Toast
 import de.nulide.shiftcal.data.calendar.AustriaSchoolBreakProvider
 import de.nulide.shiftcal.data.calendar.AustriaSchoolBreakUpdateManager
 import de.nulide.shiftcal.data.settings.CalendarMarker
@@ -30,17 +34,23 @@ import de.nulide.shiftcal.data.settings.Settings
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityAdvancedSettingsBinding
 import de.nulide.shiftcal.ui.calendar.specialdate.CalendarSpecialDateUiHelper
-import de.nulide.shiftcal.ui.importer.SwiftShiftImportActivity
+import de.nulide.shiftcal.ui.settings.export.BackupDiagnostics
+import de.nulide.shiftcal.ui.settings.export.BackupRestoreDebugState
+import de.nulide.shiftcal.ui.settings.export.ExportFileNameHelper
 import de.nulide.shiftcal.ui.settings.feature.CalSyncFeature
 import de.nulide.shiftcal.ui.settings.feature.Feature
 import de.nulide.shiftcal.ui.settings.feature.FeatureStateListener
 import de.nulide.shiftcal.utils.permission.PermissionManager
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.text.DateFormatSymbols
 import java.util.LinkedList
 import java.util.UUID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class AdvancedSettingsActivity : AppCompatActivity(),
@@ -57,6 +67,23 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
     private lateinit var calSyncFeature: CalSyncFeature
     private lateinit var schoolBreakUpdateManager: AustriaSchoolBreakUpdateManager
+    private var pendingDiagnosticsReport: String = ""
+
+    private val backupDiagnosticsPickerLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val uri = result.data?.data ?: return@registerForActivityResult
+            analyzeBackupFile(uri)
+        }
+
+    private val diagnosticsExportLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val uri = result.data?.data ?: return@registerForActivityResult
+            if (writeDiagnosticsExport(uri)) {
+                Toast.makeText(this, R.string.export_saved, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, R.string.export_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +118,16 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             applicationContext,
             R.layout.item_spinner, listWeekDays
         )
+        val monthTileScaleOptions = listOf(
+            getString(R.string.settings_month_tile_scale_compact),
+            getString(R.string.settings_month_tile_scale_standard),
+            getString(R.string.settings_month_tile_scale_large)
+        )
+        val monthTileScaleAdapter = ArrayAdapter(
+            applicationContext,
+            R.layout.item_spinner,
+            monthTileScaleOptions
+        )
 
         binding.firstDayOfWeekSpinner.setAdapter(adapterWeekDays)
         binding.firstDayOfWeekSpinner.setText(
@@ -98,6 +135,12 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             false
         )
         binding.firstDayOfWeekSpinner.onItemClickListener = this
+        binding.monthTileScaleSpinner.setAdapter(monthTileScaleAdapter)
+        binding.monthTileScaleSpinner.setText(
+            monthTileScaleOptions[settings.getInt(Settings.MONTH_TILE_SCALE).coerceIn(0, 2)],
+            false
+        )
+        binding.monthTileScaleSpinner.onItemClickListener = this
 
         updateViews()
 
@@ -106,7 +149,6 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.syncCheckBox.setOnCheckedChangeListener(this)
 
         binding.weekOfYearSwitch.setOnCheckedChangeListener(this)
-        binding.swiftShiftImportButton.setOnClickListener(this)
         binding.specialAccountsSwitch.setOnCheckedChangeListener(this)
         binding.addSpecialAccountButton.setOnClickListener(this)
         binding.holidaySwitch.setOnCheckedChangeListener(this)
@@ -114,6 +156,8 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.addCalendarMarkerButton.setOnClickListener(this)
         binding.selectSchoolBreakStatesButton.setOnClickListener(this)
         binding.updateSchoolBreaksButton.setOnClickListener(this)
+        binding.backupDiagnosticsButton.setOnClickListener(this)
+        binding.showLastRestoreErrorButton.setOnClickListener(this)
 
         val holidayRegions = listOf(getString(R.string.settings_holiday_region_austria))
         val holidayRegionAdapter = ArrayAdapter(
@@ -171,9 +215,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
     }
 
     override fun onClick(v: View?) {
-        if (v == binding.swiftShiftImportButton) {
-            startActivity(Intent(this, SwiftShiftImportActivity::class.java))
-        } else if (v == binding.addSpecialAccountButton) {
+        if (v == binding.addSpecialAccountButton) {
             showSpecialAccountDialog(null)
         } else if (v == binding.addCalendarMarkerButton) {
             showCalendarMarkerRangePicker(null)
@@ -181,6 +223,10 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             showSchoolBreakStatesDialog()
         } else if (v == binding.updateSchoolBreaksButton) {
             showSchoolBreakUpdatePreparedDialog()
+        } else if (v == binding.backupDiagnosticsButton) {
+            openBackupDiagnosticsPicker()
+        } else if (v == binding.showLastRestoreErrorButton) {
+            showLastRestoreError()
         }
     }
 
@@ -212,6 +258,14 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             },
             false
         )
+        binding.monthTileScaleSpinner.setText(
+            listOf(
+                getString(R.string.settings_month_tile_scale_compact),
+                getString(R.string.settings_month_tile_scale_standard),
+                getString(R.string.settings_month_tile_scale_large)
+            )[settings.getInt(Settings.MONTH_TILE_SCALE).coerceIn(0, 2)],
+            false
+        )
         updateSchoolBreakStatesSummary()
         updateCalendarMarkersUi()
     }
@@ -221,6 +275,10 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             if (!settings.has(Settings.START_OF_WEEK) || settings.getInt(Settings.START_OF_WEEK) != position) {
                 settings.set(Settings.START_OF_WEEK, position)
             }
+        } else if (parent?.adapter == binding.monthTileScaleSpinner.adapter) {
+            if (!settings.has(Settings.MONTH_TILE_SCALE) || settings.getInt(Settings.MONTH_TILE_SCALE) != position) {
+                settings.set(Settings.MONTH_TILE_SCALE, position)
+            }
         } else if (parent?.adapter == binding.holidayRegionSpinner.adapter) {
             settings.set(Settings.HOLIDAY_REGION, HolidayRegion.AUSTRIA_NATIONAL)
         }
@@ -228,6 +286,83 @@ class AdvancedSettingsActivity : AppCompatActivity(),
 
     override fun onFeatureStateChanged(state: Feature.Companion.STATE) {
         updateViews()
+    }
+
+    private fun openBackupDiagnosticsPicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/json"
+        }
+        backupDiagnosticsPickerLauncher.launch(intent)
+    }
+
+    private fun analyzeBackupFile(uri: Uri) {
+        lifecycleScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching {
+                    val json = contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+                        ?: throw IllegalStateException("Datei konnte nicht geöffnet werden.")
+                    BackupDiagnostics.inspect(json)
+                }
+            }
+
+            result.onSuccess { report ->
+                pendingDiagnosticsReport = report.details
+                MaterialAlertDialogBuilder(this@AdvancedSettingsActivity)
+                    .setTitle(R.string.backup_diagnostics_title)
+                    .setMessage(report.details)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setNeutralButton(R.string.backup_diagnostics_export) { _, _ ->
+                        exportDiagnosticsReport()
+                    }
+                    .show()
+            }.onFailure { exception ->
+                BackupRestoreDebugState.setException(exception)
+                MaterialAlertDialogBuilder(this@AdvancedSettingsActivity)
+                    .setTitle(R.string.backup_diagnostics_title)
+                    .setMessage(
+                        getString(
+                            R.string.backup_diagnostics_failed_with_reason,
+                            exception.message ?: exception::class.java.simpleName
+                        )
+                    )
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
+        }
+    }
+
+    private fun exportDiagnosticsReport() {
+        if (pendingDiagnosticsReport.isBlank()) {
+            Toast.makeText(this, R.string.backup_diagnostics_failed, Toast.LENGTH_SHORT).show()
+            return
+        }
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TITLE, ExportFileNameHelper.backupDiagnosticsTxt(LocalDateTime.now()))
+        }
+        diagnosticsExportLauncher.launch(intent)
+    }
+
+    private fun writeDiagnosticsExport(uri: Uri): Boolean {
+        return try {
+            contentResolver.openOutputStream(uri)?.bufferedWriter()?.use { writer ->
+                writer.write(pendingDiagnosticsReport)
+            }
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun showLastRestoreError() {
+        val lastError = BackupRestoreDebugState.getError()
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.backup_restore_last_error_title)
+            .setMessage(lastError ?: getString(R.string.backup_restore_last_error_empty))
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     private fun updateSpecialAccountsUi() {
@@ -306,7 +441,11 @@ class AdvancedSettingsActivity : AppCompatActivity(),
                 android.content.res.ColorStateList.valueOf(CalendarSpecialDateUiHelper.getColor(this, marker.type))
             row.findViewById<TextView>(R.id.calendarMarkerNameText).text = marker.name
             row.findViewById<TextView>(R.id.calendarMarkerMetaText).text =
-                "${CalendarSpecialDateUiHelper.getTypeLabel(this, marker.type)} • ${formatMarkerRange(marker)}"
+                getString(
+                    R.string.settings_calendar_marker_meta,
+                    CalendarSpecialDateUiHelper.getTypeLabel(this, marker.type),
+                    formatMarkerRange(marker)
+                )
             row.findViewById<ImageButton>(R.id.editCalendarMarkerButton).setOnClickListener {
                 showCalendarMarkerRangePicker(marker)
             }

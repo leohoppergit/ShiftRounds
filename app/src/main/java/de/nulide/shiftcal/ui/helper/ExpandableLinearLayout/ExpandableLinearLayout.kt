@@ -46,10 +46,14 @@ open class ExpandableLinearLayout @JvmOverloads constructor(
         attrs?.let {
             val typedArray =
                 context.obtainStyledAttributes(it, R.styleable.ExpandableLinearLayout, 0, 0)
-            hideChildren =
-                typedArray.getBoolean(R.styleable.ExpandableLinearLayout_hideChildren, true)
-            useCollapseSize =
-                typedArray.getBoolean(R.styleable.ExpandableLinearLayout_useCollapseSize, false)
+            try {
+                hideChildren =
+                    typedArray.getBoolean(R.styleable.ExpandableLinearLayout_hideChildren, true)
+                useCollapseSize =
+                    typedArray.getBoolean(R.styleable.ExpandableLinearLayout_useCollapseSize, false)
+            } finally {
+                typedArray.recycle()
+            }
         }
     }
 

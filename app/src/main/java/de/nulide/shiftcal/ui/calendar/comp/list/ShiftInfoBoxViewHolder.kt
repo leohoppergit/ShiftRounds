@@ -2,14 +2,11 @@ package de.nulide.shiftcal.ui.calendar.comp.list
 
 import android.content.Context
 import android.content.res.Configuration
-import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.widget.EditText
-import android.widget.GridLayout
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
@@ -21,8 +18,6 @@ import de.nulide.shiftcal.data.repository.wrapper.WorkDayDTO
 import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.ExpandableLinearLayout
 import de.nulide.shiftcal.ui.helper.ExpandableLinearLayout.OnExpandableLinearLayoutCollapsedListener
-import de.nulide.shiftcal.ui.helper.OnTagSelectedListener
-import de.nulide.shiftcal.ui.helper.TagsSelectorDialog
 import de.nulide.shiftcal.utils.ColorHelper
 import de.nulide.shiftcal.utils.Runner
 import java.time.LocalDate
@@ -34,7 +29,7 @@ class ShiftInfoBoxViewHolder(
     itemView: View,
     val shiftInfoBoxAdapter: ShiftInfoBoxAdapter
 ) : RecyclerView.ViewHolder(itemView),
-    OnExpandableLinearLayoutCollapsedListener, View.OnClickListener, OnTagSelectedListener {
+    OnExpandableLinearLayoutCollapsedListener {
 
     private val shiftInfoBox: ExpandableLinearLayout = itemView.findViewById(R.id.shiftInfoBox)
     private val shiftNameText: TextView = itemView.findViewById(R.id.shiftNameText)
@@ -46,7 +41,6 @@ class ShiftInfoBoxViewHolder(
     private val balanceTypeText: TextView = itemView.findViewById(R.id.balanceTypeText)
     private val overtimeMultiplierText: TextView = itemView.findViewById(R.id.overtimeMultiplierText)
     private val noteText: TextView = itemView.findViewById(R.id.noteText)
-    private val iconHolder: GridLayout = itemView.findViewById(R.id.iconHolder)
 
     private var initialized = false
 
@@ -92,7 +86,6 @@ class ShiftInfoBoxViewHolder(
                 layer[1] = secondBackground
                 shiftInfoBox.background = LayerDrawable(layer)
             }
-            iconHolder.removeAllViewsInLayout()
             if (ColorHelper.isTooBright(displayShiftColor)) {
                 val black = ContextCompat.getColor(context, R.color.textColorBlack)
                 shiftNameText.setTextColor(black)
@@ -108,7 +101,6 @@ class ShiftInfoBoxViewHolder(
                 balanceTypeText.background = createInfoBackground(true)
                 overtimeMultiplierText.background = createInfoBackground(true)
                 noteText.background = createInfoBackground(true)
-                addIcons(black)
             } else {
                 val white = ContextCompat.getColor(context, R.color.textColorWhite)
                 shiftNameText.setTextColor(white)
@@ -124,7 +116,6 @@ class ShiftInfoBoxViewHolder(
                 balanceTypeText.background = createInfoBackground(false)
                 overtimeMultiplierText.background = createInfoBackground(false)
                 noteText.background = createInfoBackground(false)
-                addIcons(white)
             }
             startTimeText.text = shift.startTime.toString()
             val endTimeTextBuilder = StringBuilder(shift.endTime.toString())
@@ -214,27 +205,6 @@ class ShiftInfoBoxViewHolder(
         }
     }
 
-    fun addIcons(color: Int) {
-        if (wday.wday.calendarId == sc.calendar.getLocal()) {
-            iconHolder.setOnClickListener(this)
-        } else {
-            iconHolder.setOnClickListener(null)
-        }
-        if (wday.wday.icons.isNotEmpty()) {
-            for (iconIDs in wday.wday.icons) {
-                val imageView = ImageView(context)
-                imageView.setImageResource(TagsSelectorDialog.getIconRes(iconIDs))
-                imageView.imageTintList = ColorStateList.valueOf(color)
-                iconHolder.addView(imageView)
-            }
-        } else if (wday.wday.calendarId == sc.calendar.getLocal()) {
-            val imageView = ImageView(context)
-            imageView.setImageResource(R.drawable.ic_add)
-            imageView.imageTintList = ColorStateList.valueOf(color)
-            iconHolder.addView(imageView)
-        }
-    }
-
     override fun onCollapsed(expandableLinearLayout: ExpandableLinearLayout) {
         initialized = false
         shiftInfoBoxAdapter.removeItem(wday, pos)
@@ -242,20 +212,6 @@ class ShiftInfoBoxViewHolder(
 
     fun dismiss() {
         shiftInfoBox.collapse()
-    }
-
-    override fun onClick(v: View?) {
-        TagsSelectorDialog(context, wday.wday, this)
-    }
-
-    override fun onTagSelected(tagID: Int) {
-        if (wday.wday.icons.contains(tagID)) {
-            wday.wday.icons.remove(tagID)
-        } else {
-            wday.wday.icons.add(tagID)
-        }
-        sc.workDays.update(wday.wday)
-        shiftInfoBoxAdapter.notifyItemChanged(pos)
     }
 
     private fun createInfoBackground(forBrightShift: Boolean): GradientDrawable {

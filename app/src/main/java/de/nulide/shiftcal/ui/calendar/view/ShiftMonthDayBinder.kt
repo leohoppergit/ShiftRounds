@@ -1,11 +1,14 @@
 package de.nulide.shiftcal.ui.calendar.view
 
 import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -17,12 +20,16 @@ import com.kizitonwose.calendar.view.MonthDayBinder
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.calendar.CalendarSpecialDate
 import de.nulide.shiftcal.data.calendar.CalendarSpecialDateRepository
+import de.nulide.shiftcal.data.factory.TimeFactory
 import de.nulide.shiftcal.data.repository.SCRepoManager
+import de.nulide.shiftcal.data.settings.Settings
+import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.ui.calendar.CalViewModel
 import de.nulide.shiftcal.ui.calendar.specialdate.CalendarSpecialDateUiHelper
 import de.nulide.shiftcal.utils.ColorHelper
 import de.nulide.shiftcal.utils.Runner
 import java.time.LocalDate
+import java.time.YearMonth
 
 class ShiftMonthDayBinder(
     private var context: Context,
@@ -34,10 +41,13 @@ class ShiftMonthDayBinder(
 
     private val today = LocalDate.now()
     private var defaultTextColor = -1
+    private val settings = SettingsRepository.getInstance(context)
     private val specialDateRepository = CalendarSpecialDateRepository(
         context,
-        de.nulide.shiftcal.data.settings.SettingsRepository.getInstance(context)
+        settings
     )
+    private val shiftMonthCache = mutableMapOf<YearMonth, Map<LocalDate, List<de.nulide.shiftcal.data.model.Shift>>>()
+    private val specialDateMonthCache = mutableMapOf<YearMonth, Map<LocalDate, List<CalendarSpecialDate>>>()
 
     override fun bind(container: DayViewContainer, data: CalendarDay) {
         Runner.runCo {
@@ -52,10 +62,10 @@ class ShiftMonthDayBinder(
             container.shiftTextView.background = null
             container.secondShiftTextView.background = null
             clearSpecialDateMarkers(container)
+            applyMonthTileScale(container)
 
             val selectorDrawable =
                 ContextCompat.getDrawable(context, R.drawable.shift_rounds_selected_day_outline)
-            val todayBoxDrawable = ContextCompat.getDrawable(context, R.drawable.today_box)
 
             container.calViewModel = calViewModel
             container.day = data
@@ -67,9 +77,10 @@ class ShiftMonthDayBinder(
 
             val dateString = data.date.dayOfMonth.toString()
 
+            val shifts = getShiftEntriesOn(data.date)
+
             //ShiftLogic
-            if (sc.workDays.hasWork(data.date)) {
-                val shifts = sc.shifts.getOn(data.date)
+            if (shifts.isNotEmpty()) {
                 val firstShift = shifts[0]
 
                 container.shiftTextView.text = decorateShiftShortName(firstShift)
@@ -92,7 +103,7 @@ class ShiftMonthDayBinder(
                     val secondBoxDrawable =
                         ContextCompat.getDrawable(context, R.drawable.rounded_box)
                     val halfBoxDrawable =
-                        ClipDrawable(secondBoxDrawable, Gravity.RIGHT, ClipDrawable.HORIZONTAL)
+                        ClipDrawable(secondBoxDrawable, Gravity.END, ClipDrawable.HORIZONTAL)
                     halfBoxDrawable.setLevel(5000)
                     halfBoxDrawable.setTint(secondShift.color)
                     val layer = arrayOfNulls<Drawable>(2)
@@ -143,14 +154,14 @@ class ShiftMonthDayBinder(
                 container.secondShiftTextView.background = null
             }
 
-            applySpecialDateMarkers(
-                container,
-                specialDateRepository.getEntriesOn(data.date),
-                container.dayContainer.background != null
-            )
+            applySpecialDateMarkers(container, getSpecialDatesOn(data.date), container.dayContainer.background != null)
 
             // Show Box over Today's day
             if (data.date == today) {
+                val todayBoxDrawable = createTodayHighlight(
+                    shiftColor = shifts.firstOrNull()?.color,
+                    hasShiftBackground = container.dayContainer.background != null
+                )
                 var layer = arrayOfNulls<Drawable>(2)
                 layer[0] = container.dayContainer.background
                 layer[1] = todayBoxDrawable
@@ -159,11 +170,17 @@ class ShiftMonthDayBinder(
                 container.dayContainer.background = LayerDrawable(layer)
                 container.firstDigitDayTextView.setTypeface(null, Typeface.BOLD)
                 container.secondDigitDayTextView.setTypeface(null, Typeface.BOLD)
+                if (shifts.size <= 1) {
+                    container.shiftTextView.setTypeface(null, Typeface.BOLD)
+                }
+                if (shifts.size > 1) {
+                    container.secondShiftTextView.setTypeface(null, Typeface.BOLD)
+                }
             }
 
             if (data.position == DayPosition.MonthDate) {
                 // Show Selector over selected Day
-                if (calViewModel.getLastSelectedDay() == data) {
+                if (calViewModel.getLastSelectedDay().date == data.date) {
                     if (container.dayContainer.background != null) {
                         val layer = arrayOfNulls<Drawable>(2)
                         layer[0] = container.dayContainer.background
@@ -185,11 +202,25 @@ class ShiftMonthDayBinder(
     override fun create(view: View) = DayViewContainer(view)
 
     override fun onDayClicked(date: CalendarDay) {
+        val lastSelectedDay = calViewModel.getLastSelectedDay()
+        val selectedDay = if (date.position == DayPosition.MonthDate) {
+            date
+        } else {
+            CalendarDay(date.date, DayPosition.MonthDate)
+        }
+
+        if (calViewModel.getEditMode() && lastSelectedDay.date == selectedDay.date) {
+            calViewModel.trigger(calViewModel.daySelected, selectedDay)
+            return
+        }
+
+        calViewModel.setLastSelectedDay(selectedDay)
+
         if (date.position == DayPosition.MonthDate) {
-            val lastSelectedDay = calViewModel.getLastSelectedDay()
-            calViewModel.setLastSelectedDay(date)
-            calendarView.notifyDayChanged(lastSelectedDay)
-            calendarView.notifyDayChanged(date)
+            calendarView.notifyDateChanged(lastSelectedDay.date)
+            calendarView.notifyDateChanged(date.date)
+        } else {
+            calendarView.smoothScrollToMonth(TimeFactory.convLocalDateToYearMonth(date.date))
         }
     }
 
@@ -235,6 +266,124 @@ class ShiftMonthDayBinder(
                 }
             }
         }
+    }
+
+    private fun getShiftEntriesOn(date: LocalDate): List<de.nulide.shiftcal.data.model.Shift> {
+        val yearMonth = YearMonth.from(date)
+        val monthMap = shiftMonthCache.getOrPut(yearMonth) {
+            buildShiftMonthCache(yearMonth)
+        }
+        return monthMap[date].orEmpty()
+    }
+
+    private fun buildShiftMonthCache(yearMonth: YearMonth): Map<LocalDate, List<de.nulide.shiftcal.data.model.Shift>> {
+        val shiftLookup = sc.shifts.getAll().associateBy { it.id }
+        return sc.workDays.getWorkDaysOfMonth(yearMonth.year, yearMonth.monthValue)
+            .groupBy { it.day }
+            .mapValues { (_, workDays) ->
+                workDays.mapNotNull { workDay -> shiftLookup[workDay.shiftId] }
+                    .sortedWith(
+                        compareBy<de.nulide.shiftcal.data.model.Shift>(
+                            { it.startTime.timeInMinutes },
+                            { it.endDayOffset },
+                            { it.endTime.timeInMinutes },
+                            { it.sortOrder },
+                            { it.id }
+                        )
+                    )
+            }
+    }
+
+    private fun getSpecialDatesOn(date: LocalDate): List<CalendarSpecialDate> {
+        val yearMonth = YearMonth.from(date)
+        val monthMap = specialDateMonthCache.getOrPut(yearMonth) {
+            buildSpecialDateMonthCache(yearMonth)
+        }
+        return monthMap[date].orEmpty()
+    }
+
+    private fun buildSpecialDateMonthCache(yearMonth: YearMonth): Map<LocalDate, List<CalendarSpecialDate>> {
+        val map = mutableMapOf<LocalDate, List<CalendarSpecialDate>>()
+        var day = yearMonth.atDay(1)
+        val end = yearMonth.atEndOfMonth()
+        while (!day.isAfter(end)) {
+            map[day] = specialDateRepository.getEntriesOn(day)
+            day = day.plusDays(1)
+        }
+        return map
+    }
+
+    private fun applyMonthTileScale(container: DayViewContainer) {
+        when (settings.getInt(Settings.MONTH_TILE_SCALE).coerceIn(0, 2)) {
+            2 -> {
+                container.firstDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                container.secondDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                container.shiftTextView.setAutoSizeTextTypeUniformWithConfiguration(8, 12, 1, TypedValue.COMPLEX_UNIT_SP)
+                container.secondShiftTextView.setAutoSizeTextTypeUniformWithConfiguration(8, 12, 1, TypedValue.COMPLEX_UNIT_SP)
+            }
+            0 -> {
+                container.firstDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                container.secondDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                container.shiftTextView.setAutoSizeTextTypeUniformWithConfiguration(7, 10, 1, TypedValue.COMPLEX_UNIT_SP)
+                container.secondShiftTextView.setAutoSizeTextTypeUniformWithConfiguration(7, 10, 1, TypedValue.COMPLEX_UNIT_SP)
+            }
+            else -> {
+                container.firstDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15.5f)
+                container.secondDigitDayTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15.5f)
+                container.shiftTextView.setAutoSizeTextTypeUniformWithConfiguration(8, 11, 1, TypedValue.COMPLEX_UNIT_SP)
+                container.secondShiftTextView.setAutoSizeTextTypeUniformWithConfiguration(8, 11, 1, TypedValue.COMPLEX_UNIT_SP)
+            }
+        }
+    }
+
+    private fun createTodayHighlight(shiftColor: Int?, hasShiftBackground: Boolean): Drawable {
+        val strokeColor = when {
+            shiftColor == null -> context.getColor(R.color.shiftRoundsActionInk)
+            ColorHelper.isTooBright(shiftColor) -> context.getColor(R.color.textColorBlack)
+            else -> context.getColor(R.color.textColorWhite)
+        }
+
+        val fillColor = when {
+            shiftColor == null && isNightMode() -> Color.argb(42, 111, 169, 205)
+            shiftColor == null -> Color.argb(26, 0, 0, 0)
+            ColorHelper.isTooBright(shiftColor) -> Color.argb(34, 0, 0, 0)
+            hasShiftBackground -> Color.argb(38, 255, 255, 255)
+            else -> Color.argb(28, 255, 255, 255)
+        }
+
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                16f,
+                context.resources.displayMetrics
+            )
+            setColor(fillColor)
+            setStroke(
+                TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    4f,
+                    context.resources.displayMetrics
+                ).toInt(),
+                strokeColor
+            )
+        }
+    }
+
+    private fun isNightMode(): Boolean {
+        return (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+    }
+
+    fun invalidateDate(date: LocalDate) {
+        val yearMonth = YearMonth.from(date)
+        shiftMonthCache.remove(yearMonth)
+        specialDateMonthCache.remove(yearMonth)
+    }
+
+    fun clearCaches() {
+        shiftMonthCache.clear()
+        specialDateMonthCache.clear()
     }
 
 

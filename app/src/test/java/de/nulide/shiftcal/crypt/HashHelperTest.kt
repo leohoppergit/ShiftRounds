@@ -3,12 +3,11 @@ package de.nulide.shiftcal.crypt
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class HashHelperTest {
+class PasswordGeneratorTest {
 
     @Test
-    fun testHashSize() {
-        val password = PasswordGenerator.genNewPW()
-        val hash = HashHelper.hashPassword(password)
-        assertEquals(Base64Helper.from(hash).size, HashHelper.ARGON2_HASH_LENGTH)
+    fun testGeneratedKeySize() {
+        val key = PasswordGenerator.genNewPW()
+        assertEquals(Base64Helper.from(key).size, AES.AES_GCM_KEY_SIZE_BYTES)
     }
 }

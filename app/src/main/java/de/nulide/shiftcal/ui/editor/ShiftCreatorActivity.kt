@@ -127,10 +127,10 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         shiftStartTime = ShiftTime(7, 0)
         shiftEndTime = ShiftTime(15, 0)
         selectedBalanceType = 1
-        binding.breakMinutesEdit.setText("30")
+        binding.breakMinutesEdit.setText(formatWholeNumber(30))
         binding.overtimeMultiplierSwitch.isChecked = false
         binding.overtimeMultiplierEdit.setText(formatOvertimeMultiplier(1.0))
-        binding.balanceHoursEdit.setText("8")
+        binding.balanceHoursEdit.setText(formatWholeNumber(8))
         updateTime()
 
         binding.colorPickerButton.setOnClickListener(this)
@@ -157,10 +157,10 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
                 val hours = customBalanceMinutes / 60
                 val minutes = customBalanceMinutes % 60
                 if (hours > 0) {
-                    binding.balanceHoursEdit.setText(hours.toString())
+                    binding.balanceHoursEdit.setText(formatWholeNumber(hours))
                 }
                 if (minutes > 0) {
-                    binding.balanceMinutesEdit.setText(minutes.toString())
+                    binding.balanceMinutesEdit.setText(formatWholeNumber(minutes))
                 }
             } else {
                 selectedBalanceType = 0
@@ -175,10 +175,10 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
                 val minutes = specialMinutes % 60
                 binding.specialAccountSwitch.isChecked = true
                 if (hours > 0) {
-                    binding.specialAccountHoursEdit.setText(hours.toString())
+                    binding.specialAccountHoursEdit.setText(formatWholeNumber(hours))
                 }
                 if (minutes > 0) {
-                    binding.specialAccountMinutesEdit.setText(minutes.toString())
+                    binding.specialAccountMinutesEdit.setText(formatWholeNumber(minutes))
                 }
             }
             if (toEditShift.breakMinutes > 0) {
@@ -514,6 +514,10 @@ class ShiftCreatorActivity : AppCompatActivity(), View.OnClickListener, TextWatc
         } else {
             value.toString()
         }
+    }
+
+    private fun formatWholeNumber(value: Int): String {
+        return String.format(Locale.getDefault(), "%d", value)
     }
 
     private fun updateEditText() {

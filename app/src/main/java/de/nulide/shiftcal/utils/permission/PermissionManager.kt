@@ -1,12 +1,8 @@
 package de.nulide.shiftcal.utils.permission
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
@@ -18,7 +14,6 @@ class PermissionManager(
 
     private val permissionLauncher: ActivityResultLauncher<String>
     private val multiPermissionLauncher: ActivityResultLauncher<Array<String>>
-    private val intentLauncher: ActivityResultLauncher<Intent>
     private var lastRequestedPermission = ""
 
     init {
@@ -40,40 +35,15 @@ class PermissionManager(
                 informNotGranted(lastRequestedPermission)
             }
         }
-        intentLauncher = activity.registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { _ ->
-            run {}
-        }
         activity.lifecycle.addObserver(this)
     }
 
     override fun onResume(owner: LifecycleOwner) {
     }
 
-    @SuppressLint("BatteryLife")
     fun request(perm: String) {
         lastRequestedPermission = perm
         when (perm) {
-            Perm.ONEPLUS_BACKGROUND -> {
-                OnePlusBackgroundActivityPermissionDialog(
-                    activity,
-                    this
-                ).show()
-            }
-
-            Perm.OVERLAY -> {
-                val intent = Intent(perm, ("package:" + activity.packageName).toUri())
-                intentLauncher.launch(intent)
-            }
-
-            Perm.BAT -> {
-                val intent =
-                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                intent.setData(("package:" + activity.packageName).toUri())
-                intentLauncher.launch(intent)
-            }
-
             Perm.CALENDAR -> {
                 multiPermissionLauncher.launch(
                     arrayOf(

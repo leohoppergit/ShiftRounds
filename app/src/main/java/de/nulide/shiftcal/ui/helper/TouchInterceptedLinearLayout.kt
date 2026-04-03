@@ -22,4 +22,8 @@ open class TouchInterceptedLinearLayout(context: Context, attrs: AttributeSet) :
         }
         return super.onTouchEvent(event)
     }
+
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
 }

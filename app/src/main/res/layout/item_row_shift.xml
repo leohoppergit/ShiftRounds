@@ -1,64 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
+    android:id="@+id/shiftBox"
     android:layout_width="match_parent"
-    android:paddingVertical="4dp"
-    android:paddingHorizontal="12dp">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="4dp"
+    android:background="@drawable/calendar_box"
+    android:gravity="center"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/shiftBox"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/calendar_box"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginVertical="4dp">
-
-            <TextView
-                android:id="@+id/textViewSName"
-                android:background="@drawable/rounded_box"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:maxLength="4"
-                android:ems="4"
-                android:textSize="24sp"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textAlignment="center"
-                android:paddingVertical="14dp"
-                android:textStyle="bold" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="4dp">
 
         <TextView
-            android:id="@+id/textViewName"
+            android:id="@+id/textViewSName"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="21sp" />
+            android:background="@drawable/rounded_box"
+            android:ems="4"
+            android:maxLength="4"
+            android:paddingVertical="14dp"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/buttonMore"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/shifts_more_actions"
-            android:padding="12dp"
-            android:src="@drawable/ic_more_vert"
-            app:tint="@color/textColor" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="21sp" />
+
+    <ImageButton
+        android:id="@+id/buttonMore"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/shifts_more_actions"
+        android:padding="12dp"
+        android:src="@drawable/ic_more_vert"
+        app:tint="@color/textColor" />
+
+</LinearLayout>

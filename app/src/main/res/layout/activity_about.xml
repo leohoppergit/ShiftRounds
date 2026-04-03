@@ -33,7 +33,7 @@
             android:paddingTop="8dp"
             android:paddingEnd="14dp"
             android:paddingBottom="8dp"
-            android:textColor="@color/shiftRoundsActionInk"
+            android:textColor="@color/shiftRoundsTitleInk"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textStyle="bold" />
 
@@ -53,6 +53,14 @@
             android:layout_marginTop="8dp"
             android:text="@string/about_credit_body"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/openSourceButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/about_open_source_button" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -64,6 +72,7 @@
         android:background="@drawable/calendar_box"
         android:clipToPadding="false"
         android:divider="@drawable/settings_divider"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -128,7 +128,11 @@ class TooltipHelper {
         ): Balloon.Builder {
             val backgroundColor =
                 ColorHelper.getColorAttr(context, androidx.appcompat.R.attr.colorAccent)
-            val view = LayoutInflater.from(context).inflate(R.layout.layout_tooltip_intro, null)
+            val view = LayoutInflater.from(context).inflate(
+                R.layout.layout_tooltip_intro,
+                android.widget.FrameLayout(context),
+                false
+            )
             val textView = view.findViewById<TextView>(R.id.tooltip_text)
             textView.text = msg
             if (ColorHelper.isTooBright(backgroundColor)) {

@@ -27,13 +27,17 @@ class InfoView @JvmOverloads constructor(
 
         attrs?.let {
             val typedArray = context.obtainStyledAttributes(it, R.styleable.InfoView, 0, 0)
-            val newBalloonText = typedArray.getString(R.styleable.InfoView_balloonText)
-            if (newBalloonText != null) {
-                setOnClickListener(this)
-                balloonText = newBalloonText
+            try {
+                val newBalloonText = typedArray.getString(R.styleable.InfoView_balloonText)
+                if (newBalloonText != null) {
+                    setOnClickListener(this)
+                    balloonText = newBalloonText
+                }
+                openActivity = typedArray.getResourceId(R.styleable.InfoView_openActivity, -1)
+                scrollToView = typedArray.getResourceId(R.styleable.InfoView_scrollTo, -1)
+            } finally {
+                typedArray.recycle()
             }
-            openActivity = typedArray.getResourceId(R.styleable.InfoView_openActivity, -1)
-            scrollToView = typedArray.getResourceId(R.styleable.InfoView_scrollTo, -1)
         }
     }
 

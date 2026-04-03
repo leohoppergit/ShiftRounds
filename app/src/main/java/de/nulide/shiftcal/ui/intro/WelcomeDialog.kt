@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import de.nulide.shiftcal.R
@@ -22,7 +23,7 @@ class WelcomeDialog(context: Context) : MaterialAlertDialogBuilder(context), Vie
 
     init {
         val layoutInflater = LayoutInflater.from(context)
-        val dialogView = layoutInflater.inflate(R.layout.dialog_welcome, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_welcome, FrameLayout(context), false)
         setView(dialogView)
 
         val welcomeIntroButton = dialogView.findViewById<Button>(R.id.welcomeIntroButton)

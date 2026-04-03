@@ -35,7 +35,6 @@ class WeekDayViewContainer(view: View) : ViewContainer(view) {
             for (onDayClickedListener in onDayClickedListeners) {
                 onDayClickedListener.onDayClicked(day)
             }
-            calViewModel.setLastSelectedDay(day)
         }
     }
 
@@ -46,7 +45,7 @@ class WeekDayViewContainer(view: View) : ViewContainer(view) {
 
     fun addShift(context: Context, shift: Shift?) {
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.item_shift, null) as FrameLayout
+        val view = inflater.inflate(R.layout.item_shift, shiftList, false) as FrameLayout
         val textView = view.findViewById<TextView>(R.id.shiftName)
         if (shift != null) {
             textView.text = shift.shortName

@@ -50,6 +50,9 @@ class CalViewModel : ViewModel() {
     val resume = MutableSharedFlow<Unit>()
 
     fun setCurrentMonth(currentMonth: YearMonth) {
+        if (this.currentMonth.value == currentMonth) {
+            return
+        }
         this.currentMonth.value = currentMonth
         trigger(newMonth, currentMonth)
     }
@@ -104,6 +107,10 @@ class CalViewModel : ViewModel() {
     }
 
     fun setLastSelectedDay(day: CalendarDay) {
+        val current = lastSelectedDay.value
+        if (current?.date == day.date && current.position == day.position) {
+            return
+        }
         lastSelectedDay.value = day
         trigger(daySelected, day)
     }

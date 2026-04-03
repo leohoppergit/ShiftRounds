@@ -1,8 +1,5 @@
 package de.nulide.shiftcal.ui
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,19 +12,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.forEachIndexed
 import androidx.core.view.get
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationBarView
 import de.nulide.shiftcal.R
-import de.nulide.shiftcal.data.repository.SCRepoManager
-import de.nulide.shiftcal.data.settings.Settings
-import de.nulide.shiftcal.data.settings.SettingsRepository
 import de.nulide.shiftcal.databinding.ActivityMainBinding
 import de.nulide.shiftcal.ui.calendar.ShiftCalendarFragment
 import de.nulide.shiftcal.ui.helper.SFragment
 import de.nulide.shiftcal.ui.helper.SFragmentPagerAdapter
-import de.nulide.shiftcal.ui.importer.SwiftShiftImportHelper
 import de.nulide.shiftcal.ui.settings.SettingsFragment
 import de.nulide.shiftcal.ui.stats.StatsFragment
 
@@ -39,32 +30,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private lateinit var adapter: SFragmentPagerAdapter
 
     private var ignoreReturnViaBack = false
-    private lateinit var settings: SettingsRepository
-    private lateinit var sc: SCRepoManager
-
-    private val swiftShiftImportLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val uri = result.data?.data ?: return@registerForActivityResult
-                val imported = try {
-                    contentResolver.openInputStream(uri)?.bufferedReader()?.use { reader ->
-                        SwiftShiftImportHelper(this).importLegacyJson(reader.readText())
-                    } ?: false
-                } catch (_: Exception) {
-                    false
-                }
-                if (imported) {
-                    settings.set(Settings.SWIFTSHIFT_IMPORT_PROMPT_HANDLED, true)
-                    recreate()
-                } else {
-                    com.google.android.material.snackbar.Snackbar.make(
-                        binding.root,
-                        getString(R.string.swiftshift_import_failed),
-                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
 
     private val currentFragment: SFragment?
         get() {
@@ -84,9 +49,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             v.setPadding(systemBars.left, 0, systemBars.right, 0)
             insets
         }
-
-        settings = SettingsRepository.getInstance(this)
-        sc = SCRepoManager.getInstance(this)
 
         //ActionBar
         binding.topAppBar.title = null
@@ -125,8 +87,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
             }
         }
         onBackPressedDispatcher.addCallback(backCallback)
-
-        maybePromptSwiftShiftImport()
 
     }
 
@@ -191,58 +151,6 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 }
             }
             ignoreReturnViaBack = false
-        }
-    }
-
-    private fun maybePromptSwiftShiftImport() {
-        if (settings.getBoolean(Settings.SWIFTSHIFT_IMPORT_PROMPT_HANDLED)) return
-        if (!isOriginalSwiftShiftInstalled()) return
-        if (sc.shifts.getAll().isNotEmpty() || sc.workDays.getAll().isNotEmpty() ||
-            sc.monthNotes.getAll().isNotEmpty() || sc.shiftBlocks.getAll().isNotEmpty()
-        ) {
-            settings.set(Settings.SWIFTSHIFT_IMPORT_PROMPT_HANDLED, true)
-            return
-        }
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.swiftshift_import_title)
-            .setMessage(R.string.swiftshift_import_prompt)
-            .setPositiveButton(R.string.swiftshift_import_start) { _, _ ->
-                openSwiftShiftImportFilePicker()
-            }
-            .setNegativeButton(R.string.swiftshift_import_skip) { _, _ ->
-                settings.set(Settings.SWIFTSHIFT_IMPORT_PROMPT_HANDLED, true)
-            }
-            .setOnCancelListener {
-                settings.set(Settings.SWIFTSHIFT_IMPORT_PROMPT_HANDLED, true)
-            }
-            .show()
-    }
-
-    private fun openSwiftShiftImportFilePicker() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("application/json", "text/plain"))
-        }
-        swiftShiftImportLauncher.launch(intent)
-    }
-
-    private fun isOriginalSwiftShiftInstalled(): Boolean {
-        val packageName = "de.nulide.shiftcal"
-        return try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                packageManager.getPackageInfo(
-                    packageName,
-                    android.content.pm.PackageManager.PackageInfoFlags.of(0)
-                )
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getPackageInfo(packageName, 0)
-            }
-            true
-        } catch (_: Exception) {
-            false
         }
     }
 

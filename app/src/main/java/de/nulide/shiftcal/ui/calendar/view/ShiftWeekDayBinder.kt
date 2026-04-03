@@ -11,6 +11,7 @@ import com.kizitonwose.calendar.view.WeekDayBinder
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.repository.SCRepoManager
 import de.nulide.shiftcal.ui.calendar.CalViewModel
+import java.util.Locale
 
 class ShiftWeekDayBinder(
     val context: Context,
@@ -29,7 +30,7 @@ class ShiftWeekDayBinder(
         }
 
         container.day = CalendarDay(data.date, DayPosition.MonthDate)
-        container.dayTextView.text = data.date.dayOfMonth.toString()
+        container.dayTextView.text = String.format(Locale.getDefault(), "%d", data.date.dayOfMonth)
         container.calViewModel = calViewModel
         container.clearOnDayClickedListener()
         container.addOnDayClickedListener(this)
@@ -88,6 +89,10 @@ class ShiftWeekDayBinder(
 
     override fun onDayClicked(date: CalendarDay) {
         val lastSelectedDay = calViewModel.getLastSelectedDay()
+        if (calViewModel.getEditMode() && lastSelectedDay.date == date.date) {
+            calViewModel.trigger(calViewModel.daySelected, date)
+            return
+        }
         calViewModel.setLastSelectedDay(date)
         calendarView.notifyDateChanged(lastSelectedDay.date)
         calendarView.notifyDateChanged(date.date)

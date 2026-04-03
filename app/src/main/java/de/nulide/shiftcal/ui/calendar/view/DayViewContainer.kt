@@ -1,7 +1,7 @@
 package de.nulide.shiftcal.ui.calendar.view
 
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import android.widget.TextView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.view.ViewContainer
@@ -11,7 +11,7 @@ import java.util.LinkedList
 
 class DayViewContainer(view: View) : ViewContainer(view) {
 
-    val dayContainer = view.findViewById<LinearLayout>(R.id.dayContainer)
+    val dayContainer = view.findViewById<ViewGroup>(R.id.dayContainer)
     val firstDigitDayTextView = view.findViewById<TextView>(R.id.firstDigitCalendarDayText)
     val secondDigitDayTextView = view.findViewById<TextView>(R.id.secondDigitCalendarDayText)
     val shiftTextView = view.findViewById<TextView>(R.id.shiftText)

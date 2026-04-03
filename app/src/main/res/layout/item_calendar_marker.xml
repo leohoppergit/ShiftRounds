@@ -40,6 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings_calendar_marker_edit"
         android:padding="8dp"
         android:src="@drawable/ic_edit" />
 
@@ -48,6 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings_calendar_marker_delete"
         android:padding="8dp"
         android:src="@drawable/ic_delete" />
 

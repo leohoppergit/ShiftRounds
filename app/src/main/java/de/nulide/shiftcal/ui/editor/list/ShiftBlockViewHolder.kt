@@ -46,7 +46,7 @@ class ShiftBlockViewHolder(val context: Context, itemView: View, onItemClicked: 
             shiftContainer.background.setTint(shifts[0].color)
             val secondBoxDrawable = ContextCompat.getDrawable(context, R.drawable.rounded_box)
             val halfBoxDrawable =
-                ClipDrawable(secondBoxDrawable, Gravity.RIGHT, ClipDrawable.HORIZONTAL)
+                ClipDrawable(secondBoxDrawable, Gravity.END, ClipDrawable.HORIZONTAL)
             halfBoxDrawable.setLevel(5000)
             halfBoxDrawable.setTint(shifts[1].color)
             val layer = arrayOfNulls<Drawable>(2)

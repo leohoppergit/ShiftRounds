@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.nulide.shiftcal.R
 import de.nulide.shiftcal.data.repository.SCRepoManager
@@ -33,9 +34,27 @@ class ShiftInfoBoxAdapter(
     }
 
     fun updateData(newWDays: List<WorkDayDTO>) {
+        val oldWDays = wdays.toList()
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldWDays.size
+
+            override fun getNewListSize(): Int = newWDays.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldItem = oldWDays[oldItemPosition]
+                val newItem = newWDays[newItemPosition]
+                return oldItem.wday.calendarId == newItem.wday.calendarId &&
+                    oldItem.wday.id == newItem.wday.id &&
+                    oldItem.shift.id == newItem.shift.id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldWDays[oldItemPosition] == newWDays[newItemPosition]
+            }
+        })
         wdays.clear()
         wdays.addAll(newWDays)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun removeItem(wday: WorkDayDTO, position: Int) {
@@ -45,7 +64,6 @@ class ShiftInfoBoxAdapter(
 
     fun clear() {
         if (wdays.isEmpty()) return
-        wdays.clear()
-        notifyDataSetChanged()
+        updateData(emptyList())
     }
 }

@@ -22,7 +22,7 @@ class CalEditMenu @JvmOverloads constructor(
     private val sc = SCRepoManager.getInstance(context)
     private lateinit var calViewModel: CalViewModel
     private var easterEggHandler: EasterEggHandler
-    private val editFabButton by lazy { binding.editFab as AppCompatImageButton }
+    private val editFabButton: AppCompatImageButton by lazy { binding.editFab }
 
 
     init {

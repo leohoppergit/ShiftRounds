@@ -44,10 +44,10 @@ class WorkDayDetailsDialog(
             val hours = absoluteMinutes / 60
             val minutes = absoluteMinutes % 60
             if (hours > 0) {
-                overtimeHoursEdit.setText(hours.toString())
+                overtimeHoursEdit.setText(formatWholeNumber(hours))
             }
             if (minutes > 0) {
-                overtimeMinutesEdit.setText(minutes.toString())
+                overtimeMinutesEdit.setText(formatWholeNumber(minutes))
             }
         } else {
             timeTypeGroup.check(overtimeOption.id)
@@ -125,5 +125,9 @@ class WorkDayDetailsDialog(
         } else {
             value.toString()
         }
+    }
+
+    private fun formatWholeNumber(value: Int): String {
+        return String.format(Locale.getDefault(), "%d", value)
     }
 }

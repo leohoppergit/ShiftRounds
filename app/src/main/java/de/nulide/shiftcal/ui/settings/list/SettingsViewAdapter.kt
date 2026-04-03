@@ -1,11 +1,11 @@
 package de.nulide.shiftcal.ui.settings.list
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.ImageView
 import android.widget.TextView
 import de.nulide.shiftcal.R
 
@@ -29,8 +29,15 @@ class SettingsViewAdapter(context: Context, private var settingsEntries: List<Se
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = convertView ?: inflater.inflate(R.layout.item_settings, parent, false)
         val entry = settingsEntries[position]
-        view.findViewById<TextView>(R.id.settingsItemText).text = entry.title
-        view.findViewById<ImageView>(R.id.settingsItemIcon).setImageDrawable(entry.icon)
+        view.findViewById<TextView>(R.id.settingsItemText).apply {
+            text = entry.title
+            setCompoundDrawablesRelativeWithIntrinsicBounds(
+                entry.icon,
+                null as Drawable?,
+                null as Drawable?,
+                null as Drawable?
+            )
+        }
         return view
     }
 
