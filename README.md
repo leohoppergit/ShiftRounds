@@ -14,7 +14,7 @@ ShiftRounds is a privately maintained shift calendar app based on ShiftCal / Shi
 
 ## Credit
 
-Original concept and core foundation remain fully credited to [Nulide / ShiftCal](https://github.com/Nulide/ShiftCal).
+Original concept and core foundation remain fully credited to [Nulide / ShiftCal](https://gitlab.com/Nulide/ShiftCal).
 
 ShiftRounds continues that base as a separately maintained app line with its own UI, release cycle, and feature direction.
 
