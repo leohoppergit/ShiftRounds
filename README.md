@@ -98,6 +98,21 @@ Recommended asset:
 
 - `app-prod-release.apk`
 
+## AppVerifier
+
+ShiftRounds can be verified with [AppVerifier](https://github.com/soupslurpr/AppVerifier).
+
+Use these values:
+
+- Package name: `app.shiftrounds.android`
+- Signing certificate SHA-256:
+  `A4:E5:8F:63:4F:AC:61:03:35:D6:14:8C:C7:8B:6B:7E:A8:4D:27:BA:71:5D:4C:D1:81:73:64:05:9A:9F:C5:BB`
+
+Important:
+
+- This is the **certificate fingerprint**, not the SHA-256 checksum of the APK file.
+- AppVerifier uses the signing certificate identity for verification.
+
 ## Development Notes
 
 - `prod` is the main release flavor
