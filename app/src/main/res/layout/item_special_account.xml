@@ -2,17 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:background="@drawable/shift_rounds_settings_inline_item"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingVertical="6dp">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="10dp">
 
-    <TextView
-        android:id="@+id/specialAccountNameText"
+    <View
+        android:id="@+id/specialAccountColorDot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/shift_rounds_special_date_dot"
+        android:backgroundTint="@color/shiftRoundsSelection" />
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/specialAccountNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/specialAccountMetaText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/settings_special_accounts_item_meta"
+            android:textSize="13sp" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/editSpecialAccountButton"

@@ -56,7 +56,7 @@
 
                     <TextView
                         android:id="@+id/firstDayOfWeekLabel"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
@@ -64,12 +64,11 @@
 
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/settings_inline_control_width"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:layout_gravity="end|center_vertical">
 
                         <AutoCompleteTextView
                             android:id="@+id/firstDayOfWeekSpinner"
@@ -90,7 +89,7 @@
 
                     <TextView
                         android:id="@+id/monthTileScaleLabel"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
@@ -98,11 +97,10 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/settings_inline_control_width"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:layout_weight="1"
-                        android:gravity="end">
+                        android:layout_gravity="end|center_vertical">
 
                         <AutoCompleteTextView
                             android:id="@+id/monthTileScaleSpinner"
@@ -160,34 +158,76 @@
                     android:layout_margin="4dp"
                     android:text="@string/settings_special_dates_description" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/holidaySwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@string/settings_holidays_enable" />
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/schoolBreaksSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@string/settings_school_breaks_enable" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/settings_holiday_region_label"
-                    android:layout_margin="4dp">
+                    android:orientation="horizontal">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/holidayRegionSpinner"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:inputType="none" />
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_holidays_enable" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/holidaySwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_school_breaks_enable" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/schoolBreaksSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_weight="1"
+                        android:text="@string/settings_holiday_region_label" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="@dimen/settings_inline_control_width"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:layout_gravity="end|center_vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/holidayRegionSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/schoolBreakStatesSummaryText"
@@ -206,7 +246,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/selectSchoolBreakStatesButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="@string/settings_school_break_states_select" />
@@ -214,7 +254,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/updateSchoolBreaksButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="@string/settings_school_break_update" />
@@ -235,7 +275,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addCalendarMarkerButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="@string/settings_calendar_markers_add" />
@@ -263,12 +303,20 @@
                     android:layout_margin="4dp"
                     android:text="@string/settings_special_accounts_description" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/specialAccountsSwitch"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@string/settings_special_accounts_enable" />
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/specialAccountsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/specialAccountsManageSection"
@@ -293,7 +341,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/addSpecialAccountButton"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:text="@string/settings_special_accounts_add" />
@@ -323,12 +371,20 @@
                     android:layout_margin="4dp"
                     android:text="@string/settings_dual_shift_description" />
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/dualShiftCheckBox"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@string/Enable" />
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/dualShiftCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -359,12 +415,20 @@
                         android:layout_margin="4dp"
                         android:text="@string/settings_sync_description" />
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/syncCheckBox"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:text="@string/Enable" />
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/syncCheckBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:text="" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -412,23 +476,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    android:text="@string/backup_diagnostics_description" />
+                    android:text="@string/settings_extras_compact_description" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/backupDiagnosticsButton"
+                    android:id="@+id/toggleExtrasVisibilityButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    android:text="@string/backup_diagnostics_button" />
+                    android:text="@string/settings_extras_show_tools" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/showLastRestoreErrorButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/extrasDiagnosticsSection"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="@string/backup_restore_last_error_button" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="@string/backup_diagnostics_description" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/backupDiagnosticsButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="@string/backup_diagnostics_button" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/showLastRestoreErrorButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:text="@string/backup_restore_last_error_button" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

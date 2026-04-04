@@ -45,9 +45,9 @@
     <string name="settings_dual_shift_description">Enable the option to add a second shift to your workdays.</string>
     <string name="settings_special_accounts_title">Special accounts</string>
     <string name="settings_special_accounts_description">Enable optional named special accounts that are tracked separately from your normal work account.</string>
-    <string name="settings_special_accounts_enable">Enable special accounts</string>
     <string name="settings_special_accounts_empty">No special accounts configured yet.</string>
     <string name="settings_special_accounts_add">Add special account</string>
+    <string name="settings_special_accounts_item_meta">Special account</string>
     <string name="calendar_shift_selector_tooltip">Add a shift to your calendar.</string>
     <string name="calendar_month_note_editor_tooltip">Edit your monthly note.</string>
     <string name="welcome_calendar_info">This is your shift calendar! View and track all your shifts for the month. Click on any day with a shift to see more details.</string>
@@ -220,6 +220,9 @@
     <string name="export_event_note_none">none</string>
     <string name="export_event_adjustment_none">none</string>
     <string name="settings_extras_title">Extras</string>
+    <string name="settings_extras_compact_description">Rarely needed tools for backup diagnostics and restore troubleshooting.</string>
+    <string name="settings_extras_show_tools">Show diagnostic tools</string>
+    <string name="settings_extras_hide_tools">Hide diagnostic tools</string>
     <string name="backup_diagnostics_description">Analyze a ShiftRounds backup locally and view the last restore error for debugging.</string>
     <string name="backup_diagnostics_button">Backup diagnostics</string>
     <string name="backup_diagnostics_title">Backup diagnostics</string>

@@ -2,9 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:background="@drawable/shift_rounds_settings_inline_item"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingVertical="6dp">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="10dp">
 
     <View
         android:id="@+id/calendarMarkerColorDot"

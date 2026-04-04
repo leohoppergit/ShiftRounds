@@ -88,7 +88,6 @@
     <string name="feedback_email_subject">ShiftRounds Feedback</string>
     <string name="work_day_note_dialog_title">Σημείωση ημέρας</string>
     <string name="settings_special_accounts_title">Ειδικοί λογαριασμοί</string>
-    <string name="settings_special_accounts_enable">Ενεργοποίηση ειδικών λογαριασμών</string>
     <string name="settings_special_accounts_add">Προσθήκη ειδικού λογαριασμού</string>
     <string name="stats_special_accounts_title">Ειδικοί λογαριασμοί</string>
     <string name="special_account_add_title">Προσθήκη ειδικού λογαριασμού</string>

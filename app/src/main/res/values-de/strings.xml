@@ -81,9 +81,9 @@
     <string name="settings_dual_shift_description">Aktiviere diese Option, um deinen Arbeitstagen eine zweite Schicht hinzufügen zu können.</string>
     <string name="settings_special_accounts_title">Sonderkonten</string>
     <string name="settings_special_accounts_description">Aktiviere optionale, frei benennbare Sonderkonten, die getrennt vom normalen Arbeitszeitkonto geführt werden.</string>
-    <string name="settings_special_accounts_enable">Sonderkonten aktivieren</string>
     <string name="settings_special_accounts_empty">Noch keine Sonderkonten angelegt.</string>
     <string name="settings_special_accounts_add">Sonderkonto hinzufügen</string>
+    <string name="settings_special_accounts_item_meta">Sonderkonto</string>
     <string name="calendar_shift_selector_tooltip">Füge deinem Kalender eine Schicht hinzu.</string>
     <string name="calendar_month_note_editor_tooltip">Bearbeite deine Monatsnotiz.</string>
     <string name="welcome_calendar_info">Das ist dein Schichtkalender. Hier kannst du deine Schichten ansehen und anpassen.</string>
@@ -216,6 +216,9 @@
     <string name="export_event_note_none">keine</string>
     <string name="export_event_adjustment_none">keine</string>
     <string name="settings_extras_title">Extras</string>
+    <string name="settings_extras_compact_description">Selten benötigte Werkzeuge für Backup-Diagnose und Fehlersuche bei der Wiederherstellung.</string>
+    <string name="settings_extras_show_tools">Diagnosewerkzeuge anzeigen</string>
+    <string name="settings_extras_hide_tools">Diagnosewerkzeuge ausblenden</string>
     <string name="backup_diagnostics_description">Analysiere eine ShiftRounds-Sicherung lokal und zeige den letzten Wiederherstellungsfehler zur Fehlersuche an.</string>
     <string name="backup_diagnostics_button">Backup-Diagnose</string>
     <string name="backup_diagnostics_title">Backup-Diagnose</string>

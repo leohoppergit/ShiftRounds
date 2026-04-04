@@ -156,6 +156,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.addCalendarMarkerButton.setOnClickListener(this)
         binding.selectSchoolBreakStatesButton.setOnClickListener(this)
         binding.updateSchoolBreaksButton.setOnClickListener(this)
+        binding.toggleExtrasVisibilityButton.setOnClickListener(this)
         binding.backupDiagnosticsButton.setOnClickListener(this)
         binding.showLastRestoreErrorButton.setOnClickListener(this)
 
@@ -168,6 +169,7 @@ class AdvancedSettingsActivity : AppCompatActivity(),
         binding.holidayRegionSpinner.setAdapter(holidayRegionAdapter)
         binding.holidayRegionSpinner.setText(holidayRegions.first(), false)
         binding.holidayRegionSpinner.onItemClickListener = this
+        updateExtrasSectionUi()
 
     }
 
@@ -223,6 +225,8 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             showSchoolBreakStatesDialog()
         } else if (v == binding.updateSchoolBreaksButton) {
             showSchoolBreakUpdatePreparedDialog()
+        } else if (v == binding.toggleExtrasVisibilityButton) {
+            toggleExtrasSection()
         } else if (v == binding.backupDiagnosticsButton) {
             openBackupDiagnosticsPicker()
         } else if (v == binding.showLastRestoreErrorButton) {
@@ -363,6 +367,22 @@ class AdvancedSettingsActivity : AppCompatActivity(),
             .setMessage(lastError ?: getString(R.string.backup_restore_last_error_empty))
             .setPositiveButton(android.R.string.ok, null)
             .show()
+    }
+
+    private fun toggleExtrasSection() {
+        binding.extrasDiagnosticsSection.visibility =
+            if (binding.extrasDiagnosticsSection.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        updateExtrasSectionUi()
+    }
+
+    private fun updateExtrasSectionUi() {
+        binding.toggleExtrasVisibilityButton.setText(
+            if (binding.extrasDiagnosticsSection.visibility == View.VISIBLE) {
+                R.string.settings_extras_hide_tools
+            } else {
+                R.string.settings_extras_show_tools
+            }
+        )
     }
 
     private fun updateSpecialAccountsUi() {
